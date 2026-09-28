@@ -5,7 +5,7 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 ## Phase 1: standalone public site, no accounts (live)
 
 - [x] Save deals and targets in each visitor's own browser (localStorage). Nothing is sent to a server.
-- [x] Start new visitors with the example deals in `data/deals.json`.
+- [x] Start new visitors with made-up example deals (`data/deals.json`).
 - [x] Export all deals and targets to a JSON file, and import them again, for backups and for moving between devices.
 - [x] Build a full web page (`dist/index.html`) with a description, link preview tags and an icon.
 - [x] Run both test suites on every push and pull request (GitHub Actions). The suites now fail the build on any failed check.
@@ -31,3 +31,8 @@ Only once people ask for it, because it brings a backend, privacy obligations an
 1. **Editable prime rate.** Set under **Buy box & method → Market** and shown in the sidebar. New deals start at it, and the present-value discount rate follows it until you set your own. Saved deals keep their own rate. The default (10.75%, September 2026) is in `DEFAULT_TARGETS` in engine.js.
 2. **"How grades work" guide and disclaimer.** A Guide view explains the A to E grade, how tests score, the ten tests with your own targets, what the grade leaves out, and a "not financial advice" section. A first-visit notice and a line in the sidebar link to it.
 3. **Light and dark themes.** Dark stays the default; a switch in the sidebar and the mobile top bar changes to a light theme and remembers the choice. Both themes are contrast-checked in the tests.
+4. **Legal clean-up.** Made-up example deals instead of real developments, no real investors named, a Terms & privacy page, an accurate note on what GitHub Pages logs, and "last checked" dates on the prime rate and duty table.
+
+## Future offers (not a priority now)
+
+- **Annual pack with trusted data.** A paid yearly plan that adds data from reputable sources as inputs, for example TPN reports on tenant payment behaviour by area. Before building it: TPN is a registered credit bureau, so reselling or showing its data needs a licensing agreement and must follow the National Credit Act and POPIA. Charging money also brings in the Consumer Protection Act and the Electronic Communications and Transactions Act (business details, cancellation terms). Get legal advice first.

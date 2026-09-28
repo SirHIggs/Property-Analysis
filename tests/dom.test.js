@@ -251,6 +251,17 @@ function rnd(i){
   ok(await p.evaluate(()=>!document.documentElement.dataset.theme),'switch goes back to dark','');
 
 
+  // ---------- legal content ----------
+  ok(!/Turner|Boel|Cederberg|Conradie|Pinelands/i.test(html),'site names no real investors or developments','');
+  ok(EX.every(d=>/^Example: /.test(d.name)&&/not a real listing/.test(d.notes)),'example deals are marked as made up','');
+  await p.goto(BASE+'#terms'); await p.waitForTimeout(400);
+  const tv=await p.evaluate(()=>({visible:!document.getElementById('v-terms').hidden,title:document.querySelector('#crumbs h1').textContent,text:document.getElementById('v-terms').textContent}));
+  ok(tv.visible&&tv.title==='Terms & privacy','terms view opens',JSON.stringify(tv.title));
+  ok(/Not advice/.test(tv.text)&&/GitHub Pages/.test(tv.text)&&/POPIA/.test(tv.text)&&/Republic of South Africa/.test(tv.text),'terms cover advice, hosting, POPIA and law','');
+  const dates=await p.evaluate(()=>[...document.querySelectorAll('[data-checked]')].map(e=>e.textContent));
+  ok(dates.length>=3&&dates.every(Boolean),'last-checked dates are shown',JSON.stringify(dates));
+
+  // ---------- self-hosted fonts ----------
   const fontsOk=await p.evaluate(async()=>{ await document.fonts.ready; return [document.fonts.check('14px "Geist"'),document.fonts.check('14px "Geist Mono"')]; });
   ok(fontsOk[0]&&fontsOk[1],'self-hosted fonts load',JSON.stringify(fontsOk));
   ok(!/googleapis|gstatic/.test(html),'website loads nothing from Google','');

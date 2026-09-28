@@ -1,7 +1,7 @@
 {
   "name": "buy-box",
   "private": true,
-  "description": "Property deal analysis: grades rental deals against Brandon Turner's screens and Laurens Boel's yield targets, with stress tests, a portfolio and side-by-side comparison.",
+  "description": "Property deal analysis: grades South African rental deals against common investor rules of thumb, with stress tests, a portfolio and side-by-side comparison.",
   "scripts": {
     "build": "node build.js",
     "test": "node build.js && node tests/engine.test.js",
