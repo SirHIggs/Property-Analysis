@@ -13,7 +13,7 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 - [x] Turn on GitHub Pages. Live at https://sirhiggs.github.io/Property-Analysis/
 - [x] Security: Content Security Policy, self-hosted fonts, hardened import, Dependabot, SECURITY.md.
 - [x] Name: keep **Buy Box**.
-- [ ] Custom domain (buybox.co.za is listed for sale on Dan.com; alternatives in the README).
+- [ ] Custom domain. buybox.co.za is listed for sale on Dan.com (checked 2026-09-28); otherwise a variant such as buyboxsa.co.za.
 
 ## Phase 2: accounts and syncing (next step)
 
