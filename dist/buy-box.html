@@ -488,6 +488,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
         <div style="padding:0 18px 18px"><button class="btn" id="resetTargets" type="button">Reset to defaults</button></div>
       </section>
       <section class="panel">
+        <div class="panel-h"><h2>Your data</h2><p id="dataNote">Back up your deals or move them to another device</p></div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; padding:0 18px 12px"><button class="btn" id="exportData" type="button">Export deals</button><button class="btn" id="importData" type="button">Import deals</button><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+        <p class="fine">Export saves every deal and your targets as a JSON file. Importing adds the deals in a file to yours, replaces any deal with the same id and takes the targets from the file.</p>
+      </section>
+      <section class="panel">
         <div class="panel-h"><h2>Method</h2><p>How every number is worked out</p></div>
         <div class="method"><dl>
           <dt>Grade<em>A to E</em></dt><dd>Each deal is scored on ten tests against your buy box. A test met counts 1, a test within reach counts ½. A = 90%+, B = 75%+, C = 55%+, D = 35%+, E below that. A and B fit your buy box.</dd>
@@ -763,13 +768,10 @@ const CMP_ROWS=[
     {k:"bondPmt",label:"Bond payment",sub:"Per month",f:"rand",info:true,lowBest:true}
   ]}
 ];
-const OFFLINE_EXAMPLES=[
-  {id:"ex1",slot:0,inCompare:true,name:"Cederberg 1-bed",area:"Conradie Park, Pinelands",newDev:true,price:1120000,rent:10000,levy:1400,rates:550,insurance:100,notes:"Example"},
-  {id:"ex2",slot:1,inCompare:true,name:"The Signal studio",area:"Conradie Park, Pinelands",newDev:true,price:860000,rent:7600,vacancy:5,levy:1000,rates:400,insurance:100,notes:"Example"},
-  {id:"ex3",slot:2,inCompare:true,name:"Hypothetical below-value 2-bed",area:"Example only",price:1300000,marketValue:1600000,reno:60000,rent:12500,levy:1800,rates:900,insurance:150,deposit:20,notes:"Example"}
-];
+// Example deals for a first visit, injected from data/deals.json by build.js.
+const SEED_DEALS=[{"id":"cederberg1","area":"Conradie Park, Pinelands","capGrowth":5,"costGrowth":7,"created":1758740000001,"deposit":10,"hold":10,"inCompare":false,"insurance":100,"legal":"","levy":1400,"maint":5,"marketValue":"","mgmt":11.5,"name":"Cederberg 1-bed","newDev":true,"notes":"Entry-level 1-bed (38 m²) from R1.12m. Rent based on Conradie Park 1-bed listings at R9,500–R10,700. The levy and rates are my estimates, so ask the developer for the schedule.","otherExp":0,"otherIncome":0,"price":1120000,"rate":10.75,"rates":550,"reno":0,"rent":10000,"rentGrowth":6,"sellCost":7,"slot":0,"term":20,"updated":1790290000000,"vacancy":4},{"id":"signal1","area":"Conradie Park, Pinelands","capGrowth":5,"costGrowth":7,"created":1758740000002,"deposit":10,"hold":10,"inCompare":true,"insurance":100,"legal":"","levy":1000,"maint":5,"marketValue":"","mgmt":11.5,"name":"The Signal studio","newDev":true,"notes":"Studio from R860k, with completion due March 2027. Rent based on a Conradie Park 0.5-bed listing at R7,600. The levy and rates are my estimates.","otherExp":0,"otherIncome":0,"price":860000,"rate":10.75,"rates":400,"reno":0,"rent":7600,"rentGrowth":6,"sellCost":7,"slot":1,"term":20,"updated":1790289000000,"vacancy":5},{"id":"example1","area":"Example only, not a real listing","capGrowth":8,"costGrowth":7,"created":1758740000003,"deposit":20,"hold":10,"inCompare":true,"insurance":150,"legal":"","levy":1000,"maint":5,"marketValue":1600000,"mgmt":11.5,"name":"Hypothetical below-value 2-bed","newDev":false,"notes":"A made-up Boel-style deal: an older, under-rented 2-bed bought 19% below value, with R60k of repairs and rent brought up to market. It shows how the buy price changes the numbers. Delete it once you've added real properties.","otherExp":0,"otherIncome":0,"price":1300000,"rate":10.75,"rates":900,"reno":0,"rent":12500,"rentGrowth":8,"sellCost":7,"slot":2,"term":20,"updated":1790283169366,"vacancy":4},{"id":"pmug0sul4uqez","area":"Pinelands","capGrowth":8,"costGrowth":7,"created":1790283885016,"deposit":20,"hold":10,"inCompare":true,"insurance":150,"legal":"","levy":900,"maint":5,"marketValue":"","mgmt":0,"name":"Cederberg 2 bed","newDev":true,"notes":"","otherExp":0,"otherIncome":0,"price":1750000,"rate":10.75,"rates":500,"reno":0,"rent":14000,"rentGrowth":8,"sellCost":7,"slot":3,"taxRate":0,"term":20,"updated":1790285565882,"vacancy":4}];
 
-const S={props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
+const S={props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
 const dirty=new Set(); let targetsDirty=false;
 const custom={rate:0,rent:0,vac:null,levy:0,vacTouched:false};
 
@@ -1151,7 +1153,7 @@ async function deleteDeal(id){
   S.props=S.props.filter(p=>p.id!==id); dirty.delete(id); clearTimeout(timers["properties/"+id]);
   if(S.cur===id){ S.cur=savedSorted()[0]?.id||(S.draft?"draft":null); if(!S.cur){ S.draft={...DEFAULTS}; S.cur="draft"; } }
   renderView(true); toast("Deal deleted");
-  if(S.db){ try{ await S.db.doc("properties/"+id).delete(); setStatus("saved","All changes saved"); }catch(e){ handleWriteError(e); } }
+  if(S.db){ try{ await S.db.doc("properties/"+id).delete(); setStatus("saved",S.savedText); }catch(e){ handleWriteError(e); } }
 }
 function toggleCompare(id,on){
   const p=S.props.find(x=>x.id===id); if(!p||S.readOnly) return false;
@@ -1382,7 +1384,7 @@ async function flush(path){
 }
 function done(path){
   if(path==="settings/targets") targetsDirty=false; else dirty.delete(path.slice(11));
-  if(!dirty.size&&!targetsDirty&&!Object.values(inflight).some(Boolean)&&S.mode==="db"&&!S.readOnly) setStatus("saved","All changes saved");
+  if(!dirty.size&&!targetsDirty&&!Object.values(inflight).some(Boolean)&&S.mode==="db"&&!S.readOnly) setStatus("saved",S.savedText);
 }
 function handleWriteError(e){
   const code=e&&e.code;
@@ -1399,17 +1401,88 @@ function pickInitial(){
 }
 function startLocal(){
   S.mode="local"; S.db=null;
-  const now=Date.now();
-  S.props=OFFLINE_EXAMPLES.map((x,i)=>({...DEFAULTS,...x,created:now-(3-i)*86400000,updated:now-i*3600000}));
+  S.props=SEED_DEALS.map(x=>({...DEFAULTS,...x}));
+  $("dataNote").textContent="This browser can't save, so changes are lost when you leave. Export to keep them";
   pickInitial(); setStatus("local","Example data · not saved in this view"); renderView(true);
 }
+
+/* Browser storage with the same interface as window.claude.use("db"), used outside claude.ai.
+   Everything lives under one localStorage key; other tabs pick up changes through the storage event. */
+const STORE_KEY="buybox-data";
+function browserDb(){
+  const read=()=>{ try{ const v=JSON.parse(localStorage.getItem(STORE_KEY)); return v&&typeof v==="object"&&v.properties?v:null; }catch(e){ return null; } };
+  const write=()=>{ try{ localStorage.setItem(STORE_KEY,JSON.stringify(st)); }catch(e){ throw {code:"quota_exceeded"}; } };
+  let st=read();
+  if(!st){
+    st={properties:{},settings:{}};
+    SEED_DEALS.forEach(({id,...rest})=>{ st.properties[id]=rest; });
+    try{ write(); }catch(e){ return null; }
+  }
+  const subs={};
+  const snapColl=name=>({docs:Object.entries(st[name]||{}).map(([id,d])=>({id,data:()=>({...d})}))});
+  const snapDoc=path=>{ const [c,id]=path.split("/"), d=(st[c]||{})[id]; return {exists:d!=null,data:()=>({...d})}; };
+  const snap=k=>k.includes("/")?snapDoc(k):snapColl(k);
+  const on=(k,f)=>{ (subs[k]=subs[k]||[]).push(f); f(snap(k)); return ()=>{ subs[k]=subs[k].filter(x=>x!==f); }; };
+  addEventListener("storage",e=>{ if(e.key!==STORE_KEY) return; const n=read(); if(!n) return; st=n; Object.keys(subs).forEach(k=>subs[k].forEach(f=>f(snap(k)))); });
+  return {
+    collection:name=>({onSnapshot:f=>on(name,f)}),
+    doc:path=>{ const [c,id]=path.split("/"); return {
+      set:async body=>{ (st[c]=st[c]||{})[id]=JSON.parse(JSON.stringify(body)); write(); },
+      delete:async()=>{ if(st[c]) delete st[c][id]; write(); },
+      onSnapshot:f=>on(path,f)
+    }; }
+  };
+}
+
+/* export / import */
+const DEAL_KEYS=new Set([...Object.keys(DEFAULTS),"id","created","updated","inCompare","slot"]);
+function exportData(){
+  const day=new Date().toISOString().slice(0,10);
+  const out={exported:day,deals:savedOrder().map(p=>({...p})),targets:{...S.targets}};
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:"application/json"}));
+  a.download="buy-box-"+day+".json"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast(`Exported ${out.deals.length} deal${out.deals.length===1?"":"s"}`);
+}
+async function importData(file){
+  if(S.readOnly||!file) return;
+  let data=null; try{ data=JSON.parse(await file.text()); }catch(e){}
+  const list=Array.isArray(data)?data:data&&Array.isArray(data.deals)?data.deals:null;
+  if(!list){ toast("That file isn't a Buy Box export"); return; }
+  const now=Date.now(); let n=0;
+  for(const raw of list){
+    if(!raw||typeof raw!=="object") continue;
+    const d={}; Object.keys(raw).forEach(k=>{ if(DEAL_KEYS.has(k)) d[k]=raw[k]; });
+    ["name","area","notes"].forEach(k=>{ if(k in d) d[k]=String(d[k]??""); });
+    const id=typeof d.id==="string"&&/^[\w-]{1,64}$/.test(d.id)?d.id:newId();
+    const p={...DEFAULTS,...d,id,created:Number(d.created)||now+n,updated:Number(d.updated)||now,inCompare:!!d.inCompare,slot:Number.isInteger(d.slot)&&d.slot>=0&&d.slot<8?d.slot:0};
+    const i=S.props.findIndex(x=>x.id===id); if(i>=0) S.props[i]=p; else S.props.push(p);
+    n++;
+  }
+  // Keep Compare to 8 deals, each with its own colour.
+  let cmp=0; const used=new Set();
+  savedOrder().forEach(p=>{ if(p.inCompare&&++cmp>MAX_CMP) p.inCompare=false; if(!p.inCompare) return; if(used.has(p.slot)){ for(let i=0;i<8;i++) if(!used.has(i)){ p.slot=i; break; } } used.add(p.slot); });
+  S.props.forEach(p=>scheduleSave("properties/"+p.id));
+  if(data.targets&&typeof data.targets==="object"){
+    Object.keys(DEFAULT_TARGETS).forEach(k=>{ const v=Number(data.targets[k]); if(data.targets[k]!==""&&data.targets[k]!=null&&isFinite(v)) S.targets[k]=v; });
+    syncTargets(); scheduleSave("settings/targets");
+  }
+  pickInitial(); renderView(true);
+  toast(`Imported ${n} deal${n===1?"":"s"}`);
+}
+$("exportData").addEventListener("click",exportData);
+$("importData").addEventListener("click",()=>{ if(!S.readOnly) $("importFile").click(); });
+$("importFile").addEventListener("change",e=>{ const f=e.target.files[0]; e.target.value=""; importData(f); });
 async function start(){
   S.draft=loadDraft();
   setView(location.hash.slice(1)||"analyse");
   let db=null;
   try{ db=window.claude&&window.claude.use?await window.claude.use("db"):null; }catch(e){ db=null; }
+  if(db) $("dataNote").textContent="Deals are saved with this artifact. Export a backup or move them elsewhere";
+  else{ db=browserDb(); S.savedText="Saved in this browser"; $("dataNote").textContent="Deals are saved in this browser only and never leave your device. Export a backup to keep them or move them"; }
   if(!db){ startLocal(); return; }
-  S.db=db; S.mode="db"; setStatus("saved","All changes saved");
+  S.db=db; S.mode="db"; setStatus("saved",S.savedText);
   let first=true;
   db.collection("properties").onSnapshot(snap=>{
     const byId=new Map(snap.docs.map(d=>[d.id,{...d.data(),id:d.id}]));

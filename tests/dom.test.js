@@ -7,7 +7,7 @@ fs.writeFileSync(page_,'<!doctype html><html><head><meta charset="utf-8"><meta n
 const src=html.split('/*ENGINE-START*/')[1].split('/*ENGINE-END*/')[0];
 const E=new Function(src+';return {DEFAULTS,DEFAULT_TARGETS,analyse,SCENARIOS,scenario,breakPoints,verdict,status,timeline};')();
 const T=E.DEFAULT_TARGETS;
-const EX=new Function('return '+html.match(/const OFFLINE_EXAMPLES=(\[[\s\S]*?\]);/)[1])();
+const EX=require('../data/deals.json').deals; // a first visit starts with these example deals
 
 let pass=0, fail=0; const failures=[]; const counts={};
 function ok(c,name,det){ counts[name]=(counts[name]||0)+1; if(c) pass++; else { fail++; if(failures.length<60) failures.push(name+' :: '+det); } }
@@ -141,17 +141,56 @@ function rnd(i){
   await p.goto('file://'+page_+'#compare'); await p.waitForTimeout(900);
   const cp=await p.evaluate(()=>({ leaders:[...document.querySelectorAll('#leaders .lead .who')].map(e=>e.textContent.trim()),
     rows:[...document.querySelectorAll('#cmp tbody tr:not(.grp)')].map(tr=>({h:tr.querySelector('th').childNodes[0].textContent.trim(), cells:[...tr.querySelectorAll('td')].map(td=>({t:td.querySelector('.val')?td.querySelector('.val span').textContent:td.textContent, best:!!td.querySelector('.best')}))})) }));
-  const byName=k=>exs[k].name;
-  const argmax=f=>{ let bi=0,bs=-Infinity; res.forEach((r,i)=>{ const s=f(r,i); if(s>bs){bs=s;bi=i;} }); return bi; };
+  // Compare shows only the deals ticked for comparison, oldest first.
+  const cmpIdx=exs.map((x,i)=>i).filter(i=>exs[i].inCompare).sort((a,b)=>exs[a].created-exs[b].created);
+  const cex=cmpIdx.map(i=>exs[i]), cres=cmpIdx.map(i=>res[i]);
+  const byName=k=>cex[k].name;
+  const argmax=f=>{ let bi=0,bs=-Infinity; cres.forEach((r,i)=>{ const s=f(r,i); if(s>bs){bs=s;bi=i;} }); return bi; };
   ok(cp.leaders[1]===byName(argmax(r=>r.m.cfMonth)),'leader: most cash flow',cp.leaders[1]);
   ok(cp.leaders[2]===byName(argmax(r=>isFinite(r.m.coc)?r.m.coc:(r.m.coc>0?1e9:-1e9))),'leader: best CoC',cp.leaders[2]);
   ok(cp.leaders[3]===byName(argmax(r=>r.storm)),'leader: most resilient',cp.leaders[3]);
   ok(cp.leaders[4]===byName(argmax(r=>-r.cashIn)),'leader: least cash',cp.leaders[4]);
   const rowCheck=(label,f,lowBest)=>{ const row=cp.rows.find(x=>x.h===label); if(!row){ ok(false,'compare row '+label,'missing'); return; }
-    const vals=res.map(f); const best=lowBest?Math.min(...vals):Math.max(...vals);
-    row.cells.forEach((c,i)=>ok(c.best===(vals[i]===best&&vals.filter(v=>v===best).length===1),'compare best flag: '+label,`${exs[i].name} flagged=${c.best}`)); };
+    ok(row.cells.length===cres.length,'compare columns: '+label,row.cells.length+' vs '+cres.length);
+    const vals=cres.map(f); const best=lowBest?Math.min(...vals):Math.max(...vals);
+    row.cells.forEach((c,i)=>ok(c.best===(vals[i]===best&&vals.filter(v=>v===best).length===1),'compare best flag: '+label,`${cex[i].name} flagged=${c.best}`)); };
   rowCheck('Monthly cash flow',r=>r.m.cfMonth); rowCheck('Gross yield',r=>r.m.grossYield); rowCheck('Expense ratio',r=>r.m.expRatio,true); rowCheck('Cash required',r=>r.cashIn,true); rowCheck('Net gain if sold',r=>r.m.netGain);
+
+  // ---------- saving in this browser, export and import ----------
+  await p.goto('file://'+page_+'#analyse'); await p.waitForTimeout(900);
+  ok((await p.textContent('#statusText'))==='Saved in this browser','status shows browser saving',await p.textContent('#statusText'));
+  await p.click('#newDeal'); await p.waitForTimeout(300);
+  if(await p.$('#newDeal.armed')) { await p.click('#newDeal'); await p.waitForTimeout(300); }
+  await p.fill('#f-name','Persist check'); await p.fill('#f-price','1234567'); await p.waitForTimeout(100);
+  await p.click('#saveDeal'); await p.waitForTimeout(1200);
+  await p.reload(); await p.goto('file://'+page_+'#portfolio'); await p.waitForTimeout(900);
+  const names=async()=>p.evaluate(()=>[...document.querySelectorAll('#ptable tbody tr td:first-child')].map(td=>td.textContent.trim()));
+  let nm=await names();
+  ok(nm.some(t=>t.startsWith('Persist check')),'saved deal survives a reload',nm.join(' | '));
+  ok(nm.length===exs.length+1,'portfolio holds examples plus the saved deal',nm.length);
+  await p.goto('file://'+page_+'#settings'); await p.waitForTimeout(500);
+  const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#exportData')]);
+  const exported=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));
+  ok(exported.deals.length===exs.length+1,'export holds every deal',exported.deals.length);
+  ok(exported.deals.some(d=>d.name==='Persist check'&&d.price===1234567),'export keeps deal fields','');
+  ok(Object.keys(T).every(k=>k in exported.targets),'export holds the targets','');
+  const imp=path.join(__dirname,'import.json');
+  fs.writeFileSync(imp,JSON.stringify({deals:[{id:'imported1',name:'Imported deal',price:2000000,rent:15000,inCompare:true,slot:0,created:1,evil:'<img src=x onerror=alert(1)>'},
+    {id:exs[0].id,name:'Replaced example',price:999999}],targets:{irr:17,bogus:5}}));
+  await p.setInputFiles('#importFile',imp); await p.waitForTimeout(1200);
+  await p.reload(); await p.goto('file://'+page_+'#portfolio'); await p.waitForTimeout(900);
+  nm=await names();
+  ok(nm.some(t=>t.startsWith('Imported deal')),'imported deal survives a reload',nm.join(' | '));
+  ok(nm.some(t=>t.startsWith('Replaced example'))&&!nm.some(t=>t.startsWith(exs[0].name+' ')||t===exs[0].name),'import replaces a deal with the same id',nm.join(' | '));
+  ok(nm.length===exs.length+2,'import adds new deals and keeps the rest',nm.length);
+  const tg=await p.evaluate(()=>JSON.parse(localStorage.getItem('buybox-data')));
+  ok(tg.settings.targets&&tg.settings.targets.irr===17&&!('bogus' in tg.settings.targets),'import takes known targets only',JSON.stringify(tg.settings.targets));
+  ok(!('evil' in tg.properties.imported1),'import drops unknown fields','');
+  const slots=Object.values(tg.properties).filter(d=>d.inCompare).map(d=>d.slot);
+  ok(new Set(slots).size===slots.length&&slots.length<=8,'compare colours stay unique after import',slots.join(','));
+  fs.unlinkSync(imp);
 
   console.log(JSON.stringify({deals:N,pass,fail,pageErrors:errs,failures,checkTypes:Object.keys(counts).length},null,1));
   await b.close();
+  if(fail||errs.length) process.exitCode=1;
 })();

@@ -184,6 +184,7 @@ group('Present value of the 20-year cash', () => {
 });
 
 console.log(JSON.stringify({ pass, fail, groups, failures }, null, 1));
+if (fail) process.exitCode = 1;
 
 function rand() {
   const R = (a, b) => a + Math.random() * (b - a);

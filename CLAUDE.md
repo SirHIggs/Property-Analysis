@@ -1,25 +1,28 @@
 # Buy Box
 
-A property deal-analysis dashboard for South African rental property. It grades each deal from A to E against Brandon Turner's quick screens and Laurens Boel's yield and return targets. It also stress tests each deal, keeps a portfolio of deals and compares up to 8 side by side. It started as a claude.ai artifact and is now being built out here.
+A property deal-analysis dashboard for South African rental property. It grades each deal from A to E against Brandon Turner's quick screens and Laurens Boel's yield and return targets. It also stress tests each deal, keeps a portfolio of deals and compares up to 8 side by side. It started as a claude.ai artifact and is being turned into a public website (see ROADMAP.md).
 
 ## Layout
 
 ```
 src/engine.js      All the maths. Pure functions, no DOM. Lives between /*ENGINE-START*/ and /*ENGINE-END*/.
-src/shell.html     Page markup, CSS and UI code. Contains a %%ENGINE%% placeholder.
-build.js           Injects engine.js into shell.html → dist/buy-box.html (one self-contained file).
-dist/buy-box.html  The built page. Open it in a browser, or publish it.
+src/shell.html     Page markup, CSS and UI code. Contains %%ENGINE%% and %%SEED%% placeholders.
+build.js           Injects engine.js and the example deals from data/deals.json into shell.html.
+dist/buy-box.html  The built page as one self-contained fragment (claude.ai artifact; what the tests open).
+dist/index.html    The same page as a full HTML document with meta tags: the public website.
 tests/engine.test.js  ~50,000 checks on the engine (bond maths vs month-by-month simulation, SARS transfer duty,
                       IRR/NPV, break-even, breaking points, offer prices, 20-year timeline, present value, fuzzing, monotonicity).
 tests/dom.test.js     Opens the built page in Playwright, types random deals into the form and checks every number on
                       screen against the engine run separately (summary, KPIs, screening, stress, 20-year panel, portfolio, compare).
-data/deals.json    Deals and buy-box targets exported from the claude.ai version on 2026-09-28.
+data/deals.json    Deals and buy-box targets exported from the claude.ai version on 2026-09-28. The deals seed
+                   a first visit; the targets are not seeded (visitors start from DEFAULT_TARGETS).
+.github/workflows/site.yml  Runs both suites on every push and PR; the default branch also deploys dist/ to GitHub Pages.
 ```
 
 ## Commands
 
-- `npm run build` rebuilds dist/buy-box.html. Always edit src/, never dist/.
-- `npm test` runs the build plus the engine suite. It must end with 0 failed.
+- `npm run build` rebuilds dist/buy-box.html and dist/index.html. Always edit src/, never dist/.
+- `npm test` runs the build plus the engine suite. It must end with 0 failed (both suites exit non-zero on a failure).
 - `npm run test:ui` runs the build plus the on-screen reconciliation (needs `npm i` and `npx playwright install chromium`).
 
 Run both test suites after any change to the maths or to how numbers are displayed. When you add a metric, add engine checks for it and a matching on-screen check in dom.test.js.
@@ -35,9 +38,17 @@ Run both test suites after any change to the maths or to how numbers are display
 
 ## Storage
 
-The page saves through `window.claude.use("db")`, which only exists inside claude.ai artifacts. Opened anywhere else, `use()` is missing, so the page falls back to built-in example deals and saves nothing (see `startLocal()` in src/shell.html).
+`start()` in src/shell.html picks a store with one interface (`collection(name).onSnapshot`, `doc(path).set / delete / onSnapshot`):
 
-To make it standalone, replace the storage calls in `start()`, `flush()` and `deleteDeal()` with a small adapter. Use localStorage for single-user local use, or a backend such as Supabase or Firebase for accounts and syncing. Seed it from data/deals.json. Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`, `updated`, `inCompare` and `slot` (colour slot 0–7). Targets live in one object, whose keys match `DEFAULT_TARGETS`.
+1. `window.claude.use("db")` inside a claude.ai artifact.
+2. Otherwise `browserDb()`: localStorage under the key `buybox-data`, shaped `{properties:{id:deal}, settings:{targets}}`. A first visit is seeded with the deals from data/deals.json (`SEED_DEALS`). Other tabs pick up changes through the `storage` event.
+3. If localStorage is blocked, `startLocal()` shows the example deals and saves nothing.
+
+For accounts and syncing (phase 2 in ROADMAP.md), write another store with the same interface (for example on Supabase) and pick it in `start()`. The rest of the UI doesn't need to change.
+
+The unsaved draft is kept separately in localStorage (`buybox-draft`). **Your data** in the settings view exports every deal and the targets as JSON, and imports the same format (or the data/deals.json format): deals are added, a deal with the same id is replaced, unknown fields and targets are dropped, and Compare is kept to 8 deals with unique colours.
+
+Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`, `updated`, `inCompare` and `slot` (colour slot 0–7). Targets live in one object, whose keys match `DEFAULT_TARGETS`.
 
 ## Design
 
@@ -48,4 +59,4 @@ A single dark look, painted explicitly for every host theme: ledger-green surfac
 - No capital gains tax on the sale. Tax only feeds the optional after-tax cash flow line.
 - Attorney and bond fees are a rough estimate when left blank.
 - Municipal rates and levies stay fixed when solving for offer prices.
-- The prime rate (10.75%) shown in the sidebar is hard-coded. It was correct at September 2026.
+- The prime rate (10.75%) shown in the sidebar is hard-coded. It was correct at September 2026. Making it editable is on the roadmap.
