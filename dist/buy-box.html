@@ -403,8 +403,9 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <a href="#settings" class="mk" title="Change the prime rate"><span>Prime lending rate</span><b id="primeShow">10.75%</b></a>
       <div><span>Transfer duty free to</span><b>R1.21m</b></div>
       <div><span>Duty table</span><b>2026/27</b></div>
+      <div><span>Last checked</span><b data-checked="short">Sep 2026</b></div>
     </div>
-    <p class="side-fine">A calculator, not financial advice. <a href="#guide">Read more</a></p>
+    <p class="side-fine">A calculator, not financial advice. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a></p>
     <button type="button" class="themebtn" id="themeBtn" aria-pressed="false"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span id="themeLabel">Light mode</span></button>
     <div class="status" id="status" data-s="loading"><i></i><span id="statusText">Connecting…</span></div>
   </aside>
@@ -417,7 +418,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 
     <!-- ANALYSE -->
     <section class="view" id="v-analyse" aria-label="Analyse a deal">
-      <div class="notice" id="notice" hidden><p><strong>Buy Box is a calculator, not financial advice.</strong> Grades show how a deal compares with your targets, based on the numbers you enter. <a href="#guide">How grades work</a></p><button class="btn" id="noticeOk" type="button">Got it</button></div>
+      <div class="notice" id="notice" hidden><p><strong>Buy Box is a calculator, not financial advice.</strong> Grades show how a deal compares with your targets, based on the numbers you enter. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a></p><button class="btn" id="noticeOk" type="button">Got it</button></div>
       <div class="panel summary" id="summary">
         <div class="ident">
           <span class="cap" id="sEyebrow">Deal</span>
@@ -533,10 +534,10 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <section class="panel">
         <div class="panel-h"><h2>Market</h2><p id="primeNote">New deals start at the prime rate. Saved deals keep their own rate</p></div>
         <div class="tgrid"><div class="field"><label for="t-prime">Prime lending rate</label><div class="inp"><input type="number" step="0.25" min="0" max="40" inputmode="decimal" id="t-prime" data-t="prime" value="10.75"><span>%</span></div></div></div>
-        <p class="fine">10.75% at September 2026. Update it when the Reserve Bank changes the repo rate. While the present-value discount rate equals prime, it moves with it.</p>
+        <p class="fine">The default is 10.75%, last checked <span data-checked="long">28 September 2026</span>. Update it when the Reserve Bank changes the repo rate. While the present-value discount rate equals prime, it moves with it.</p>
       </section>
       <section class="panel">
-        <div class="panel-h"><h2>Your buy box</h2><p>The targets every deal is graded against. Boel's 12% cash-on-cash is his stated bar; the rest are common starting points.</p></div>
+        <div class="panel-h"><h2>Your buy box</h2><p>The targets every deal is graded against. The defaults are common rules of thumb. Set your own.</p></div>
         <div class="tgrid" id="tgrid"></div>
         <div style="padding:0 18px 18px"><button class="btn" id="resetTargets" type="button">Reset to defaults</button></div>
       </section>
@@ -549,21 +550,21 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
         <div class="panel-h"><h2>Method</h2><p>How every number is worked out</p></div>
         <div class="method"><dl>
           <dt>Grade<em>A to E</em></dt><dd>Each deal is scored on ten tests against your buy box. A test met counts 1, a test within reach counts ½. A = 90%+, B = 75%+, C = 55%+, D = 35%+, E below that. A and B fit your buy box.</dd>
-          <dt>1% rule<em>Brandon Turner</em></dt><dd>Monthly rent ÷ price. A 10-second first screen. At SA interest rates few Cape Town apartments reach 1%, so anything near it is strong.</dd>
-          <dt>50% rule<em>Brandon Turner</em></dt><dd>Running costs usually take about half the rent. The expense ratio shows your own estimate. Far below 50%? Check for missing costs.</dd>
-          <dt>Cash flow, cap rate, DSCR<em>Brandon Turner</em></dt><dd>NOI is rent collected less running costs. Cap rate is <code>NOI ÷ price</code>. Cash flow is <code>NOI − bond payments</code>. DSCR is <code>NOI ÷ bond payments</code>; lenders like 1.2 or more.</dd>
-          <dt>Gross and effective yield<em>Laurens Boel</em></dt><dd>Gross yield is annual rent ÷ price. Effective yield is <code>NOI ÷ total cost</code>, including transfer duty, fees and upfront repairs.</dd>
-          <dt>Cash-on-cash (ROI)<em>Laurens Boel</em></dt><dd><code>Annual cash flow ÷ cash you put in</code>: deposit, transfer duty, attorney and bond fees, repairs. Boel wants 12% or more.</dd>
-          <dt>Buying below value<em>Laurens Boel</em></dt><dd><code>(market value − price) ÷ market value</code>. Boel makes much of his return on the way in, buying from motivated sellers and fixing under-rented buildings.</dd>
-          <dt>Annualised return<em>Laurens Boel</em></dt><dd>IRR over your hold: rent growth, cost growth, bond paydown, capital growth and selling costs.</dd>
+          <dt>1% rule<em>Quick screen</em></dt><dd>Monthly rent ÷ price. A 10-second first screen. At South African interest rates few apartments reach 1%, so anything near it is strong.</dd>
+          <dt>50% rule<em>Quick screen</em></dt><dd>Running costs usually take about half the rent. The expense ratio shows your own estimate. Far below 50%? Check for missing costs.</dd>
+          <dt>Cash flow, cap rate, DSCR<em>Quick screen</em></dt><dd>NOI is rent collected less running costs. Cap rate is <code>NOI ÷ price</code>. Cash flow is <code>NOI − bond payments</code>. DSCR is <code>NOI ÷ bond payments</code>; lenders like 1.2 or more.</dd>
+          <dt>Gross and effective yield<em>Yield &amp; return</em></dt><dd>Gross yield is annual rent ÷ price. Effective yield is <code>NOI ÷ total cost</code>, including transfer duty, fees and upfront repairs.</dd>
+          <dt>Cash-on-cash (ROI)<em>Yield &amp; return</em></dt><dd><code>Annual cash flow ÷ cash you put in</code>: deposit, transfer duty, attorney and bond fees, repairs. The default target is 12%.</dd>
+          <dt>Buying below value<em>Yield &amp; return</em></dt><dd><code>(market value − price) ÷ market value</code>. Much of a property's return can be made on the way in: buying from a motivated seller, or fixing up an under-rented property.</dd>
+          <dt>Annualised return<em>Yield &amp; return</em></dt><dd>IRR over your hold: rent growth, cost growth, bond paydown, capital growth and selling costs.</dd>
           <dt>Stress test</dt><dd>Each scenario reruns the full model with one input made worse. Breaking points solve for the exact rate, rent or vacancy where cash flow hits zero. Offer prices solve for the highest price that still meets your target, with duty and fees recalculated; levies and rates are held fixed.</dd>
           <dt>Income vs expenses</dt><dd>Twenty years of rent collected (after vacancy) against running costs and bond repayments, using your rent and levy growth rates. The bond disappears once it's paid off. "Cash you top up" adds up every year the rent falls short. The sale of the property is left out.</dd>
           <dt>Present value</dt><dd>Each year's net cash from the 20-year view, discounted back to today: <code>Σ net ÷ (1 + rate)^year</code>, with cash treated as arriving at each year end. The default rate is prime (set under Market), the return you'd get by paying down debt instead. Use your own required return if it's higher.</dd>
           <dt>Tax</dt><dd>Add your marginal rate on a deal to see after-tax cash flow. Taxable rental income is NOI less bond interest; a loss usually reduces tax on other income. Grades use pre-tax numbers.</dd>
-          <dt>Before you offer<em>Boel's checks</em></dt><dd><ul><li>TPN report on tenant payment behaviour in the area</li><li>Levy statement and any planned special levies</li><li>Municipal account arrears</li><li>Title deed and approved building plans</li><li>Current tenant's status and arrears</li></ul></dd>
+          <dt>Before you offer<em>Checklist</em></dt><dd><ul><li>TPN report on tenant payment behaviour in the area</li><li>Levy statement and any planned special levies</li><li>Municipal account arrears</li><li>Title deed and approved building plans</li><li>Current tenant's status and arrears</li></ul></dd>
           <dt>Model checks</dt><dd>The engine is tested against an independent month-by-month bond simulation, the SARS transfer duty table, hand-built cash flows, and thousands of random and junk deals for consistency.</dd>
         </dl></div>
-        <p class="fine">Transfer duty uses the SARS table effective 1 April 2025, unchanged for 2026/27. On new developments the developer usually pays duty and fees. Attorney and bond fees are estimates; get a quote. A calculator, not financial advice.</p>
+        <p class="fine">Transfer duty uses the SARS table effective 1 April 2025, unchanged for 2026/27 (last checked <span data-checked="long">28 September 2026</span>). On new developments the developer usually pays duty and fees. Attorney and bond fees are estimates; get a quote. A calculator, not financial advice.</p>
       </section>
     </section>
     <section class="view" id="v-guide" aria-label="How grades work" hidden>
@@ -584,7 +585,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <section class="panel">
         <div class="panel-h"><h2>The ten tests</h2><p>With your current targets</p></div>
         <div class="tablebox"><table class="gtests" id="gtests"></table></div>
-        <p class="fine" style="padding-top:12px">Brandon Turner's quick screens come from his books and teaching on rental property. Laurens Boel's targets are his yield and return bars for buying well. The defaults are common starting points. Set your own in <a href="#settings" style="color:var(--text-2)">Buy box &amp; method</a>.</p>
+        <p class="fine" style="padding-top:12px">The quick screens are fast first checks that many rental investors use. The yield and return tests look at what the deal earns on the money you put in. The default targets are common rules of thumb, not recommendations. Set your own in <a href="#settings" style="color:var(--text-2)">Buy box &amp; method</a>.</p>
       </section>
       <section class="panel">
         <div class="panel-h"><h2>What the grade leaves out</h2></div>
@@ -598,7 +599,35 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p>Buy Box is a free calculator for learning and for screening deals. It is not financial, tax, legal or investment advice, and it does not recommend any property, bond or product. It is not provided by an authorised financial services provider.</p>
           <p>The results are only as good as the numbers you enter. Rates, rents, costs, transfer duty and fees change, and the estimates may be wrong or out of date. Before you buy, speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
           <p>Buy Box is provided as is, without any warranty. You use it at your own risk.</p>
-          <p><strong>Your privacy.</strong> Your deals are saved only in this browser and are never sent to us. Clearing your browser data deletes them, so export a backup under <a href="#settings">Your data</a>.</p>
+          <p><strong>Your privacy.</strong> Your deals are saved only in this browser and are never sent to us or anyone else. Clearing your browser data deletes them, so export a backup under <a href="#settings">Your data</a>. Read the full <a href="#terms">terms of use and privacy notice</a>.</p>
+        </div>
+      </section>
+    </section>
+    <section class="view" id="v-terms" aria-label="Terms and privacy" hidden>
+      <section class="panel">
+        <div class="panel-h"><h2>Terms of use</h2><p>Last updated 28 September 2026</p></div>
+        <div class="guide-body">
+          <p><strong>What Buy Box is.</strong> Buy Box is a free online calculator for screening South African rental property deals. It is run by an individual in South Africa. By using it, you agree to these terms. If you don't agree, please don't use it.</p>
+          <p><strong>Not advice.</strong> Buy Box gives general information only. It is not financial, investment, tax or legal advice, and it does not recommend any property, bond, developer or product. It is not provided by an authorised financial services provider. Grades and results depend only on the numbers you enter and the targets you choose.</p>
+          <p><strong>Estimates can be wrong.</strong> Interest rates, transfer duty, fees, rents and costs change. The built-in figures (the prime rate and the SARS transfer duty table) show when they were last checked, and they may be out of date. The example deals are made up and are not real listings. Check every number yourself.</p>
+          <p><strong>Your decisions are your own.</strong> Before you buy, sell or borrow, get advice from qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
+          <p><strong>No warranty.</strong> Buy Box is provided as is and as available, without any warranty. It may contain errors, and it may change or stop working at any time.</p>
+          <p><strong>Limitation of liability.</strong> To the extent the law allows, the operator of Buy Box is not liable for any loss or damage that comes from using it or relying on it, including any investment loss.</p>
+          <p><strong>Fair use.</strong> Don't use Buy Box to break the law, or try to disrupt or damage the site.</p>
+          <p><strong>Changes.</strong> These terms may be updated. The date above shows the latest version.</p>
+          <p><strong>Law.</strong> These terms are governed by the law of the Republic of South Africa.</p>
+          <p><strong>Contact.</strong> Questions or problems: open an issue on the <a href="https://github.com/SirHIggs/Property-Analysis/issues" rel="noopener noreferrer" target="_blank">Buy Box project page</a>.</p>
+        </div>
+      </section>
+      <section class="panel" id="privacy">
+        <div class="panel-h"><h2>Privacy notice</h2><p>Last updated 28 September 2026</p></div>
+        <div class="guide-body">
+          <p><strong>What we collect: nothing.</strong> Buy Box has no accounts, sign-up forms, cookies, analytics, trackers or adverts. We don't receive your deals, your targets or anything you type.</p>
+          <p><strong>Where your deals are kept.</strong> Everything you enter is saved only in this browser, on this device (in its local storage). It stays there until you delete it or clear your browser data. The site is built so that it can't send your deals anywhere.</p>
+          <p><strong>Backups.</strong> Exported files are saved to your device. You decide where they go and who sees them. Only import files from people you trust.</p>
+          <p><strong>Hosting.</strong> The site is hosted on GitHub Pages. Like any web host, GitHub may record technical information when your browser loads the site, such as your IP address and browser type, to run and secure its service. GitHub handles that information under its own privacy statement. We don't see it.</p>
+          <p><strong>Fonts.</strong> Fonts are served from this site, so no font service learns that you visited.</p>
+          <p><strong>Your rights.</strong> South Africa's Protection of Personal Information Act (POPIA) gives you rights over your personal information. Because we don't collect any, there is nothing for us to share, correct or delete. To remove everything from your device, delete your deals or clear this site's data in your browser. For questions, use the contact link above.</p>
         </div>
       </section>
     </section>
@@ -789,7 +818,7 @@ function timeline(raw,years,discPct){
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const DRAFT_KEY="buybox-draft", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings","guide"];
+const VIEWS=["analyse","portfolio","compare","settings","guide","terms"];
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -830,14 +859,14 @@ const TARGET_DEFS=[
   {k:"discountRate",label:"Discount rate for present value",u:"%",step:0.25}
 ];
 const TESTS={
-  turner:{title:"Brandon Turner · quick screens", rows:[
+  screens:{title:"Quick screens", rows:[
     {k:"onePct",label:"1% rule",sub:"Monthly rent ÷ price",f:"pct2",dir:"hi"},
     {k:"expRatio",label:"Expense ratio",sub:"50% rule",f:"pct1",dir:"lo"},
     {k:"cfMonth",label:"Monthly cash flow",sub:"After bond, year 1",f:"rand",dir:"hi",band:1000},
     {k:"capRate",label:"Cap rate",sub:"NOI ÷ price",f:"pct1",dir:"hi"},
     {k:"dscr",label:"Debt cover",sub:"DSCR",f:"x",dir:"hi"}
   ]},
-  boel:{title:"Laurens Boel · yield & return", rows:[
+  returns:{title:"Yield & return", rows:[
     {k:"grossYield",label:"Gross yield",sub:"Annual rent ÷ price",f:"pct1",dir:"hi"},
     {k:"effYield",label:"Effective yield",sub:"NOI ÷ all-in cost",f:"pct1",dir:"hi"},
     {k:"coc",label:"Cash-on-cash",sub:"Cash flow ÷ cash in",f:"pct1",dir:"hi"},
@@ -846,8 +875,8 @@ const TESTS={
   ]}
 };
 const CMP_ROWS=[
-  {g:"Quick screens",gs:"Brandon Turner",rows:TESTS.turner.rows},
-  {g:"Yield & return",gs:"Laurens Boel",rows:TESTS.boel.rows},
+  {g:"Quick screens",gs:"fast first checks",rows:TESTS.screens.rows},
+  {g:"Yield & return",gs:"what your money earns",rows:TESTS.returns.rows},
   {g:"Stress test",gs:"how it holds up",rows:[
     {k:"cfRate2",label:"Cash flow if prime +2%",sub:"Per month",f:"rand",info:true},
     {k:"cfStorm",label:"Cash flow, perfect storm",sub:"Rate +2%, rent −10%, 2 months empty, levy +25%",f:"rand",info:true},
@@ -861,7 +890,7 @@ const CMP_ROWS=[
   ]}
 ];
 // Example deals for a first visit, injected from data/deals.json by build.js.
-const SEED_DEALS=[{"id":"cederberg1","area":"Conradie Park, Pinelands","capGrowth":5,"costGrowth":7,"created":1758740000001,"deposit":10,"hold":10,"inCompare":false,"insurance":100,"legal":"","levy":1400,"maint":5,"marketValue":"","mgmt":11.5,"name":"Cederberg 1-bed","newDev":true,"notes":"Entry-level 1-bed (38 m²) from R1.12m. Rent based on Conradie Park 1-bed listings at R9,500–R10,700. The levy and rates are my estimates, so ask the developer for the schedule.","otherExp":0,"otherIncome":0,"price":1120000,"rate":10.75,"rates":550,"reno":0,"rent":10000,"rentGrowth":6,"sellCost":7,"slot":0,"term":20,"updated":1790290000000,"vacancy":4},{"id":"signal1","area":"Conradie Park, Pinelands","capGrowth":5,"costGrowth":7,"created":1758740000002,"deposit":10,"hold":10,"inCompare":true,"insurance":100,"legal":"","levy":1000,"maint":5,"marketValue":"","mgmt":11.5,"name":"The Signal studio","newDev":true,"notes":"Studio from R860k, with completion due March 2027. Rent based on a Conradie Park 0.5-bed listing at R7,600. The levy and rates are my estimates.","otherExp":0,"otherIncome":0,"price":860000,"rate":10.75,"rates":400,"reno":0,"rent":7600,"rentGrowth":6,"sellCost":7,"slot":1,"term":20,"updated":1790289000000,"vacancy":5},{"id":"example1","area":"Example only, not a real listing","capGrowth":8,"costGrowth":7,"created":1758740000003,"deposit":20,"hold":10,"inCompare":true,"insurance":150,"legal":"","levy":1000,"maint":5,"marketValue":1600000,"mgmt":11.5,"name":"Hypothetical below-value 2-bed","newDev":false,"notes":"A made-up Boel-style deal: an older, under-rented 2-bed bought 19% below value, with R60k of repairs and rent brought up to market. It shows how the buy price changes the numbers. Delete it once you've added real properties.","otherExp":0,"otherIncome":0,"price":1300000,"rate":10.75,"rates":900,"reno":0,"rent":12500,"rentGrowth":8,"sellCost":7,"slot":2,"term":20,"updated":1790283169366,"vacancy":4},{"id":"pmug0sul4uqez","area":"Pinelands","capGrowth":8,"costGrowth":7,"created":1790283885016,"deposit":20,"hold":10,"inCompare":true,"insurance":150,"legal":"","levy":900,"maint":5,"marketValue":"","mgmt":0,"name":"Cederberg 2 bed","newDev":true,"notes":"","otherExp":0,"otherIncome":0,"price":1750000,"rate":10.75,"rates":500,"reno":0,"rent":14000,"rentGrowth":8,"sellCost":7,"slot":3,"taxRate":0,"term":20,"updated":1790285565882,"vacancy":4}];
+const SEED_DEALS=[{"area":"Example only · Gauteng","capGrowth":5,"costGrowth":7,"created":1758740000001,"deposit":10,"hold":10,"id":"ex-newbuild","inCompare":true,"insurance":100,"legal":"","levy":1100,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: new-build 1-bed","newDev":true,"notes":"Made-up example, not a real listing. A typical new-build 1-bed: no transfer duty and low repairs, but the bond is bigger than the rent can cover. Delete it once you have added your own deals.","otherExp":0,"otherIncome":0,"price":950000,"rate":10.75,"rates":450,"reno":0,"rent":8500,"rentGrowth":6,"sellCost":7,"slot":0,"taxRate":0,"term":20,"updated":1790290000000,"vacancy":4},{"area":"Example only · Western Cape","capGrowth":5,"costGrowth":7,"created":1758740000002,"deposit":20,"hold":10,"id":"ex-below-value","inCompare":true,"insurance":150,"legal":"","levy":1800,"maint":5,"marketValue":1500000,"mgmt":11.5,"name":"Example: older 2-bed bought below value","newDev":false,"notes":"Made-up example, not a real listing. An older, under-rented 2-bed bought 23% below its value, with R60k of repairs and the rent brought up to market. It shows how the price you pay changes every number.","otherExp":0,"otherIncome":0,"price":1150000,"rate":10.75,"rates":900,"reno":60000,"rent":13000,"rentGrowth":6,"sellCost":7,"slot":1,"taxRate":0,"term":20,"updated":1790286400000,"vacancy":4},{"area":"Example only · KwaZulu-Natal","capGrowth":5,"costGrowth":7,"created":1758740000003,"deposit":40,"hold":10,"id":"ex-townhouse","inCompare":true,"insurance":200,"legal":"","levy":1500,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: townhouse with a bigger deposit","newDev":false,"notes":"Made-up example, not a real listing. A 40% deposit makes the monthly cash flow easier but ties up more of your own money. Compare its cash-on-cash with the others.","otherExp":0,"otherIncome":0,"price":1350000,"rate":10.75,"rates":850,"reno":0,"rent":16000,"rentGrowth":6,"sellCost":7,"slot":2,"taxRate":0,"term":20,"updated":1790282800000,"vacancy":5},{"area":"Example only · Free State","capGrowth":5,"costGrowth":7,"created":1758740000004,"deposit":10,"hold":10,"id":"ex-studio","inCompare":false,"insurance":80,"legal":"","levy":950,"maint":5,"marketValue":"","mgmt":12,"name":"Example: studio near a campus","newDev":false,"notes":"Made-up example, not a real listing. Student lets can empty out between terms, so the vacancy is set higher. Tick it into Compare to see it next to the others.","otherExp":0,"otherIncome":0,"price":720000,"rate":10.75,"rates":350,"reno":0,"rent":7200,"rentGrowth":6,"sellCost":7,"slot":3,"taxRate":0,"term":20,"updated":1790279200000,"vacancy":8}];
 
 const S={props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
 const dirty=new Set(); let targetsDirty=false;
@@ -914,6 +943,7 @@ function renderView(rebuild){
   else if(S.view==="portfolio") renderPortfolio();
   else if(S.view==="compare") renderCompare();
   else if(S.view==="guide") renderGuide();
+  else if(S.view==="terms"){}
   else renderSettings();
 }
 const TOGGLE_M=`<button type="button" class="themebtn m" data-theme-toggle aria-label="Switch light or dark mode"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg></button>`;
@@ -942,6 +972,9 @@ function renderTopInner(){
   } else if(S.view==="compare"){
     const n=S.props.filter(p=>p.inCompare).length;
     c.innerHTML=`${mb}<span class="cap">Compare</span><span class="sep">/</span><h1>${n} deal${n===1?"":"s"} side by side</h1>`;
+    a.innerHTML="";
+  } else if(S.view==="terms"){
+    c.innerHTML=`${mb}<span class="cap">About</span><span class="sep">/</span><h1>Terms &amp; privacy</h1>`;
     a.innerHTML="";
   } else if(S.view==="guide"){
     c.innerHTML=`${mb}<span class="cap">Guide</span><span class="sep">/</span><h1>How grades work</h1>`;
@@ -1065,7 +1098,7 @@ function renderScreening(r){
   const v=r.v;
   $("screenTally").textContent=`${v.pass} met · ${v.close} close · ${v.fail} missed`;
   let h="";
-  ["turner","boel"].forEach(w=>{
+  ["screens","returns"].forEach(w=>{
     const G=TESTS[w];
     h+=`<div class="screen-g"><div class="gh"><span class="cap" style="color:var(--brass)">${G.title}</span><span class="cap">Value · vs target</span></div>`;
     G.rows.forEach(row=>{
@@ -1373,10 +1406,14 @@ $("t-prime").addEventListener("input",e=>{
   S.targets.prime=n; syncTargets(); scheduleSave("settings/targets");
 });
 
+/* Dates the built-in market figures (prime rate, duty table) were last checked. Update when you re-check them. */
+const MARKET_CHECKED={long:"28 September 2026",short:"Sep 2026"};
+document.querySelectorAll("[data-checked]").forEach(el=>{ el.textContent=MARKET_CHECKED[el.dataset.checked]; });
+
 /* ================= GUIDE ================= */
 function renderGuide(){
-  const rows=[...TESTS.turner.rows.map(r=>({...r,src:"Brandon Turner"})),...TESTS.boel.rows.map(r=>({...r,src:"Laurens Boel"}))];
-  $("gtests").innerHTML=`<thead><tr><th>Test</th><th>What it measures</th><th>Your target</th><th>From</th></tr></thead><tbody>${rows.map(r=>`<tr data-k="${r.k}"><td><b>${esc(r.label)}</b></td><td>${esc(r.sub)}</td><td class="num">${tgtText(r,S.targets[r.k])}</td><td><small>${r.src}</small></td></tr>`).join("")}</tbody>`;
+  const rows=[...TESTS.screens.rows.map(r=>({...r,src:"Quick screen"})),...TESTS.returns.rows.map(r=>({...r,src:"Yield & return"}))];
+  $("gtests").innerHTML=`<thead><tr><th>Test</th><th>What it measures</th><th>Your target</th><th>Group</th></tr></thead><tbody>${rows.map(r=>`<tr data-k="${r.k}"><td><b>${esc(r.label)}</b></td><td>${esc(r.sub)}</td><td class="num">${tgtText(r,S.targets[r.k])}</td><td><small>${r.src}</small></td></tr>`).join("")}</tbody>`;
 }
 /* ================= THEME ================= */
 // Dark is the default look; the choice is remembered per browser.

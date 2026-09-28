@@ -1,6 +1,6 @@
 # Buy Box
 
-A property deal-analysis dashboard for South African rental property. It grades each deal from A to E against Brandon Turner's quick screens and Laurens Boel's yield and return targets. It also stress tests each deal, keeps a portfolio of deals and compares up to 8 side by side. It started as a claude.ai artifact and is being turned into a public website (see ROADMAP.md).
+A property deal-analysis dashboard for South African rental property. It grades each deal from A to E against ten common investor rules of thumb (quick screens, and yield & return). Don't name real investors, developers or developments anywhere on the site. It also stress tests each deal, keeps a portfolio of deals and compares up to 8 side by side. It started as a claude.ai artifact and is being turned into a public website (see ROADMAP.md).
 
 ## Layout
 
@@ -18,8 +18,8 @@ tests/dom.test.js     Serves dist/ over HTTP, opens dist/index.html in Playwrigh
                       checks every number on screen against the engine run separately (summary, KPIs, screening, stress,
                       20-year panel, portfolio, compare), plus saving, export/import, the prime rate, the guide, fonts and
                       security (hostile import, CSP). Any console error or CSP violation fails the run.
-data/deals.json    Deals and buy-box targets exported from the claude.ai version on 2026-09-28. The deals seed
-                   a first visit; the targets are not seeded (visitors start from DEFAULT_TARGETS).
+data/deals.json    Made-up example deals (none is a real listing) that seed a first visit, plus the default targets
+                   (not seeded; visitors start from DEFAULT_TARGETS).
 .github/workflows/site.yml  Runs both suites on every push and PR; the default branch also deploys dist/ to GitHub Pages.
 .github/dependabot.yml      Weekly update PRs for GitHub Actions and npm.
 SECURITY.md        How to report a problem and how the site protects visitors.
@@ -60,7 +60,7 @@ Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`,
 
 ## Views
 
-Analyse, Portfolio, Compare, Buy box & method (`settings`) and How grades work (`guide`). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
+Analyse, Portfolio, Compare, Buy box & method (`settings`), How grades work (`guide`) and Terms & privacy (`terms`, static text with a "last updated" date; update the date whenever the wording changes). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
 
 ## Security
 
@@ -78,4 +78,4 @@ Ledger-green surfaces with a brass accent (`--brass #C9A45C`). Dark is the defau
 - No capital gains tax on the sale. Tax only feeds the optional after-tax cash flow line.
 - Attorney and bond fees are a rough estimate when left blank.
 - Municipal rates and levies stay fixed when solving for offer prices.
-- The default prime rate (10.75%, correct at September 2026) is in `DEFAULT_TARGETS` in engine.js. Users can change their own under Market; saved deals keep their own rate.
+- The default prime rate (10.75%, correct at September 2026) is in `DEFAULT_TARGETS` in engine.js. When you re-check it or the SARS duty table, update `MARKET_CHECKED` in src/shell.html; the date shows in the sidebar, Market panel and Method notes. Users can change their own under Market; saved deals keep their own rate.

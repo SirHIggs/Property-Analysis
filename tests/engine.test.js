@@ -51,7 +51,7 @@ group('Bond maths vs month-by-month simulation', () => {
   ok(near(known.pmt, 10152.29, 1), 'R1m at 10.75% over 20y is about R10 152 a month', known.pmt.toFixed(2));
 });
 
-group('Cash flow built up by hand (Cederberg 1-bed)', () => {
+group('Cash flow built up by hand (new-development 1-bed)', () => {
   const d = { price: 1120000, newDev: true, rent: 10000, vacancy: 4, levy: 1400, rates: 550, insurance: 100, mgmt: 11.5, maint: 5, deposit: 10, rate: 10.75, term: 20 };
   const r = E.analyse(d);
   const gross = 120000, eff = gross * 0.96, opex = (1400 + 550 + 100) * 12 + 0.115 * eff + 0.05 * gross, noi = eff - opex;

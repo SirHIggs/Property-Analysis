@@ -1,6 +1,6 @@
 # Buy Box
 
-A free property deal analyser for South African rental property. It grades each deal from A to E against Brandon Turner's quick screens and Laurens Boel's yield and return targets, stress tests the bond, finds your maximum offer price and compares up to 8 deals side by side.
+A free property deal analyser for South African rental property. It grades each deal from A to E against common investor rules of thumb for cash flow, yield and return, stress tests the bond, finds your maximum offer price and compares up to 8 deals side by side.
 
 Deals are saved in your own browser and never leave your device. Use **Buy box & method → Your data** to export a backup or move your deals to another device.
 
