@@ -9,7 +9,7 @@
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Xi1E8EjyJFagB8cMJ/LMFMy407PV2GZd36rNpCXqdOU='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ryvQKAV3tl1WxYnxq3AqjEUrcVtiZ5S1fAotHJMAzcQ='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>Buy Box</title>
 <style>
@@ -22,26 +22,50 @@
   color-scheme:dark;
   --bg:#0A0F0E; --surface:#101816; --surface-2:#141F1C; --surface-3:#1A2724; --hover:#1E2D29;
   --line:#1F2E2A; --line-2:#2B3D37;
-  --text:#E9EEEB; --text-2:#AAB6B1; --muted:#74827C;
+  --text:#E9EEEB; --text-2:#AAB6B1; --muted:#7C8A84;
   --brass:#C9A45C; --brass-2:#E3C68C; --brass-ink:#17120A; --brass-soft:rgba(201,164,92,.12); --brass-line:rgba(201,164,92,.35);
   --good:#0ca30c; --good-text:#3DC458; --warn:#fab219; --warn-text:#F5B93A; --bad:#d03b3b; --bad-text:#F07A74;
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
   --grid:#1C2925; --axis:#34463F;
+  --side-bg:rgba(10,15,14,.6); --bar-bg:rgba(13,20,18,.96); --top-fade:rgba(10,15,14,.88); --btn-hover-line:#3A5049;
+  --tip-bg:#0C1311; --inset:rgba(255,255,255,.025); --row-tint:rgba(255,255,255,.02); --shadow:rgba(0,0,0,.45);
+  --glow-1:rgba(201,164,92,.075); --glow-2:rgba(25,158,112,.05);
   --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
   --side:236px;
+}
+/* Light theme: the same ledger-and-brass look on warm paper. Every text colour keeps at least 4.5:1 contrast and every
+   series colour at least 4:1 on the panels, so charts stay readable. Chosen with the switch in the sidebar or top bar. */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F6F3EC; --surface:#FFFFFF; --surface-2:#F4F1EA; --surface-3:#ECE7DC; --hover:#E8E2D5;
+  --line:#E3DDD0; --line-2:#CFC7B6;
+  --text:#15201D; --text-2:#46534E; --muted:#626F6A;
+  --brass:#8A6526; --brass-2:#6E4F17; --brass-ink:#FFFFFF; --brass-soft:rgba(138,101,38,.10); --brass-line:rgba(138,101,38,.35);
+  --good:#1B9A45; --good-text:#157A36; --warn:#E0A018; --warn-text:#8F5B00; --bad:#C43535; --bad-text:#B02A2A;
+  --s1:#2F72CC; --s2:#C24E1F; --s3:#13845C; --s4:#A06A00; --s5:#BF3F6D; --s6:#007A00; --s7:#6D60D4; --s8:#CC4444;
+  --grid:#ECE7DC; --axis:#B9B09E;
+  --side-bg:rgba(255,255,255,.55); --bar-bg:rgba(255,255,255,.96); --top-fade:rgba(246,243,236,.9); --btn-hover-line:#B9B09E;
+  --tip-bg:#FFFFFF; --inset:rgba(255,255,255,.6); --row-tint:rgba(21,32,29,.025); --shadow:rgba(21,32,29,.14);
+  --glow-1:rgba(138,101,38,.07); --glow-2:rgba(19,132,92,.05);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{background:var(--bg)}
 body{margin:0; color:var(--text); font-family:var(--sans); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
-  background:radial-gradient(1100px 560px at 88% -8%,rgba(201,164,92,.075),transparent 62%),radial-gradient(900px 500px at -10% 110%,rgba(25,158,112,.05),transparent 60%),var(--bg);
+  background:radial-gradient(1100px 560px at 88% -8%,var(--glow-1),transparent 62%),radial-gradient(900px 500px at -10% 110%,var(--glow-2),transparent 60%),var(--bg);
   background-attachment:fixed}
 h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.02em; text-wrap:balance}
 button,input,textarea,select{font:inherit; color:inherit}
 button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+.lg-o{stroke:var(--brass)} .lg-f{fill:var(--brass)} .lg-c{stroke:var(--bg)}
+.themebtn{display:inline-flex; align-items:center; gap:8px; background:none; border:1px solid var(--line); border-radius:8px; color:var(--text-2); font-size:12.5px; padding:6px 10px}
+.themebtn:hover{background:var(--surface-2); color:var(--text)}
+.themebtn .ic-sun,:root[data-theme="light"] .themebtn .ic-moon{display:none}
+:root[data-theme="light"] .themebtn .ic-sun{display:inline}
+.themebtn.m{display:none; padding:6px; border-color:var(--line-2)}
 .num,.mono{font-family:var(--mono); font-variant-numeric:tabular-nums; letter-spacing:-.01em}
 .cap{font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
 .sw{display:inline-block; width:8px; height:8px; border-radius:2px; flex:none}
@@ -49,7 +73,7 @@ a{color:inherit}
 
 /* ---------- shell ---------- */
 .app{display:grid; grid-template-columns:var(--side) minmax(0,1fr); min-height:100vh}
-.side{position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:26px; padding:22px 16px 18px; border-right:1px solid var(--line); background:rgba(10,15,14,.6); backdrop-filter:blur(8px)}
+.side{position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:26px; padding:22px 16px 18px; border-right:1px solid var(--line); background:var(--side-bg); backdrop-filter:blur(8px)}
 .brand{display:flex; align-items:center; gap:10px; padding:0 6px}
 .brand svg{flex:none}
 .brand b{font-size:17px; font-weight:650; letter-spacing:-.02em}
@@ -75,7 +99,7 @@ a{color:inherit}
 .status[data-s="local"] i,.status[data-s="error"] i{background:var(--bad)}
 
 .main{min-width:0; padding:0 32px 64px}
-.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:15; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 16px; padding:16px 0 14px; margin-bottom:22px; border-bottom:1px solid var(--line); background:linear-gradient(var(--bg) 70%,rgba(10,15,14,.88))}
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:15; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 16px; padding:16px 0 14px; margin-bottom:22px; border-bottom:1px solid var(--line); background:linear-gradient(var(--bg) 70%,var(--top-fade))}
 .crumbs{display:flex; align-items:center; gap:10px; min-width:0; flex-wrap:wrap}
 .crumbs .cap{color:var(--muted)}
 .crumbs .sep{color:var(--line-2)}
@@ -88,15 +112,17 @@ a{color:inherit}
   .app{grid-template-columns:1fr}
   .side{display:none}
   .main{padding:0 16px calc(84px + env(safe-area-inset-bottom,0px))}
+  .themebtn.m{display:inline-flex}
+  .side .themebtn{display:none}
   .mobilebrand{display:flex; align-items:center; gap:8px; font-weight:650; font-size:15px}
-  .tabbar{display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(13,20,18,.96); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--bar-bg); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
   .tabbar a{display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; font-size:11px; color:var(--muted); text-decoration:none; border-radius:8px}
   .tabbar a[aria-current="page"]{color:var(--brass-2); background:var(--brass-soft)}
 }
 
 /* ---------- controls ---------- */
 .btn{display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line-2); background:var(--surface-2); color:var(--text); padding:7px 12px; border-radius:7px; font-size:13px; font-weight:550; line-height:1.2; transition:background .12s,border-color .12s}
-.btn:hover{background:var(--hover); border-color:#3A5049}
+.btn:hover{background:var(--hover); border-color:var(--btn-hover-line)}
 .btn.primary{background:var(--brass); border-color:var(--brass); color:var(--brass-ink)}
 .btn.primary:hover{background:var(--brass-2); border-color:var(--brass-2)}
 .btn.ghost{background:transparent}
@@ -124,7 +150,7 @@ select.pick option{background:var(--surface); color:var(--text)}
 input[type=range]{accent-color:var(--brass); width:100%}
 
 /* ---------- panels ---------- */
-.panel{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:inset 0 1px 0 var(--inset)}
 .panel-h{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px 14px; padding:16px 18px 12px}
 .panel-h h2{font-size:15px}
 .panel-h p{margin:0; color:var(--muted); font-size:12.5px}
@@ -228,7 +254,7 @@ thead th{font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:u
 .scen tbody th{font-weight:500; font-size:13px; min-width:160px}
 .scen tbody th small{display:block; color:var(--muted); font-size:11px; font-weight:400}
 .scen td{font-family:var(--mono); font-size:13px; white-space:nowrap}
-.scen tr.base th,.scen tr.base td{background:rgba(255,255,255,.02)}
+.scen tr.base th,.scen tr.base td{background:var(--row-tint)}
 .scen tr.storm th,.scen tr.storm td{background:rgba(208,59,59,.06)}
 .scen tbody tr:last-child th,.scen tbody tr:last-child td{border-bottom:0}
 .cfbar{display:flex; align-items:center; gap:10px}
@@ -261,7 +287,7 @@ figure{margin:0; position:relative; min-width:0}
 svg text{font-family:var(--sans); fill:var(--muted); font-size:11px}
 svg .lbl{fill:var(--text-2); font-size:12px; font-weight:500}
 svg .vlab{fill:var(--text); font-family:var(--mono); font-size:11.5px}
-.tip{position:absolute; pointer-events:none; background:#0C1311; border:1px solid var(--line-2); color:var(--text); border-radius:8px; padding:9px 11px; font-size:12px; box-shadow:0 10px 30px rgba(0,0,0,.45); min-width:180px; z-index:5}
+.tip{position:absolute; pointer-events:none; background:var(--tip-bg); border:1px solid var(--line-2); color:var(--text); border-radius:8px; padding:9px 11px; font-size:12px; box-shadow:0 10px 30px var(--shadow); min-width:180px; z-index:5}
 .tip b{display:block; margin-bottom:5px; font-weight:600}
 .tip div{display:flex; justify-content:space-between; gap:14px; align-items:center}
 .tip div span{display:inline-flex; align-items:center; gap:6px; color:var(--text-2)}
@@ -374,7 +400,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 <div class="app">
   <aside class="side" aria-label="Buy Box">
     <div class="brand">
-      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="7" fill="none" stroke="#C9A45C" stroke-width="1.5"/><rect x="8" y="8" width="14" height="14" rx="3" fill="#C9A45C"/><path d="M8 22 22 8" stroke="#0A0F0E" stroke-width="1.6"/></svg>
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect class="lg-o" x="1.5" y="1.5" width="27" height="27" rx="7" fill="none" stroke-width="1.5"/><rect class="lg-f" x="8" y="8" width="14" height="14" rx="3"/><path class="lg-c" d="M8 22 22 8" stroke-width="1.6"/></svg>
       <div><b>Buy Box</b><small>Property deal analysis</small></div>
     </div>
     <nav class="nav" aria-label="Screens">
@@ -393,6 +419,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <div><span>Duty table</span><b>2026/27</b></div>
     </div>
     <p class="side-fine">A calculator, not financial advice. <a href="#guide">Read more</a></p>
+    <button type="button" class="themebtn" id="themeBtn" aria-pressed="false"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span id="themeLabel">Light mode</span></button>
     <div class="status" id="status" data-s="loading"><i></i><span id="statusText">Connecting…</span></div>
   </aside>
 
@@ -903,8 +930,10 @@ function renderView(rebuild){
   else if(S.view==="guide") renderGuide();
   else renderSettings();
 }
-const LOGO=`<svg width="22" height="22" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="7" fill="none" stroke="#C9A45C" stroke-width="1.5"/><rect x="8" y="8" width="14" height="14" rx="3" fill="#C9A45C"/><path d="M8 22 22 8" stroke="#0A0F0E" stroke-width="1.6"/></svg>`;
-function renderTop(){
+const TOGGLE_M=`<button type="button" class="themebtn m" data-theme-toggle aria-label="Switch light or dark mode"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg></button>`;
+const LOGO=`<svg width="22" height="22" viewBox="0 0 30 30" aria-hidden="true"><rect class="lg-o" x="1.5" y="1.5" width="27" height="27" rx="7" fill="none" stroke-width="1.5"/><rect class="lg-f" x="8" y="8" width="14" height="14" rx="3"/><path class="lg-c" d="M8 22 22 8" stroke-width="1.6"/></svg>`;
+function renderTop(){ renderTopInner(); const a=$("actions"); a.insertAdjacentHTML("beforeend",TOGGLE_M); a.querySelector("[data-theme-toggle]").addEventListener("click",toggleTheme); }
+function renderTopInner(){
   const c=$("crumbs"), a=$("actions");
   const mb=`<span class="mobilebrand">${LOGO}Buy Box</span>`;
   const ro=S.readOnly?"disabled":"";
@@ -1363,6 +1392,24 @@ function renderGuide(){
   const rows=[...TESTS.turner.rows.map(r=>({...r,src:"Brandon Turner"})),...TESTS.boel.rows.map(r=>({...r,src:"Laurens Boel"}))];
   $("gtests").innerHTML=`<thead><tr><th>Test</th><th>What it measures</th><th>Your target</th><th>From</th></tr></thead><tbody>${rows.map(r=>`<tr data-k="${r.k}"><td><b>${esc(r.label)}</b></td><td>${esc(r.sub)}</td><td class="num">${tgtText(r,S.targets[r.k])}</td><td><small>${r.src}</small></td></tr>`).join("")}</tbody>`;
 }
+/* ================= THEME ================= */
+// Dark is the default look; the choice is remembered per browser.
+const THEME_KEY="buybox-theme";
+function applyTheme(t){
+  const light=t==="light";
+  if(light) document.documentElement.dataset.theme="light"; else delete document.documentElement.dataset.theme;
+  $("themeLabel").textContent=light?"Dark mode":"Light mode";
+  document.querySelectorAll("#themeBtn,[data-theme-toggle]").forEach(b=>b.setAttribute("aria-pressed",String(light)));
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=light?"#F6F3EC":"#0A0F0E";
+}
+function toggleTheme(){
+  const t=document.documentElement.dataset.theme==="light"?"dark":"light";
+  applyTheme(t); try{ localStorage.setItem(THEME_KEY,t); }catch(e){}
+  if(S.mode!=="loading") renderView(false);
+}
+try{ applyTheme(localStorage.getItem(THEME_KEY)); }catch(e){ applyTheme("dark"); }
+$("themeBtn").addEventListener("click",toggleTheme);
+
 const NOTICE_KEY="buybox-notice";
 function initNotice(){
   let seen=false; try{ seen=localStorage.getItem(NOTICE_KEY)==="1"; }catch(e){}
