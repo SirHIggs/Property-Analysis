@@ -1,7 +1,9 @@
 // Assembles src/shell.html + src/engine.js + the example deals in data/deals.json into:
 //   dist/buy-box.html  one self-contained page (a claude.ai artifact, and what the tests open)
-//   dist/index.html    the same page as a full HTML document for the public website (GitHub Pages)
+//   dist/index.html    the same page as a full HTML document for the public website (GitHub Pages), with
+//                      self-hosted fonts (dist/fonts) and a Content Security Policy
 const fs = require('fs');
+const crypto = require('crypto');
 const shell = fs.readFileSync(__dirname + '/src/shell.html', 'utf8');
 const engine = fs.readFileSync(__dirname + '/src/engine.js', 'utf8');
 const seed = JSON.parse(fs.readFileSync(__dirname + '/data/deals.json', 'utf8')).deals;
@@ -33,7 +35,39 @@ const head = [
   '<link rel="icon" href="' + icon + '">',
 ].join('\n');
 
-fs.mkdirSync(__dirname + '/dist', { recursive: true });
+// The website serves its own copy of the Geist fonts instead of loading them from Google, so visitors' browsers
+// talk to no one but this site.
+const googleFonts = /<link rel="preconnect" href="https:\/\/fonts\.googleapis\.com">\n<link rel="preconnect" href="https:\/\/fonts\.gstatic\.com" crossorigin>\n<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/[^"]*">\n/;
+if (!googleFonts.test(page)) throw new Error('src/shell.html font links changed; update build.js');
+const fontFaces = '<style>\n' +
+  '@font-face{font-family:"Geist";src:url("fonts/Geist-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
+  '@font-face{font-family:"Geist Mono";src:url("fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
+  '</style>\n';
+const site = page.replace(googleFonts, () => fontFaces);
+
+// Content Security Policy: only the page's own inline script (by hash) may run, and the page may not connect
+// anywhere, so saved deals cannot be sent off the device even if something slipped into the page.
+const scripts = [...site.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+if (scripts.length !== 1 || /<script[^>]*\ssrc=/.test(site)) throw new Error('expected exactly one inline script');
+const hash = crypto.createHash('sha256').update(scripts[0], 'utf8').digest('base64');
+const csp = [
+  "default-src 'none'",
+  "script-src 'sha256-" + hash + "'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "img-src 'self' data: blob:",
+  "connect-src 'none'",
+  "object-src 'none'",
+  "base-uri 'none'",
+  "form-action 'none'",
+].join('; ');
+
+fs.mkdirSync(__dirname + '/dist/fonts', { recursive: true });
+for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt']) {
+  fs.copyFileSync(__dirname + '/src/fonts/' + f, __dirname + '/dist/fonts/' + f);
+}
 fs.writeFileSync(__dirname + '/dist/buy-box.html', page);
-fs.writeFileSync(__dirname + '/dist/index.html', head + '\n' + page + '\n</html>\n');
+fs.writeFileSync(__dirname + '/dist/index.html',
+  head + '\n<meta http-equiv="Content-Security-Policy" content="' + csp + '">\n' +
+  '<meta name="referrer" content="no-referrer">\n' + site + '\n</html>\n');
 console.log('Built dist/buy-box.html and dist/index.html');

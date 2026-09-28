@@ -48,9 +48,12 @@ a{color:inherit}
 .nav a[aria-current="page"]{background:var(--brass-soft); color:var(--brass-2)}
 .nav a[aria-current="page"] svg{opacity:1}
 .nav a .cnt{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); padding:0 6px; border-radius:5px}
+.side-fine{margin:10px 2px 0; font-size:11.5px; color:var(--muted)} .side-fine a{color:var(--text-2)}
 .market{margin-top:auto; border:1px solid var(--line); border-radius:9px; padding:12px; display:flex; flex-direction:column; gap:8px; background:var(--surface)}
-.market div{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--text-2)}
-.market div b{font-family:var(--mono); font-weight:500; color:var(--text)}
+.market div,.market .mk{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--text-2)}
+.market div b,.market .mk b{font-family:var(--mono); font-weight:500; color:var(--text)}
+.market .mk{text-decoration:none; border-radius:5px; margin:-2px -4px; padding:2px 4px}
+.market .mk:hover{background:var(--hover)} .market .mk:hover b{color:var(--brass-2)}
 .status{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); padding:0 6px}
 .status i{width:7px; height:7px; border-radius:50%; background:var(--muted); flex:none}
 .status[data-s="saved"] i{background:var(--good); box-shadow:0 0 0 3px rgba(12,163,12,.18)}
@@ -72,7 +75,7 @@ a{color:inherit}
   .side{display:none}
   .main{padding:0 16px calc(84px + env(safe-area-inset-bottom,0px))}
   .mobilebrand{display:flex; align-items:center; gap:8px; font-weight:650; font-size:15px}
-  .tabbar{display:grid; grid-template-columns:repeat(4,1fr); position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(13,20,18,.96); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(13,20,18,.96); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
   .tabbar a{display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; font-size:11px; color:var(--muted); text-decoration:none; border-radius:8px}
   .tabbar a[aria-current="page"]{color:var(--brass-2); background:var(--brass-soft)}
 }
@@ -330,6 +333,21 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .method dd{color:var(--text-2); font-size:13px}
 .method code{font-family:var(--mono); font-size:12px; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:0 5px; border-radius:4px}
 .method ul{margin:0; padding-left:18px}
+.guide-body{padding:0 18px 18px; color:var(--text-2); font-size:13.5px; line-height:1.55; max-width:760px}
+.guide-body p{margin:0 0 10px}
+.guide-body strong{color:var(--text)}
+.guide-body a{color:var(--brass-2)}
+.bands{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; padding:0 18px 16px}
+.bands div{border:1px solid var(--line); border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:6px; background:var(--surface-2)}
+.bands small{color:var(--muted); font-size:11.5px}
+.gtests{min-width:620px}
+.gtests td{font-size:13px}
+.gtests td.num{font-family:var(--mono); white-space:nowrap}
+.gtests td small{display:block; color:var(--muted); font-size:11.5px}
+.notice{display:flex; align-items:center; gap:10px; flex-wrap:wrap; border:1px solid var(--brass-line); background:var(--brass-soft); border-radius:9px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--text-2)}
+.notice p{margin:0; flex:1; min-width:220px}
+.notice a{color:var(--brass-2)}
+@media (max-width:640px){ .bands{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:640px){ .method dl{grid-template-columns:1fr} .method dd{border-top:0; padding-top:0} }
 .fine{font-size:12px; color:var(--muted); padding:0 18px 18px; margin:0}
 
@@ -352,13 +370,15 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <a href="#compare" data-v="compare"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5v11M11 2.5v11M2.5 5.5h5M8.5 10.5h5"/></svg>Compare<span class="cnt" id="cntCmp">0</span></a>
       <span class="cap" style="margin-top:14px">Setup</span>
       <a href="#settings" data-v="settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Buy box &amp; method</a>
+      <a href="#guide" data-v="guide"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2.5h7.5L13 5v8.5H3z"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3"/></svg>How grades work</a>
     </nav>
     <div class="market" aria-label="Market inputs">
       <span class="cap">Market · SA</span>
-      <div><span>Prime lending rate</span><b>10.75%</b></div>
+      <a href="#settings" class="mk" title="Change the prime rate"><span>Prime lending rate</span><b id="primeShow">10.75%</b></a>
       <div><span>Transfer duty free to</span><b>R1.21m</b></div>
       <div><span>Duty table</span><b>2026/27</b></div>
     </div>
+    <p class="side-fine">A calculator, not financial advice. <a href="#guide">Read more</a></p>
     <div class="status" id="status" data-s="loading"><i></i><span id="statusText">Connecting…</span></div>
   </aside>
 
@@ -370,6 +390,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 
     <!-- ANALYSE -->
     <section class="view" id="v-analyse" aria-label="Analyse a deal">
+      <div class="notice" id="notice" hidden><p><strong>Buy Box is a calculator, not financial advice.</strong> Grades show how a deal compares with your targets, based on the numbers you enter. <a href="#guide">How grades work</a></p><button class="btn" id="noticeOk" type="button">Got it</button></div>
       <div class="panel summary" id="summary">
         <div class="ident">
           <span class="cap" id="sEyebrow">Deal</span>
@@ -483,6 +504,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
     <!-- SETTINGS -->
     <section class="view" id="v-settings" aria-label="Buy box and method" hidden>
       <section class="panel">
+        <div class="panel-h"><h2>Market</h2><p id="primeNote">New deals start at the prime rate. Saved deals keep their own rate</p></div>
+        <div class="tgrid"><div class="field"><label for="t-prime">Prime lending rate</label><div class="inp"><input type="number" step="0.25" min="0" max="40" inputmode="decimal" id="t-prime" data-t="prime" value="10.75"><span>%</span></div></div></div>
+        <p class="fine">10.75% at September 2026. Update it when the Reserve Bank changes the repo rate. While the present-value discount rate equals prime, it moves with it.</p>
+      </section>
+      <section class="panel">
         <div class="panel-h"><h2>Your buy box</h2><p>The targets every deal is graded against. Boel's 12% cash-on-cash is his stated bar; the rest are common starting points.</p></div>
         <div class="tgrid" id="tgrid"></div>
         <div style="padding:0 18px 18px"><button class="btn" id="resetTargets" type="button">Reset to defaults</button></div>
@@ -505,12 +531,48 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <dt>Annualised return<em>Laurens Boel</em></dt><dd>IRR over your hold: rent growth, cost growth, bond paydown, capital growth and selling costs.</dd>
           <dt>Stress test</dt><dd>Each scenario reruns the full model with one input made worse. Breaking points solve for the exact rate, rent or vacancy where cash flow hits zero. Offer prices solve for the highest price that still meets your target, with duty and fees recalculated; levies and rates are held fixed.</dd>
           <dt>Income vs expenses</dt><dd>Twenty years of rent collected (after vacancy) against running costs and bond repayments, using your rent and levy growth rates. The bond disappears once it's paid off. "Cash you top up" adds up every year the rent falls short. The sale of the property is left out.</dd>
-          <dt>Present value</dt><dd>Each year's net cash from the 20-year view, discounted back to today: <code>Σ net ÷ (1 + rate)^year</code>, with cash treated as arriving at each year end. The default rate is prime (10.75%), the return you'd get by paying down debt instead. Use your own required return if it's higher.</dd>
+          <dt>Present value</dt><dd>Each year's net cash from the 20-year view, discounted back to today: <code>Σ net ÷ (1 + rate)^year</code>, with cash treated as arriving at each year end. The default rate is prime (set under Market), the return you'd get by paying down debt instead. Use your own required return if it's higher.</dd>
           <dt>Tax</dt><dd>Add your marginal rate on a deal to see after-tax cash flow. Taxable rental income is NOI less bond interest; a loss usually reduces tax on other income. Grades use pre-tax numbers.</dd>
           <dt>Before you offer<em>Boel's checks</em></dt><dd><ul><li>TPN report on tenant payment behaviour in the area</li><li>Levy statement and any planned special levies</li><li>Municipal account arrears</li><li>Title deed and approved building plans</li><li>Current tenant's status and arrears</li></ul></dd>
           <dt>Model checks</dt><dd>The engine is tested against an independent month-by-month bond simulation, the SARS transfer duty table, hand-built cash flows, and thousands of random and junk deals for consistency.</dd>
         </dl></div>
         <p class="fine">Transfer duty uses the SARS table effective 1 April 2025, unchanged for 2026/27. On new developments the developer usually pays duty and fees. Attorney and bond fees are estimates; get a quote. A calculator, not financial advice.</p>
+      </section>
+    </section>
+    <section class="view" id="v-guide" aria-label="How grades work" hidden>
+      <section class="panel">
+        <div class="panel-h"><h2>What the grade means</h2><p>A quick screen, not a verdict on the property</p></div>
+        <div class="guide-body">
+          <p>Every deal gets a grade from <strong>A</strong> to <strong>E</strong>. It shows how well the deal meets <a href="#settings">your buy box</a>: ten targets for cash flow, yield and return. Change a target and every grade updates.</p>
+          <p>Each test that is <strong>met</strong> scores 1 point. A test that is <strong>close</strong> scores half a point: within 20% of the target (15% for the expense ratio, where lower is better), or within R1,000 a month for cash flow. A test that can't be worked out is left out. For example, "below market value" needs a market value. The grade is the share of points scored.</p>
+        </div>
+        <div class="bands">
+          <div><span class="gchip g-A">A</span><small>90% or more. Fits your buy box</small></div>
+          <div><span class="gchip g-B">B</span><small>75% or more. Fits your buy box</small></div>
+          <div><span class="gchip g-C">C</span><small>55% or more</small></div>
+          <div><span class="gchip g-D">D</span><small>35% or more</small></div>
+          <div><span class="gchip g-E">E</span><small>Below 35%</small></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-h"><h2>The ten tests</h2><p>With your current targets</p></div>
+        <div class="tablebox"><table class="gtests" id="gtests"></table></div>
+        <p class="fine" style="padding-top:12px">Brandon Turner's quick screens come from his books and teaching on rental property. Laurens Boel's targets are his yield and return bars for buying well. The defaults are common starting points. Set your own in <a href="#settings" style="color:var(--text-2)">Buy box &amp; method</a>.</p>
+      </section>
+      <section class="panel">
+        <div class="panel-h"><h2>What the grade leaves out</h2></div>
+        <div class="guide-body">
+          <p>The grade uses first-year, pre-tax numbers and only what you enter. It can't see the building's condition, the area, the tenant, the body corporate's finances or your own circumstances. A good grade means a deal is worth a closer look, not that you should buy it. The stress test and 20-year view show how a deal holds up when things go wrong. The checklist under <a href="#settings">Before you offer</a> lists what to check next.</p>
+        </div>
+      </section>
+      <section class="panel" id="disclaimer">
+        <div class="panel-h"><h2>Not financial advice</h2></div>
+        <div class="guide-body">
+          <p>Buy Box is a free calculator for learning and for screening deals. It is not financial, tax, legal or investment advice, and it does not recommend any property, bond or product. It is not provided by an authorised financial services provider.</p>
+          <p>The results are only as good as the numbers you enter. Rates, rents, costs, transfer duty and fees change, and the estimates may be wrong or out of date. Before you buy, speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
+          <p>Buy Box is provided as is, without any warranty. You use it at your own risk.</p>
+          <p><strong>Your privacy.</strong> Your deals are saved only in this browser and are never sent to us. Clearing your browser data deletes them, so export a backup under <a href="#settings">Your data</a>.</p>
+        </div>
       </section>
     </section>
   </main>
@@ -521,6 +583,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
   <a href="#portfolio" data-v="portfolio"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="2"/><path d="M2 6.5h12M6 6.5v7"/></svg>Portfolio</a>
   <a href="#compare" data-v="compare"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 2.5v11M11 2.5v11M2.5 5.5h5M8.5 10.5h5"/></svg>Compare</a>
   <a href="#settings" data-v="settings"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Buy box</a>
+  <a href="#guide" data-v="guide"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2.5h7.5L13 5v8.5H3z"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3"/></svg>Guide</a>
 </nav>
 <div class="toast" id="toast" role="status" hidden></div>
 
@@ -532,7 +595,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const DRAFT_KEY="buybox-draft", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings"];
+const VIEWS=["analyse","portfolio","compare","settings","guide"];
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -656,6 +719,7 @@ function renderView(rebuild){
   if(S.view==="analyse") renderAnalyse(rebuild);
   else if(S.view==="portfolio") renderPortfolio();
   else if(S.view==="compare") renderCompare();
+  else if(S.view==="guide") renderGuide();
   else renderSettings();
 }
 const LOGO=`<svg width="22" height="22" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="7" fill="none" stroke="#C9A45C" stroke-width="1.5"/><rect x="8" y="8" width="14" height="14" rx="3" fill="#C9A45C"/><path d="M8 22 22 8" stroke="#0A0F0E" stroke-width="1.6"/></svg>`;
@@ -682,6 +746,9 @@ function renderTop(){
   } else if(S.view==="compare"){
     const n=S.props.filter(p=>p.inCompare).length;
     c.innerHTML=`${mb}<span class="cap">Compare</span><span class="sep">/</span><h1>${n} deal${n===1?"":"s"} side by side</h1>`;
+    a.innerHTML="";
+  } else if(S.view==="guide"){
+    c.innerHTML=`${mb}<span class="cap">Guide</span><span class="sep">/</span><h1>How grades work</h1>`;
     a.innerHTML="";
   } else {
     c.innerHTML=`${mb}<span class="cap">Setup</span><span class="sep">/</span><h1>Buy box &amp; method</h1>`;
@@ -957,10 +1024,11 @@ function newDeal(){
   startFresh();
 }
 function startFresh(){
-  S.draft={...DEFAULTS}; S.cur="draft"; storeDraft(); resetCustom();
+  S.draft=blankDeal(); S.cur="draft"; storeDraft(); resetCustom();
   go("analyse"); renderView(true);
   const nm=$("f-name"); if(nm){ nm.focus({preventScroll:true}); nm.select(); }
 }
+function blankDeal(){ return {...DEFAULTS,rate:S.targets.prime}; }
 function freeSlot(exceptId){ const used=new Set(S.props.filter(p=>p.inCompare&&p.id!==exceptId).map(p=>p.slot)); for(let i=0;i<8;i++) if(!used.has(i)) return i; return 0; }
 function newId(){ return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 async function createDeal(data){
@@ -977,7 +1045,7 @@ async function saveDraft(){
   S.draft=null; storeDraft(); S.cur=p.id; renderView(true);
   toast("Saved to portfolio"+(p.inCompare?" and added to Compare":""));
 }
-function discardDraft(){ S.draft=null; storeDraft(); S.cur=savedSorted()[0]?.id||null; if(!S.cur){ S.draft={...DEFAULTS}; S.cur="draft"; } renderView(true); toast("Draft discarded"); }
+function discardDraft(){ S.draft=null; storeDraft(); S.cur=savedSorted()[0]?.id||null; if(!S.cur){ S.draft=blankDeal(); S.cur="draft"; } renderView(true); toast("Draft discarded"); }
 async function duplicate(id){
   const src=S.props.find(p=>p.id===id); if(!src) return;
   const {id:_i,slot,created,updated,inCompare,...rest}=src;
@@ -986,7 +1054,7 @@ async function duplicate(id){
 }
 async function deleteDeal(id){
   S.props=S.props.filter(p=>p.id!==id); dirty.delete(id); clearTimeout(timers["properties/"+id]);
-  if(S.cur===id){ S.cur=savedSorted()[0]?.id||(S.draft?"draft":null); if(!S.cur){ S.draft={...DEFAULTS}; S.cur="draft"; } }
+  if(S.cur===id){ S.cur=savedSorted()[0]?.id||(S.draft?"draft":null); if(!S.cur){ S.draft=blankDeal(); S.cur="draft"; } }
   renderView(true); toast("Deal deleted");
   if(S.db){ try{ await S.db.doc("properties/"+id).delete(); setStatus("saved",S.savedText); }catch(e){ handleWriteError(e); } }
 }
@@ -1101,8 +1169,26 @@ function buildTargets(){
   g.innerHTML=TARGET_DEFS.map(d=>`<div class="field"><label for="t-${d.k}">${d.label}</label><div class="inp">${d.u==="R"?"<span>R</span>":""}<input type="number" step="${d.step}" inputmode="decimal" id="t-${d.k}" data-t="${d.k}" value="${S.targets[d.k]}" ${S.readOnly?"readonly":""}>${d.u!=="R"?`<span>${d.u}</span>`:""}</div></div>`).join("");
   g.querySelectorAll("[data-t]").forEach(el=>el.addEventListener("input",()=>{ if(S.readOnly||el.value==="") return; const n=Number(el.value); if(!isFinite(n)) return; S.targets[el.dataset.t]=n; scheduleSave("settings/targets"); }));
 }
-function syncTargets(){ document.querySelectorAll("[data-t]").forEach(el=>{ if(el!==document.activeElement) el.value=S.targets[el.dataset.t]; }); }
-$("resetTargets").addEventListener("click",()=>{ if(S.readOnly) return; S.targets={...DEFAULT_TARGETS}; syncTargets(); scheduleSave("settings/targets"); toast("Targets reset"); });
+function syncTargets(){ document.querySelectorAll("[data-t]").forEach(el=>{ if(el!==document.activeElement) el.value=S.targets[el.dataset.t]; }); $("primeShow").textContent=pct(S.targets.prime,2); }
+$("resetTargets").addEventListener("click",()=>{ if(S.readOnly) return; const pr=S.targets.prime; S.targets={...DEFAULT_TARGETS,prime:pr,discountRate:pr}; syncTargets(); scheduleSave("settings/targets"); toast("Targets reset"); });
+$("t-prime").addEventListener("input",e=>{
+  if(S.readOnly||e.target.value==="") return; const n=Number(e.target.value); if(!isFinite(n)||n<0||n>40) return;
+  if(S.targets.discountRate===S.targets.prime) S.targets.discountRate=n;
+  S.targets.prime=n; syncTargets(); scheduleSave("settings/targets");
+});
+
+/* ================= GUIDE ================= */
+function renderGuide(){
+  const rows=[...TESTS.turner.rows.map(r=>({...r,src:"Brandon Turner"})),...TESTS.boel.rows.map(r=>({...r,src:"Laurens Boel"}))];
+  $("gtests").innerHTML=`<thead><tr><th>Test</th><th>What it measures</th><th>Your target</th><th>From</th></tr></thead><tbody>${rows.map(r=>`<tr data-k="${r.k}"><td><b>${esc(r.label)}</b></td><td>${esc(r.sub)}</td><td class="num">${tgtText(r,S.targets[r.k])}</td><td><small>${r.src}</small></td></tr>`).join("")}</tbody>`;
+}
+const NOTICE_KEY="buybox-notice";
+function initNotice(){
+  let seen=false; try{ seen=localStorage.getItem(NOTICE_KEY)==="1"; }catch(e){}
+  $("notice").hidden=seen;
+  $("noticeOk").addEventListener("click",()=>{ $("notice").hidden=true; try{ localStorage.setItem(NOTICE_KEY,"1"); }catch(e){} });
+}
+initNotice();
 
 /* ================= charts ================= */
 function niceTicks(min,max,count){
@@ -1232,7 +1318,7 @@ function handleWriteError(e){
 function pickInitial(){
   if(S.cur&&(S.cur==="draft"?S.draft:S.props.find(p=>p.id===S.cur))) return;
   const first=savedSorted()[0];
-  if(first) S.cur=first.id; else { if(!S.draft) S.draft={...DEFAULTS}; S.cur="draft"; }
+  if(first) S.cur=first.id; else { if(!S.draft) S.draft=blankDeal(); S.cur="draft"; }
 }
 function startLocal(){
   S.mode="local"; S.db=null;
@@ -1270,7 +1356,19 @@ function browserDb(){
 }
 
 /* export / import */
-const DEAL_KEYS=new Set([...Object.keys(DEFAULTS),"id","created","updated","inCompare","slot"]);
+// Imported files may come from anyone: keep known fields only, each with the same type as in DEFAULTS.
+function cleanDeal(raw){
+  const d={};
+  Object.keys(DEFAULTS).forEach(k=>{
+    if(!(k in raw)) return; const def=DEFAULTS[k], v=raw[k];
+    if(BLANKABLE.has(k)&&(v===""||v==null)) d[k]="";
+    else if(typeof def==="boolean") d[k]=!!v;
+    else if(typeof def==="number"||BLANKABLE.has(k)){ const n=Number(v); if(v!==""&&v!=null&&isFinite(n)) d[k]=n; }
+    else d[k]=String(v??"").slice(0,5000);
+  });
+  ["id","created","updated","inCompare","slot"].forEach(k=>{ if(k in raw) d[k]=raw[k]; });
+  return d;
+}
 function exportData(){
   const day=new Date().toISOString().slice(0,10);
   const out={exported:day,deals:savedOrder().map(p=>({...p})),targets:{...S.targets}};
@@ -1282,14 +1380,14 @@ function exportData(){
 }
 async function importData(file){
   if(S.readOnly||!file) return;
+  if(file.size>5e6){ toast("That file is too big to be a Buy Box export"); return; }
   let data=null; try{ data=JSON.parse(await file.text()); }catch(e){}
   const list=Array.isArray(data)?data:data&&Array.isArray(data.deals)?data.deals:null;
   if(!list){ toast("That file isn't a Buy Box export"); return; }
   const now=Date.now(); let n=0;
   for(const raw of list){
     if(!raw||typeof raw!=="object") continue;
-    const d={}; Object.keys(raw).forEach(k=>{ if(DEAL_KEYS.has(k)) d[k]=raw[k]; });
-    ["name","area","notes"].forEach(k=>{ if(k in d) d[k]=String(d[k]??""); });
+    const d=cleanDeal(raw);
     const id=typeof d.id==="string"&&/^[\w-]{1,64}$/.test(d.id)?d.id:newId();
     const p={...DEFAULTS,...d,id,created:Number(d.created)||now+n,updated:Number(d.updated)||now,inCompare:!!d.inCompare,slot:Number.isInteger(d.slot)&&d.slot>=0&&d.slot<8?d.slot:0};
     const i=S.props.findIndex(x=>x.id===id); if(i>=0) S.props[i]=p; else S.props.push(p);
@@ -1300,7 +1398,7 @@ async function importData(file){
   savedOrder().forEach(p=>{ if(p.inCompare&&++cmp>MAX_CMP) p.inCompare=false; if(!p.inCompare) return; if(used.has(p.slot)){ for(let i=0;i<8;i++) if(!used.has(i)){ p.slot=i; break; } } used.add(p.slot); });
   S.props.forEach(p=>scheduleSave("properties/"+p.id));
   if(data.targets&&typeof data.targets==="object"){
-    Object.keys(DEFAULT_TARGETS).forEach(k=>{ const v=Number(data.targets[k]); if(data.targets[k]!==""&&data.targets[k]!=null&&isFinite(v)) S.targets[k]=v; });
+    Object.keys(DEFAULT_TARGETS).forEach(k=>{ const v=Number(data.targets[k]); if(data.targets[k]!==""&&data.targets[k]!=null&&isFinite(v)&&!(k==="prime"&&(v<0||v>40))) S.targets[k]=v; });
     syncTargets(); scheduleSave("settings/targets");
   }
   pickInitial(); renderView(true);

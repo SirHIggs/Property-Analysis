@@ -1,9 +1,16 @@
 // Types random deals into the live page and checks every number it shows against the engine run separately in Node.
-const fs=require('fs'), path=require('path');
+// It opens the public website (dist/index.html) over HTTP, as GitHub Pages serves it, with its Content Security Policy.
+const fs=require('fs'), path=require('path'), http=require('http');
 const { chromium } = require('playwright');
-const html=fs.readFileSync(path.join(__dirname,'../dist/buy-box.html'),'utf8');
-const page_=path.join(__dirname,'page.html');
-fs.writeFileSync(page_,'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+html+'</body></html>');
+const dist=path.join(__dirname,'../dist');
+const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
+const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
+const server=http.createServer((q,r)=>{
+  let f=decodeURIComponent(new URL(q.url,'http://x').pathname); if(f.endsWith('/')) f+='index.html';
+  const fp=path.join(dist,path.normalize(f));
+  if(!fp.startsWith(dist+path.sep)||!fs.existsSync(fp)){ r.writeHead(404); r.end(); return; }
+  r.writeHead(200,{'content-type':TYPES[path.extname(fp)]||'application/octet-stream'}); fs.createReadStream(fp).pipe(r);
+});
 const src=html.split('/*ENGINE-START*/')[1].split('/*ENGINE-END*/')[0];
 const E=new Function(src+';return {DEFAULTS,DEFAULT_TARGETS,analyse,SCENARIOS,scenario,breakPoints,verdict,status,timeline};')();
 const T=E.DEFAULT_TARGETS;
@@ -35,9 +42,13 @@ function rnd(i){
 }
 
 (async()=>{
-  const b=await chromium.launch(), p=await b.newPage({viewport:{width:1440,height:1000}});
-  const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-  await p.goto('file://'+page_+'#analyse'); await p.waitForTimeout(1200);
+  await new Promise(res=>server.listen(0,'127.0.0.1',res));
+  const BASE='http://127.0.0.1:'+server.address().port+'/';
+  const b=await chromium.launch(), p=await b.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});
+  // Any script error, blocked resource or CSP violation fails the run.
+  const errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{ if(m.type()==='error') errs.push('console: '+m.text()); });
+  p.on('dialog',d=>{ errs.push('dialog opened: '+d.message()); d.dismiss(); });
+  await p.goto(BASE+'#analyse'); await p.waitForTimeout(1200);
   await p.click('#newDeal'); await p.waitForTimeout(900);
   const N=Number(process.argv[2]||40);
   for(let i=1;i<=N;i++){
@@ -121,7 +132,7 @@ function rnd(i){
   await p.fill('#ie-disc','10.75'); await p.waitForTimeout(80);
 
   // ---------- portfolio ----------
-  await p.goto('file://'+page_+'#portfolio'); await p.waitForTimeout(900);
+  await p.goto(BASE+'#portfolio'); await p.waitForTimeout(900);
   const pr=await p.evaluate(()=>({ rows:[...document.querySelectorAll('#ptable tbody tr')].map(tr=>[...tr.querySelectorAll('td')].map(td=>td.textContent.trim())), stats:[...document.querySelectorAll('#stats .stat b')].map(e=>e.textContent) }));
   const exs=EX.map(x=>({...E.DEFAULTS,...x}));
   const res=exs.map(x=>{ const r=E.analyse(x); r.v=E.verdict(r,T); r.storm=E.scenario(x,'storm').m.cfMonth; return r; });
@@ -138,7 +149,7 @@ function rnd(i){
   ok(pr.stats[4]===grade(res.reduce((b,r)=>!b||r.v.ratio>b.v.ratio?r:b,null).v),'stats: best grade',pr.stats[4]);
 
   // ---------- compare ----------
-  await p.goto('file://'+page_+'#compare'); await p.waitForTimeout(900);
+  await p.goto(BASE+'#compare'); await p.waitForTimeout(900);
   const cp=await p.evaluate(()=>({ leaders:[...document.querySelectorAll('#leaders .lead .who')].map(e=>e.textContent.trim()),
     rows:[...document.querySelectorAll('#cmp tbody tr:not(.grp)')].map(tr=>({h:tr.querySelector('th').childNodes[0].textContent.trim(), cells:[...tr.querySelectorAll('td')].map(td=>({t:td.querySelector('.val')?td.querySelector('.val span').textContent:td.textContent, best:!!td.querySelector('.best')}))})) }));
   // Compare shows only the deals ticked for comparison, oldest first.
@@ -157,18 +168,18 @@ function rnd(i){
   rowCheck('Monthly cash flow',r=>r.m.cfMonth); rowCheck('Gross yield',r=>r.m.grossYield); rowCheck('Expense ratio',r=>r.m.expRatio,true); rowCheck('Cash required',r=>r.cashIn,true); rowCheck('Net gain if sold',r=>r.m.netGain);
 
   // ---------- saving in this browser, export and import ----------
-  await p.goto('file://'+page_+'#analyse'); await p.waitForTimeout(900);
+  await p.goto(BASE+'#analyse'); await p.waitForTimeout(900);
   ok((await p.textContent('#statusText'))==='Saved in this browser','status shows browser saving',await p.textContent('#statusText'));
   await p.click('#newDeal'); await p.waitForTimeout(300);
   if(await p.$('#newDeal.armed')) { await p.click('#newDeal'); await p.waitForTimeout(300); }
   await p.fill('#f-name','Persist check'); await p.fill('#f-price','1234567'); await p.waitForTimeout(100);
   await p.click('#saveDeal'); await p.waitForTimeout(1200);
-  await p.reload(); await p.goto('file://'+page_+'#portfolio'); await p.waitForTimeout(900);
+  await p.reload(); await p.goto(BASE+'#portfolio'); await p.waitForTimeout(900);
   const names=async()=>p.evaluate(()=>[...document.querySelectorAll('#ptable tbody tr td:first-child')].map(td=>td.textContent.trim()));
   let nm=await names();
   ok(nm.some(t=>t.startsWith('Persist check')),'saved deal survives a reload',nm.join(' | '));
   ok(nm.length===exs.length+1,'portfolio holds examples plus the saved deal',nm.length);
-  await p.goto('file://'+page_+'#settings'); await p.waitForTimeout(500);
+  await p.goto(BASE+'#settings'); await p.waitForTimeout(500);
   const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#exportData')]);
   const exported=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));
   ok(exported.deals.length===exs.length+1,'export holds every deal',exported.deals.length);
@@ -178,7 +189,7 @@ function rnd(i){
   fs.writeFileSync(imp,JSON.stringify({deals:[{id:'imported1',name:'Imported deal',price:2000000,rent:15000,inCompare:true,slot:0,created:1,evil:'<img src=x onerror=alert(1)>'},
     {id:exs[0].id,name:'Replaced example',price:999999}],targets:{irr:17,bogus:5}}));
   await p.setInputFiles('#importFile',imp); await p.waitForTimeout(1200);
-  await p.reload(); await p.goto('file://'+page_+'#portfolio'); await p.waitForTimeout(900);
+  await p.reload(); await p.goto(BASE+'#portfolio'); await p.waitForTimeout(900);
   nm=await names();
   ok(nm.some(t=>t.startsWith('Imported deal')),'imported deal survives a reload',nm.join(' | '));
   ok(nm.some(t=>t.startsWith('Replaced example'))&&!nm.some(t=>t.startsWith(exs[0].name+' ')||t===exs[0].name),'import replaces a deal with the same id',nm.join(' | '));
@@ -190,7 +201,64 @@ function rnd(i){
   ok(new Set(slots).size===slots.length&&slots.length<=8,'compare colours stay unique after import',slots.join(','));
   fs.unlinkSync(imp);
 
+  // ---------- prime rate setting ----------
+  await p.goto(BASE+'#settings'); await p.waitForTimeout(500);
+  await p.fill('#t-prime','11.25'); await p.waitForTimeout(1200);
+  ok((await p.textContent('#primeShow'))==='11.25%','sidebar shows the new prime rate',await p.textContent('#primeShow'));
+  let st=await p.evaluate(()=>JSON.parse(localStorage.getItem('buybox-data')).settings.targets);
+  ok(st.prime===11.25,'prime rate is saved',st.prime);
+  ok(st.discountRate===11.25,'discount rate follows prime while they match',st.discountRate);
+  await p.fill('#t-discountRate','8'); await p.fill('#t-prime','11.5'); await p.waitForTimeout(1200);
+  st=await p.evaluate(()=>JSON.parse(localStorage.getItem('buybox-data')).settings.targets);
+  ok(st.prime===11.5&&st.discountRate===8,'a discount rate of your own stays put',JSON.stringify(st));
+  await p.goto(BASE+'#analyse'); await p.waitForTimeout(700);
+  await p.click('#newDeal'); await p.waitForTimeout(300);
+  if(await p.$('#newDeal.armed')) { await p.click('#newDeal'); await p.waitForTimeout(300); }
+  ok((await p.inputValue('#f-rate'))==='11.5','a new deal starts at the prime rate',await p.inputValue('#f-rate'));
+
+  // ---------- guide and notice ----------
+  await p.goto(BASE+'#guide'); await p.waitForTimeout(500);
+  const gt=await p.evaluate(()=>[...document.querySelectorAll('#gtests tbody tr')].map(tr=>({k:tr.dataset.k,t:tr.querySelectorAll('td')[2].textContent})));
+  ok(gt.length===10,'guide lists the ten graded tests',gt.length);
+  ok((gt.find(r=>r.k==='irr')||{}).t==='≥ 17%','guide shows your own targets',JSON.stringify(gt.find(r=>r.k==='irr')));
+  ok((gt.find(r=>r.k==='cfMonth')||{}).t==='≥ R 0','guide formats rand targets',JSON.stringify(gt.find(r=>r.k==='cfMonth')));
+  await p.goto(BASE+'#analyse'); await p.waitForTimeout(500);
+  ok(await p.isVisible('#notice'),'not-financial-advice notice shows on a first visit','');
+  await p.click('#noticeOk'); await p.reload(); await p.waitForTimeout(800);
+  ok(!(await p.isVisible('#notice')),'notice stays dismissed after a reload','');
+
+  // ---------- self-hosted fonts ----------
+  const fontsOk=await p.evaluate(async()=>{ await document.fonts.ready; return [document.fonts.check('14px "Geist"'),document.fonts.check('14px "Geist Mono"')]; });
+  ok(fontsOk[0]&&fontsOk[1],'self-hosted fonts load',JSON.stringify(fontsOk));
+  ok(!/googleapis|gstatic/.test(html),'website loads nothing from Google','');
+
+  // ---------- hostile import ----------
+  const bad='"><img src=x onerror="window.__xss=1"><script>window.__xss=1</script>';
+  const hostile={}; Object.keys(E.DEFAULTS).forEach(k=>hostile[k]=bad);
+  fs.writeFileSync(imp,JSON.stringify({deals:[{...hostile,id:'hostile1',inCompare:true,slot:'"><img src=x>'},{...hostile,id:'"><img src=x onerror=alert(1)>'}],targets:{irr:bad,prime:bad}}));
+  await p.goto(BASE+'#settings'); await p.waitForTimeout(400);
+  await p.setInputFiles('#importFile',imp); await p.waitForTimeout(900); fs.unlinkSync(imp);
+  for(const v of ['portfolio','compare','analyse','guide']){
+    await p.goto(BASE+'#'+v); await p.waitForTimeout(500);
+    if(v==='analyse'){ await p.selectOption('#dealPick','hostile1'); await p.waitForTimeout(400); }
+    const hit=await p.evaluate(()=>({xss:!!window.__xss,imgs:document.querySelectorAll('img[src="x"]').length,scripts:document.scripts.length}));
+    ok(!hit.xss&&hit.imgs===0&&hit.scripts===1,'hostile import cannot inject markup: '+v,JSON.stringify(hit));
+  }
+  // The policy itself: injected inline handlers and outbound requests are blocked.
+  const before=errs.length;
+  const pol=await p.evaluate(async()=>{
+    document.body.insertAdjacentHTML('beforeend','<img src="data:," onload="window.__csp=1" onerror="window.__csp=1">');
+    let fetched=true; try{ await fetch('https://example.com/'); }catch(e){ fetched=false; }
+    await new Promise(r=>setTimeout(r,300)); return {handler:!!window.__csp,fetched};
+  });
+  ok(!pol.handler,'CSP blocks injected inline handlers',JSON.stringify(pol));
+  ok(!pol.fetched,'CSP blocks sending data off the page',JSON.stringify(pol));
+  errs.splice(before,errs.length-before,...errs.slice(before).filter(e=>!/Content Security Policy|Failed to fetch/.test(e))); // the probe's own expected violations
+  const hs=await p.evaluate(()=>JSON.parse(localStorage.getItem('buybox-data')));
+  ok(typeof hs.properties.hostile1.price==='undefined'||typeof hs.properties.hostile1.price==='number','import keeps numbers as numbers',typeof hs.properties.hostile1.price);
+  ok(hs.settings.targets.irr===17&&hs.settings.targets.prime===11.5,'import ignores non-numeric targets',JSON.stringify(hs.settings.targets));
+
   console.log(JSON.stringify({deals:N,pass,fail,pageErrors:errs,failures,checkTypes:Object.keys(counts).length},null,1));
-  await b.close();
+  await b.close(); server.close();
   if(fail||errs.length) process.exitCode=1;
 })();

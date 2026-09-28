@@ -9,14 +9,20 @@ src/engine.js      All the maths. Pure functions, no DOM. Lives between /*ENGINE
 src/shell.html     Page markup, CSS and UI code. Contains %%ENGINE%% and %%SEED%% placeholders.
 build.js           Injects engine.js and the example deals from data/deals.json into shell.html.
 dist/buy-box.html  The built page as one self-contained fragment (claude.ai artifact; what the tests open).
-dist/index.html    The same page as a full HTML document with meta tags: the public website.
+dist/index.html    The public website: the same page as a full HTML document with meta tags, self-hosted fonts and a
+                   Content Security Policy.
+src/fonts/         Geist and Geist Mono (SIL Open Font License), copied to dist/fonts for the website.
 tests/engine.test.js  ~50,000 checks on the engine (bond maths vs month-by-month simulation, SARS transfer duty,
                       IRR/NPV, break-even, breaking points, offer prices, 20-year timeline, present value, fuzzing, monotonicity).
-tests/dom.test.js     Opens the built page in Playwright, types random deals into the form and checks every number on
-                      screen against the engine run separately (summary, KPIs, screening, stress, 20-year panel, portfolio, compare).
+tests/dom.test.js     Serves dist/ over HTTP, opens dist/index.html in Playwright, types random deals into the form and
+                      checks every number on screen against the engine run separately (summary, KPIs, screening, stress,
+                      20-year panel, portfolio, compare), plus saving, export/import, the prime rate, the guide, fonts and
+                      security (hostile import, CSP). Any console error or CSP violation fails the run.
 data/deals.json    Deals and buy-box targets exported from the claude.ai version on 2026-09-28. The deals seed
                    a first visit; the targets are not seeded (visitors start from DEFAULT_TARGETS).
 .github/workflows/site.yml  Runs both suites on every push and PR; the default branch also deploys dist/ to GitHub Pages.
+.github/dependabot.yml      Weekly update PRs for GitHub Actions and npm.
+SECURITY.md        How to report a problem and how the site protects visitors.
 ```
 
 ## Commands
@@ -48,7 +54,20 @@ For accounts and syncing (phase 2 in ROADMAP.md), write another store with the s
 
 The unsaved draft is kept separately in localStorage (`buybox-draft`). **Your data** in the settings view exports every deal and the targets as JSON, and imports the same format (or the data/deals.json format): deals are added, a deal with the same id is replaced, unknown fields and targets are dropped, and Compare is kept to 8 deals with unique colours.
 
+The prime rate lives in the targets object as `prime` (a setting, not a graded test). New deals start at it (`blankDeal()`), and `discountRate` follows it while the two are equal. It is edited under **Market** in the settings view and shown in the sidebar.
+
 Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`, `updated`, `inCompare` and `slot` (colour slot 0–7). Targets live in one object, whose keys match `DEFAULT_TARGETS`.
+
+## Views
+
+Analyse, Portfolio, Compare, Buy box & method (`settings`) and How grades work (`guide`). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
+
+## Security
+
+- The website has one inline script. build.js hashes it into the CSP, so adding a second `<script>` or an external script fails the build. Don't add inline event handlers (`onclick="…"`); the CSP blocks them. Attach listeners in JS.
+- `connect-src 'none'`: the page can't make network requests. Phase 2 (a backend) must add its origin to the CSP in build.js on purpose.
+- Escape all user text with `esc()` before it goes into `innerHTML`. Imported files are untrusted: `cleanDeal()` keeps known fields only, each with the type it has in `DEFAULTS`.
+- Keep the site free of third-party requests (fonts are self-hosted). The dom suite fails if the page loads anything from Google.
 
 ## Design
 
@@ -59,4 +78,4 @@ A single dark look, painted explicitly for every host theme: ledger-green surfac
 - No capital gains tax on the sale. Tax only feeds the optional after-tax cash flow line.
 - Attorney and bond fees are a rough estimate when left blank.
 - Municipal rates and levies stay fixed when solving for offer prices.
-- The prime rate (10.75%) shown in the sidebar is hard-coded. It was correct at September 2026. Making it editable is on the roadmap.
+- The default prime rate (10.75%, correct at September 2026) is in `DEFAULT_TARGETS` in engine.js. Users can change their own under Market; saved deals keep their own rate.

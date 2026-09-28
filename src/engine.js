@@ -7,7 +7,9 @@ const DEFAULTS = {
   deposit:10, rate:10.75, term:20,
   rentGrowth:6, costGrowth:7, capGrowth:5, hold:10, sellCost:7, taxRate:0
 };
-const DEFAULT_TARGETS = {onePct:1, expRatio:50, cfMonth:0, capRate:8, dscr:1.2, grossYield:10, effYield:8, coc:12, discount:10, irr:15, discountRate:10.75};
+// prime is the SA prime lending rate (10.75% at September 2026). It is a setting rather than a graded target:
+// new deals start at it and the present-value discount rate follows it until the user sets their own.
+const DEFAULT_TARGETS = {onePct:1, expRatio:50, cfMonth:0, capRate:8, dscr:1.2, grossYield:10, effYield:8, coc:12, discount:10, irr:15, discountRate:10.75, prime:10.75};
 function num(v){ const n=Number(v); return isFinite(n)?n:0; }
 function clamp(v,lo,hi){ return Math.min(hi,Math.max(lo,v)); }
 function transferDuty(v){

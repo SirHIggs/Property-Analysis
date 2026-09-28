@@ -22,6 +22,11 @@ function solvePmt(loan, annualRate, months) { // bisection, no closed form
 }
 function npv(flows, r) { return flows.reduce((s, f, t) => s + f / Math.pow(1 + r, t), 0); }
 
+group('Prime rate defaults agree', () => {
+  ok(E.DEFAULT_TARGETS.prime === E.DEFAULTS.rate, 'a new deal starts at the default prime rate');
+  ok(E.DEFAULT_TARGETS.discountRate === E.DEFAULT_TARGETS.prime, 'the default discount rate is prime');
+});
+
 group('Transfer duty vs SARS table', () => {
   const T = E.transferDuty;
   const cases = [[0,0],[900000,0],[1210000,0],[1210001,0.03],[1500000,8700],[1663800,13614],[2000000,33786],[2329300,53544],[2994800,106784],[3500000,162356],[13310000,1241456],[15000000,1241456+0.13*1690000]];
