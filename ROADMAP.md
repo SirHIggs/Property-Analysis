@@ -12,7 +12,8 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 - [x] Publish `dist/` to GitHub Pages on every push to the default branch.
 - [x] Turn on GitHub Pages. Live at https://sirhiggs.github.io/Property-Analysis/
 - [x] Security: Content Security Policy, self-hosted fonts, hardened import, Dependabot, SECURITY.md.
-- [ ] Choose a name and branding, then a custom domain.
+- [x] Name: keep **Buy Box**.
+- [ ] Custom domain. buybox.co.za is listed for sale on Dan.com (checked 2026-09-28); otherwise a variant such as buyboxsa.co.za.
 
 ## Phase 2: accounts and syncing (next step)
 
@@ -29,3 +30,4 @@ Only once people ask for it, because it brings a backend, privacy obligations an
 
 1. **Editable prime rate.** Set under **Buy box & method → Market** and shown in the sidebar. New deals start at it, and the present-value discount rate follows it until you set your own. Saved deals keep their own rate. The default (10.75%, September 2026) is in `DEFAULT_TARGETS` in engine.js.
 2. **"How grades work" guide and disclaimer.** A Guide view explains the A to E grade, how tests score, the ten tests with your own targets, what the grade leaves out, and a "not financial advice" section. A first-visit notice and a line in the sidebar link to it.
+3. **Light and dark themes.** Dark stays the default; a switch in the sidebar and the mobile top bar changes to a light theme and remembers the choice. Both themes are contrast-checked in the tests.

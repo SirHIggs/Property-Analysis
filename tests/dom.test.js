@@ -227,7 +227,30 @@ function rnd(i){
   await p.click('#noticeOk'); await p.reload(); await p.waitForTimeout(800);
   ok(!(await p.isVisible('#notice')),'notice stays dismissed after a reload','');
 
-  // ---------- self-hosted fonts ----------
+  // ---------- light and dark themes ----------
+  const contrast=()=>p.evaluate(()=>{
+    const cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+    const lum=h=>{ const c=h.replace('#','').match(/\w\w/g).map(x=>parseInt(x,16)/255).map(x=>x<=.03928?x/12.92:((x+.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
+    const cr=(a,b)=>{ const x=lum(v(a)),y=lum(v(b)); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); };
+    const out={};
+    ['--text','--text-2','--muted','--good-text','--warn-text','--bad-text'].forEach(t=>['--bg','--surface','--surface-2'].forEach(b=>out[t+' on '+b]=[cr(t,b),4.5]));
+    for(let i=1;i<=8;i++) ['--surface','--surface-2'].forEach(b=>out['--s'+i+' on '+b]=[cr('--s'+i,b),3]);
+    out['--brass-ink on --brass']=[cr('--brass-ink','--brass'),4.5];
+    return {theme:document.documentElement.dataset.theme||'dark',out};
+  });
+  const checkTheme=async want=>{ const c=await contrast(); ok(c.theme===want,'theme is '+want,c.theme);
+    Object.entries(c.out).forEach(([k,[r,min]])=>ok(r>=min,want+' contrast '+k,r.toFixed(2)+' < '+min)); };
+  await p.goto(BASE+'#analyse'); await p.waitForTimeout(500);
+  await checkTheme('dark');
+  await p.click('#themeBtn'); await p.waitForTimeout(300);
+  await checkTheme('light');
+  ok((await p.textContent('#themeLabel'))==='Dark mode','switch offers the other theme',await p.textContent('#themeLabel'));
+  await p.reload(); await p.waitForTimeout(800);
+  ok(await p.evaluate(()=>document.documentElement.dataset.theme)==='light','theme choice survives a reload','');
+  await p.click('#themeBtn'); await p.waitForTimeout(300);
+  ok(await p.evaluate(()=>!document.documentElement.dataset.theme),'switch goes back to dark','');
+
+
   const fontsOk=await p.evaluate(async()=>{ await document.fonts.ready; return [document.fonts.check('14px "Geist"'),document.fonts.check('14px "Geist Mono"')]; });
   ok(fontsOk[0]&&fontsOk[1],'self-hosted fonts load',JSON.stringify(fontsOk));
   ok(!/googleapis|gstatic/.test(html),'website loads nothing from Google','');

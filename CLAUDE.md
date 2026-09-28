@@ -71,7 +71,7 @@ Analyse, Portfolio, Compare, Buy box & method (`settings`) and How grades work (
 
 ## Design
 
-A single dark look, painted explicitly for every host theme: ledger-green surfaces with a brass accent (`--brass #C9A45C`). Fonts are Geist and Geist Mono. Series colours `--s1…--s8` are a colour-blind-checked categorical palette, assigned per deal and kept with that deal. Status colours (good, warn, bad) are separate from the series colours and never reused as them. Keep new UI in the same token system.
+Ledger-green surfaces with a brass accent (`--brass #C9A45C`). Dark is the default; a light theme (warm paper, darker brass) is set with `data-theme="light"` on `<html>` by the switch in the sidebar and mobile top bar, and remembered in localStorage (`buybox-theme`). Every colour is a token on `:root`, redefined under `:root[data-theme="light"]`: never hard-code a colour, add a token to both blocks. The dom suite checks text (4.5:1) and series (3:1) contrast in both themes. Fonts are Geist and Geist Mono. Series colours `--s1…--s8` are a colour-blind-checked categorical palette, assigned per deal and kept with that deal. Status colours (good, warn, bad) are separate from the series colours and never reused as them. Keep new UI in the same token system.
 
 ## Known simplifications
 
