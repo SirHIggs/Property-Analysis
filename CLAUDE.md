@@ -35,7 +35,7 @@ Run both test suites after any change to the maths or to how numbers are display
 
 ## Engine (src/engine.js)
 
-- `analyse(deal, lite)` returns every figure for one deal: cash flow, NOI, the bond, cash in, yields, DSCR, IRR, net gain series, break-even rent and after-tax cash flow. `lite` skips IRR for speed inside solvers.
+- `analyse(deal, lite)` returns every figure for one deal: cash flow, NOI, the bond, cash in, yields, DSCR, IRR, net gain series, break-even rent and after-tax cash flow, plus `costs` (annual line items behind income collected and running costs) and `deposit`, `reno`, `ratePct`, `termM`, `debtA`. `lite` skips IRR for speed inside solvers.
 - `SCENARIOS` / `scenario(deal, key)` hold the stress scenarios (prime +1/+2, rent −10%, 2 months empty, levy +25%, no growth, perfect storm).
 - `breakPoints(deal, targets)` solves for the interest rate, vacancy and rent drop that take cash flow to zero, plus the maximum offer prices.
 - `timeline(deal, years, discountRatePct)` gives year-by-year income vs running costs vs bond, crossover year, top-up, net and present value.
@@ -60,7 +60,9 @@ Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`,
 
 ## Views
 
-Analyse, Portfolio, Compare, Buy box & method (`settings`), How grades work (`guide`) and Terms & privacy (`terms`, static text with a "last updated" date; update the date whenever the wording changes). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
+Analyse, Portfolio, Compare, Buy box & method (`settings`), How grades work (`guide`), Terms & privacy (`terms`, static text with a "last updated" date; update the date whenever the wording changes) and Investor report (`report`, not in the nav). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
+
+**Investor report.** `openReport(ids, back)` sets `S.report` and opens `#report`; `renderReport()` builds a printable `.report-doc` (cover, a portfolio summary when there are 2+ deals, one section per deal, closing disclaimer). Entry points: the Analyse topbar (current deal, drafts included), the Report tick boxes on Portfolio (`S.reportSel`, in memory, with Select all) and the Compare topbar. Users save it with the browser's Print → Save as PDF. Prepared by/for live in localStorage (`buybox-report`). The report reuses the same builders as the screens: `breakCards()`, `scenarioRows()`, `ieSummary()`, `ieChart()`/`ieLegendHtml()` and `cmpBody()`, so a figure can't differ between screen and report. `.report-doc` always uses the light tokens (it shares the light-theme selector). Print styles live in `@media print`, scoped to `html[data-view="report"]`, and `@page report` adds the page footer and numbers.
 
 ## Security
 

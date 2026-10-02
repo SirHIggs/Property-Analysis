@@ -22,7 +22,7 @@
 }
 /* Light theme: the same ledger-and-brass look on warm paper. Every text colour keeps at least 4.5:1 contrast and every
    series colour at least 4:1 on the panels, so charts stay readable. Chosen with the switch in the sidebar or top bar. */
-:root[data-theme="light"]{
+:root[data-theme="light"],.report-doc{
   color-scheme:light;
   --bg:#F6F3EC; --surface:#FFFFFF; --surface-2:#F4F1EA; --surface-3:#ECE7DC; --hover:#E8E2D5;
   --line:#E3DDD0; --line-2:#CFC7B6;
@@ -359,6 +359,76 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .method dd{color:var(--text-2); font-size:13px}
 .method code{font-family:var(--mono); font-size:12px; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:0 5px; border-radius:4px}
 .method ul{margin:0; padding-left:18px}
+/* ---------- investor report ---------- */
+.rpt-bar{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:flex-end; margin-bottom:8px}
+.rpt-bar .field{flex:1 1 220px}
+.rpt-bar .btns{display:flex; gap:8px; margin-left:auto}
+.rpt-tip{padding:0 0 14px; margin:0}
+.report-doc{display:block; min-width:0; overflow-wrap:anywhere; background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:40px 44px; width:100%; max-width:960px; margin:0 auto; font-size:13px; line-height:1.5; box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.report-doc h2{font-size:22px; margin:0 0 4px}
+.report-doc h3{font-size:14px; margin:22px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--brass-line); color:var(--text)}
+.report-doc .cap{color:var(--muted)}
+.report-doc p{margin:0 0 8px; color:var(--text-2)}
+.report-doc table{font-size:12.5px}
+.report-doc th,.report-doc td{padding:6px 8px}
+.report-doc td.num,.report-doc .num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right}
+.report-doc .cmp{min-width:0; table-layout:fixed}
+.report-doc .cmp thead th{font-size:12px; white-space:normal; vertical-align:bottom}
+.report-doc .cmp tbody th{position:static; min-width:0; width:30%; font-size:12px}
+.report-doc .cmp td.v{white-space:normal}
+.report-doc .cmp td.v .val{flex-wrap:wrap; gap:4px; font-size:12px}
+.report-doc .cmp .pill,.report-doc .cmp .best{font-size:10.5px; padding:1px 6px}
+.rpt-cards.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-cover{display:flex; flex-direction:column; gap:18px}
+.rpt-brand{display:flex; align-items:center; gap:10px; font-weight:650; font-size:15px}
+.rpt-title{font-size:30px; font-weight:650; letter-spacing:-.03em; margin:6px 0 0}
+.rpt-meta{display:flex; flex-wrap:wrap; gap:6px 24px; color:var(--text-2)}
+.rpt-meta b{color:var(--text); font-weight:600}
+.rpt-kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0}
+.rpt-kpis div{border:1px solid var(--line); border-radius:8px; padding:9px 11px; background:var(--surface-2)}
+.rpt-kpis span{display:block; font-size:10.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.rpt-kpis b{display:block; font-family:var(--mono); font-size:15px; font-weight:600; margin-top:2px}
+.rpt-kpis small{display:block; color:var(--muted); font-size:11px}
+.rpt-cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 28px}
+.rpt-dh{display:flex; justify-content:space-between; gap:20px; align-items:flex-start; padding-bottom:12px; border-bottom:1px solid var(--line)}
+.rpt-grade{text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:2px}
+.rpt-grade .gchip{width:44px; height:44px; font-size:24px; border-radius:10px}
+.rpt-grade small{color:var(--muted)}
+.rpt-t tr.tot th,.rpt-t tr.tot td{font-weight:650; border-top:1.5px solid var(--line-2)}
+.rpt-t tbody th{font-weight:500}
+.rpt-t th small{display:block; color:var(--muted); font-weight:400; font-size:11px}
+.rpt-cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+.rpt-cards div{border:1px solid var(--line); border-radius:8px; padding:8px 10px}
+.rpt-cards span{display:block; font-size:11.5px; color:var(--text-2)}
+.rpt-cards b{display:block; font-family:var(--mono); font-size:14px}
+.rpt-cards small{display:block; color:var(--muted); font-size:11px}
+.rpt-chart svg text{font-size:10px; fill:var(--muted)} .rpt-chart svg text.ann{fill:var(--brass)}
+.rpt-legend{display:flex; gap:16px; font-size:11.5px; color:var(--text-2); margin:4px 0}
+.rpt-legend i{display:inline-block; width:14px; border-top:2.5px solid; margin-right:6px; vertical-align:middle}
+.rpt-notes{white-space:pre-wrap; border-left:3px solid var(--brass-line); padding:4px 0 4px 12px; color:var(--text-2)}
+.rpt-deal{margin-top:36px; padding-top:28px; border-top:2px dashed var(--line-2)}
+.rpt-end{margin-top:28px; padding-top:14px; border-top:1px solid var(--line); font-size:11.5px; color:var(--muted)}
+.rpt-end p{color:var(--muted)}
+.rpt-dfoot{margin-top:14px; font-size:11px; color:var(--muted)}
+@media (max-width:700px){ .report-doc{padding:22px 16px} .rpt-kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .rpt-cols{grid-template-columns:minmax(0,1fr)} .rpt-cards,.rpt-cards.c4{grid-template-columns:repeat(2,minmax(0,1fr))} .rpt-dh{flex-direction:column} .rpt-grade{align-items:flex-start; text-align:left} .report-doc .tablebox{overflow-x:auto} }
+/* Printing a report: only the document, on white A4, with colours kept. Other screens print as they are. */
+@media print{
+  html[data-view="report"],html[data-view="report"] body{background:#fff!important}
+  html[data-view="report"] .side,html[data-view="report"] .topbar,html[data-view="report"] .tabbar,html[data-view="report"] .notice,html[data-view="report"] .toast,html[data-view="report"] .rpt-bar,html[data-view="report"] .rpt-tip{display:none!important}
+  html[data-view="report"] .app{display:block}
+  html[data-view="report"] .main{padding:0}
+  html[data-view="report"] .report-doc{border:0; border-radius:0; box-shadow:none; padding:0; max-width:none; font-size:11.5px}
+  .rpt-deal{break-before:page; margin-top:0; padding-top:0; border-top:0}
+  .rpt-kpis,.rpt-cards,.rpt-chart,.report-doc tr,.rpt-dh,.rpt-end{break-inside:avoid}
+  .report-doc h3{break-after:avoid}
+  .report-doc,.report-doc *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .report-doc .tablebox{overflow:visible}
+}
+.report-doc{page:report}
+@page report{size:A4; margin:14mm 14mm 16mm;
+  @bottom-left{content:"Buy Box investor report · A calculator, not financial advice"; font-size:8pt; color:#6b7772}
+  @bottom-right{content:"Page " counter(page) " of " counter(pages); font-size:8pt; color:#6b7772}
+}
 .guide-body{padding:0 18px 18px; color:var(--text-2); font-size:13.5px; line-height:1.55; max-width:760px}
 .guide-body p{margin:0 0 10px}
 .guide-body strong{color:var(--text)}
@@ -603,6 +673,15 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
         </div>
       </section>
     </section>
+    <section class="view" id="v-report" aria-label="Investor report" hidden>
+      <div class="rpt-bar">
+        <div class="field"><label for="rpt-by">Prepared by</label><div class="inp"><input type="text" id="rpt-by" maxlength="80" placeholder="Your name (optional)"></div></div>
+        <div class="field"><label for="rpt-for">Prepared for</label><div class="inp"><input type="text" id="rpt-for" maxlength="80" placeholder="A partner, co-investor or your bank (optional)"></div></div>
+        <div class="btns"><button type="button" class="btn" id="rptBack">Back</button><button type="button" class="btn primary" id="rptPrint">Print / Save as PDF</button></div>
+      </div>
+      <p class="fine rpt-tip">In the print screen, choose <b>Save as PDF</b> as the printer to keep a copy or send it on. The report is built in your browser; nothing is uploaded.</p>
+      <article class="report-doc" id="reportDoc"></article>
+    </section>
     <section class="view" id="v-terms" aria-label="Terms and privacy" hidden>
       <section class="panel">
         <div class="panel-h"><h2>Terms of use</h2><p>Last updated 28 September 2026</p></div>
@@ -651,7 +730,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const DRAFT_KEY="buybox-draft", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings","guide","terms"];
+const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report"];
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -725,7 +804,7 @@ const CMP_ROWS=[
 // Example deals for a first visit, injected from data/deals.json by build.js.
 const SEED_DEALS=%%SEED%%;
 
-const S={props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
+const S={report:{ids:[],back:"portfolio"},reportSel:new Set(),props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
 const dirty=new Set(); let targetsDirty=false;
 const custom={rate:0,rent:0,vac:null,levy:0,vacTouched:false};
 
@@ -761,7 +840,7 @@ function storeDraft(){ try{ if(S.draft) localStorage.setItem(DRAFT_KEY,JSON.stri
 function setView(v){
   if(v==="deals") v="portfolio";
   if(!VIEWS.includes(v)) v="analyse";
-  S.view=v;
+  S.view=v; document.documentElement.dataset.view=v;
   VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("[data-v]").forEach(a=>a.setAttribute("aria-current",a.dataset.v===v?"page":"false"));
   renderView(true);
@@ -777,6 +856,7 @@ function renderView(rebuild){
   else if(S.view==="compare") renderCompare();
   else if(S.view==="guide") renderGuide();
   else if(S.view==="terms"){}
+  else if(S.view==="report") renderReport();
   else renderSettings();
 }
 const TOGGLE_M=`<button type="button" class="themebtn m" data-theme-toggle aria-label="Switch light or dark mode"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg></button>`;
@@ -792,19 +872,27 @@ function renderTopInner(){
     savedOrder().forEach(p=>opts.push(`<option value="${esc(p.id)}" ${p.id===S.cur?"selected":""}>${esc(p.name||"Untitled")}</option>`));
     c.innerHTML=`${mb}<span class="cap">Analyse</span><span class="sep">/</span><select class="pick" id="dealPick" aria-label="Deal on the desk">${opts.join("")}</select>`;
     const d=curDeal();
-    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
-    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
+    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
+    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
     $("dealPick")&&$("dealPick").addEventListener("change",e=>{ S.cur=e.target.value; resetCustom(); renderView(true); });
     $("newDeal").addEventListener("click",newDeal);
+    $("rptOne").addEventListener("click",()=>{ if(curDeal()) openReport([S.cur],"analyse"); });
     if(S.cur==="draft"){ $("saveDeal").addEventListener("click",saveDraft); $("discard").addEventListener("click",e=>confirmThen(e.currentTarget,"Discard draft?",discardDraft)); }
     else if(d){ $("inCmp").addEventListener("change",e=>{ if(!toggleCompare(d.id,e.target.checked)) e.target.checked=false; }); $("dupDeal").addEventListener("click",()=>duplicate(d.id)); $("delDeal").addEventListener("click",e=>confirmThen(e.currentTarget,"Delete deal?",()=>deleteDeal(d.id))); }
   } else if(S.view==="portfolio"){
     c.innerHTML=`${mb}<span class="cap">Portfolio</span><span class="sep">/</span><h1>${S.props.length} deal${S.props.length===1?"":"s"} analysed</h1>`;
-    a.innerHTML=`<button type="button" class="btn primary" id="newDeal">Analyse a new deal</button>`;
+    const sel=S.props.filter(p=>S.reportSel.has(p.id)).map(p=>p.id);
+    a.innerHTML=`<button type="button" class="btn" id="rptSel" ${sel.length?"":"disabled"} title="Tick deals in the Report column first">Investor report (${sel.length})</button><button type="button" class="btn primary" id="newDeal">Analyse a new deal</button>`;
     $("newDeal").addEventListener("click",newDeal);
+    $("rptSel").addEventListener("click",()=>{ const ids=savedOrder().filter(p=>S.reportSel.has(p.id)).map(p=>p.id); if(ids.length) openReport(ids,"portfolio"); });
   } else if(S.view==="compare"){
     const n=S.props.filter(p=>p.inCompare).length;
     c.innerHTML=`${mb}<span class="cap">Compare</span><span class="sep">/</span><h1>${n} deal${n===1?"":"s"} side by side</h1>`;
+    a.innerHTML=n?`<button type="button" class="btn" id="rptCmp">Investor report</button>`:"";
+    if(n) $("rptCmp").addEventListener("click",()=>openReport(S.props.filter(p=>p.inCompare).sort((x,y)=>(x.created||0)-(y.created||0)).map(p=>p.id),"compare"));
+  } else if(S.view==="report"){
+    const n=reportItems().length;
+    c.innerHTML=`${mb}<span class="cap">Report</span><span class="sep">/</span><h1>Investor report${n?` · ${n} deal${n===1?"":"s"}`:""}</h1>`;
     a.innerHTML="";
   } else if(S.view==="terms"){
     c.innerHTML=`${mb}<span class="cap">About</span><span class="sep">/</span><h1>Terms &amp; privacy</h1>`;
@@ -948,7 +1036,8 @@ function renderReadout(r){
   el.innerHTML=`<div><span>Transfer duty</span><b>${rand(r.duty)}</b></div><div><span>Attorney & bond fees</span><b>${rand(r.legal)}${r.legalBlank&&r.legal>0?" est.":""}</b></div><div><span>Bond amount</span><b>${rand(r.loan)}</b></div><div><span>Bond /month</span><b>${rand(r.pmt)}</b></div>`;
   const d=curDeal(), lh=$("legalHint"); if(lh&&d) lh.textContent=d.newDev?"Usually paid by developer":`Blank = est. ${compactR(r.legalEst)}`;
 }
-function renderStress(d,r){
+// Breaking points and max offer prices as [status, question, answer, detail] cards (shared with the report).
+function breakCards(d,r){
   const bp=breakPoints(d,S.targets), price=r.price, rate=num(({...DEFAULTS,...d}).rate);
   const c=[];
   if(bp.rate.kind==="nobond") c.push(["good","Rate it survives","No bond","Cash purchase"]);
@@ -969,8 +1058,14 @@ function renderStress(d,r){
   };
   c.push(offer(bp.offerCoc,`Max price for ${S.targets.coc}% CoC`,true));
   c.push(offer(bp.offerCf,S.targets.cfMonth===0?"Max price to break even":`Max price for ${rand(S.targets.cfMonth)}/m`));
+  return c;
+}
+// Every stress scenario, re-run and graded (shared with the report).
+function scenarioRows(d){ return SCENARIOS.map(s=>{ const x=analyse(s.apply({...DEFAULTS,...d})); x.v=verdict(x,S.targets); x.g=grade(x.v); return {s,x}; }); }
+function renderStress(d,r){
+  const c=breakCards(d,r);
   $("bps").innerHTML=c.map(([s,q,a,sub])=>`<div class="bpc"><span class="q"><i class="dot ${s==="good"?"pass":s==="warn"?"close":"fail"}"></i>${esc(q)}</span><span class="a ${s}">${esc(a)}</span><span class="s">${esc(sub)}</span></div>`).join("");
-  const rows=SCENARIOS.map(s=>{ const x=analyse(s.apply({...DEFAULTS,...d})); x.v=verdict(x,S.targets); x.g=grade(x.v); return {s,x}; });
+  const rows=scenarioRows(d);
   const maxAbs=Math.max(1,...rows.map(o=>Math.abs(o.x.m.cfMonth)));
   let h=`<thead><tr><th>Scenario</th><th>Cash flow /m</th><th>CoC</th><th>DSCR</th><th>IRR</th><th>Grade</th></tr></thead><tbody>`;
   rows.forEach(({s,x})=>{
@@ -1004,8 +1099,9 @@ $("csReset").addEventListener("click",()=>{ resetCustom(); renderCustom(); });
 
 /* income vs expenses, 20 years */
 $("ie-disc").addEventListener("input",e=>{ if(S.readOnly||e.target.value==="") return; const n=Number(e.target.value); if(!isFinite(n)||n<0) return; S.targets.discountRate=n; scheduleSave("settings/targets"); const d=curDeal(); if(d&&S.view==="analyse"&&!S.db) renderIE(d); });
-function renderIE(d){
-  const tl=timeline(d,20,S.targets.discountRate), rows=tl.rows;
+// The four 20-year headline answers as [status, answer, detail] (shared with the report).
+function ieSummary(tl){
+  const rows=tl.rows;
   let c1;
   if(tl.crossover===1) c1=["good","From year 1","Rent covers every cost from the start"];
   else if(tl.crossover) c1=[tl.crossover<=5?"warn":"bad","Year "+tl.crossover,`Rent covers running costs and the bond from year ${tl.crossover} on`];
@@ -1014,22 +1110,25 @@ function renderIE(d){
   const topC=tl.topUp===0?"good":tl.topUp<50000?"warn":"bad";
   const netC=tl.net>=0?"good":"bad";
   const bf=tl.bondFreeYear;
-  const setA=(id,cls,txt)=>{ const el=$(id); el.className="a "+cls; el.textContent=txt; };
-  setA("ie1a",c1[0],c1[1]); $("ie1s").textContent=c1[2];
-  setA("ie2a",topC,tl.topUp===0?"R 0":rand(tl.topUp)); $("ie2s").textContent=tl.topUp===0?"The deal never needs money from your pocket":"Total of every shortfall year you'd fund yourself";
-  setA("ie3a",netC,rand(tl.net)); $("ie3s").textContent=`${compactR(tl.income)} rent in, ${compactR(tl.expenses)} costs out${bf&&bf>1&&bf<=20?` · bond-free from year ${bf}`:""}. Excludes the sale`;
-  setA("ie4a",tl.pv>=0?"good":"bad",rand(tl.pv));
-  $("ie4s").textContent=tl.discRate>0?`What those 20 years of cash are worth today at ${tl.discRate.toFixed(2)}% a year. ${tl.pv<0&&tl.net>0?"In today's money the early shortfalls outweigh the later surpluses":tl.pv<tl.net&&tl.net>0?`R ${sp(tl.net-tl.pv)} less than the raw total`:""}`:"No discounting at 0%";
-  const di=$("ie-disc"); if(di!==document.activeElement) di.value=num(S.targets.discountRate);
-  const box=$("ieChart"), fig=$("figIE");
-  const W=Math.max(300,box.clientWidth||600), narrow=W<520;
+  return [
+    c1,
+    [topC,tl.topUp===0?"R 0":rand(tl.topUp),tl.topUp===0?"The deal never needs money from your pocket":"Total of every shortfall year you'd fund yourself"],
+    [netC,rand(tl.net),`${compactR(tl.income)} rent in, ${compactR(tl.expenses)} costs out${bf&&bf>1&&bf<=20?` · bond-free from year ${bf}`:""}. Excludes the sale`],
+    [tl.pv>=0?"good":"bad",rand(tl.pv),tl.discRate>0?`What those 20 years of cash are worth today at ${tl.discRate.toFixed(2)}% a year. ${tl.pv<0&&tl.net>0?"In today's money the early shortfalls outweigh the later surpluses":tl.pv<tl.net&&tl.net>0?`R ${sp(tl.net-tl.pv)} less than the raw total`:""}`:"No discounting at 0%"]
+  ];
+}
+// The 20-year income vs costs chart as SVG markup without its closing tag, plus the geometry the hover layer needs
+// (shared with the report, which closes it with "</svg>").
+const IE_COL={income:"var(--s3)",running:"var(--s2)",bond:"var(--s1)"};
+function ieLegendHtml(){ const COL=IE_COL; return `<span><i style="border-color:${COL.income}"></i>Rent collected</span><span><i style="border-color:${COL.running};border-top-width:8px;width:10px"></i>Running costs</span><span><i style="border-color:${COL.bond};border-top-width:8px;width:10px"></i>Bond repayment</span>`; }
+function ieChart(tl,W){
+  const rows=tl.rows, narrow=W<520;
   const padL=narrow?46:58, padR=10, top=24, bottom=28, H=narrow?240:290;
   const maxV=Math.max(...rows.map(r=>Math.max(r.income,r.expenses)));
   const ticks=niceTicks(0,maxV,5), yMax=ticks[ticks.length-1];
   const n=rows.length, band=(W-padL-padR)/n, bw=Math.max(4,band*0.62);
   const cx=i=>padL+band*i+band/2, y=v=>top+(1-v/yMax)*(H-top-bottom);
-  const COL={income:"var(--s3)",running:"var(--s2)",bond:"var(--s1)"};
-  $("ieLegend").innerHTML=`<span><i style="border-color:${COL.income}"></i>Rent collected</span><span><i style="border-color:${COL.running};border-top-width:8px;width:10px"></i>Running costs</span><span><i style="border-color:${COL.bond};border-top-width:8px;width:10px"></i>Bond repayment</span>`;
+  const COL=IE_COL;
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Rent collected against running costs and bond repayments over 20 years">`;
   ticks.forEach(t=>{ s+=`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="${t===0?"var(--axis)":"var(--grid)"}"/><text x="${padL-8}" y="${y(t)+4}" text-anchor="end">${compactR(t)}</text>`; });
   rows.forEach((r,i)=>{
@@ -1046,6 +1145,17 @@ function renderIE(d){
   s+=`<polyline fill="none" stroke="var(--surface)" stroke-width="5" stroke-linejoin="round" points="${rows.map((r,i)=>cx(i)+","+y(r.income)).join(" ")}"/>`;
   s+=`<polyline fill="none" stroke="${COL.income}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${rows.map((r,i)=>cx(i)+","+y(r.income)).join(" ")}"/>`;
   s+=`<circle cx="${cx(n-1)}" cy="${y(rows[n-1].income)}" r="4" fill="${COL.income}" stroke="var(--surface)" stroke-width="2"/>`;
+  return {s,padL,padR,top,bottom,H,n,band,cx,y,COL};
+}
+function renderIE(d){
+  const tl=timeline(d,20,S.targets.discountRate), rows=tl.rows, sum=ieSummary(tl);
+  const setA=(id,cls,txt)=>{ const el=$(id); el.className="a "+cls; el.textContent=txt; };
+  sum.forEach(([cls,a,sub],i)=>{ setA("ie"+(i+1)+"a",cls,a); $("ie"+(i+1)+"s").textContent=sub; });
+  const di=$("ie-disc"); if(di!==document.activeElement) di.value=num(S.targets.discountRate);
+  const box=$("ieChart"), fig=$("figIE");
+  const W=Math.max(300,box.clientWidth||600);
+  $("ieLegend").innerHTML=ieLegendHtml();
+  let {s,padL,padR,top,bottom,H,n,band,cx,y,COL}=ieChart(tl,W);
   s+=`<line class="xh" x1="0" x2="0" y1="${top}" y2="${H-bottom}" stroke="var(--text-2)" stroke-dasharray="3 3" visibility="hidden"/><g class="dots"></g><rect class="hitr" x="${padL}" y="${top}" width="${W-padL-padR}" height="${H-top-bottom}" fill="transparent"/></svg>`;
   box.innerHTML=s;
   const svg=box.querySelector("svg"), hit=svg.querySelector(".hitr"), xh=svg.querySelector(".xh"), dots=svg.querySelector(".dots");
@@ -1146,6 +1256,7 @@ function renderPortfolio(){
   if(S.mode==="loading"){ st.innerHTML=""; t.innerHTML=""; return; }
   const rs=new Map(S.props.map(p=>[p.id,full(p)]));
   const n=S.props.length, all=[...rs.values()];
+  S.reportSel.forEach(id=>{ if(!rs.has(id)) S.reportSel.delete(id); });
   const ys=all.map(r=>r.m.grossYield).filter(isFinite), tot=all.reduce((a,r)=>a+r.price,0), avgY=ys.length?ys.reduce((a,b)=>a+b,0)/ys.length:NaN;
   const pos=all.filter(r=>r.m.cfMonth>=0).length, best=all.reduce((b,r)=>!b||r.v.ratio>b.v.ratio?r:b,null);
   st.innerHTML=`<div class="stat"><span class="cap">Deals analysed</span><b>${n}</b><small>${S.props.filter(p=>p.inCompare).length} in comparison</small></div>
@@ -1156,7 +1267,7 @@ function renderPortfolio(){
   if(!n){ t.innerHTML=`<tbody><tr><td><div class="empty"><b>No deals yet</b><span>Analyse a deal and save it to build your portfolio.</span><button class="btn primary" type="button" id="emptyNew">Analyse a new deal</button></div></td></tr></tbody>`; $("emptyNew").addEventListener("click",newDeal); return; }
   const c=PCOLS.find(x=>x.k===S.sort.k)||PCOLS[PCOLS.length-1];
   const list=[...S.props].sort((a,b)=>{ const va=c.v(a,rs.get(a.id)), vb=c.v(b,rs.get(b.id)); return (va>vb?1:va<vb?-1:0)*S.sort.dir; });
-  let h=`<thead><tr>${PCOLS.map(x=>`<th class="${x.r?"r":""}" ${S.sort.k===x.k?`aria-sort="${S.sort.dir>0?"ascending":"descending"}"`:""}><button type="button" data-sort="${x.k}">${x.l}${S.sort.k===x.k?(S.sort.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}<th class="r">Compare</th></tr></thead><tbody>`;
+  let h=`<thead><tr>${PCOLS.map(x=>`<th class="${x.r?"r":""}" ${S.sort.k===x.k?`aria-sort="${S.sort.dir>0?"ascending":"descending"}"`:""}><button type="button" data-sort="${x.k}">${x.l}${S.sort.k===x.k?(S.sort.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}<th class="r">Compare</th><th class="r"><label class="toggle rsel-all" style="padding:3px 8px" title="Select all for the report"><input type="checkbox" id="rselAll" ${n&&S.props.every(p=>S.reportSel.has(p.id))?"checked":""}> Report</label></th></tr></thead><tbody>`;
   list.forEach(p=>{
     const r=rs.get(p.id);
     h+=`<tr data-open="${esc(p.id)}">
@@ -1168,35 +1279,20 @@ function renderPortfolio(){
       <td class="r ${r.m.cfStorm<0?"bad":"good"}">${rand(r.m.cfStorm)}</td>
       <td class="r">${rand(r.cashIn)}</td><td class="r" style="font-family:var(--sans);color:var(--muted)">${ago(p.updated||p.created)}</td>
       <td class="r"><label class="toggle" style="padding:3px 8px" data-stop><input type="checkbox" data-cmp="${esc(p.id)}" ${p.inCompare?"checked":""} ${S.readOnly?"disabled":""}><span class="sw" style="background:${p.inCompare?col(p):"var(--line-2)"}"></span></label></td>
+      <td class="r" data-stop><input type="checkbox" class="rsel" data-rsel="${esc(p.id)}" aria-label="Include ${esc(p.name||"Untitled")} in the investor report" ${S.reportSel.has(p.id)?"checked":""}></td>
     </tr>`;
   });
   t.innerHTML=h+"</tbody>";
   t.querySelectorAll("[data-sort]").forEach(b=>b.addEventListener("click",()=>{ const k=b.dataset.sort; S.sort = S.sort.k===k?{k,dir:-S.sort.dir}:{k,dir:(k==="name"||k==="price"||k==="cash")?1:-1}; renderPortfolio(); }));
   t.querySelectorAll("tbody tr[data-open]").forEach(tr=>tr.addEventListener("click",e=>{ if(e.target.closest("[data-stop]")) return; S.cur=tr.dataset.open; resetCustom(); go("analyse"); }));
   t.querySelectorAll("[data-cmp]").forEach(cb=>cb.addEventListener("change",()=>{ if(!toggleCompare(cb.dataset.cmp,cb.checked)) cb.checked=false; renderPortfolio(); }));
+  t.querySelectorAll("[data-rsel]").forEach(cb=>cb.addEventListener("change",()=>{ if(cb.checked) S.reportSel.add(cb.dataset.rsel); else S.reportSel.delete(cb.dataset.rsel); renderTop(); const all=$("rselAll"); if(all) all.checked=S.props.every(p=>S.reportSel.has(p.id)); }));
+  const allBox=$("rselAll"); if(allBox) allBox.addEventListener("change",()=>{ if(allBox.checked) S.props.forEach(p=>S.reportSel.add(p.id)); else S.reportSel.clear(); renderPortfolio(); renderTop(); });
 }
 
-/* ================= COMPARE ================= */
-function renderCompare(){
-  const chips=$("chips");
-  if(S.mode==="loading"){ chips.innerHTML=""; return; }
-  const cnt=S.props.filter(p=>p.inCompare).length;
-  chips.innerHTML=S.props.length?[...S.props].sort((a,b)=>(a.created||0)-(b.created||0)).map(p=>`<button type="button" class="chip-t" data-id="${esc(p.id)}" aria-pressed="${!!p.inCompare}" ${(!p.inCompare&&cnt>=MAX_CMP)||S.readOnly?"disabled":""}><span class="box">${p.inCompare?"✓":""}</span>${p.inCompare?`<i class="sw" style="background:${col(p)}"></i>`:""}${esc(p.name||"Untitled")}</button>`).join(""):`<span style="color:var(--muted)">Save some deals first.</span>`;
-  chips.querySelectorAll(".chip-t").forEach(b=>b.addEventListener("click",()=>{ const p=S.props.find(x=>x.id===b.dataset.id); if(toggleCompare(p.id,!p.inCompare)){ renderTop(); renderCompare(); } }));
-  const props=S.props.filter(p=>p.inCompare).sort((a,b)=>(a.created||0)-(b.created||0));
-  const L=$("leaders"), t=$("cmp");
-  if(props.length<2){ L.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Pick at least two deals</b><span>Select deals above to put them side by side.</span></div>`; $("cmpPanel").hidden=true; $("cmpCharts").hidden=true; return; }
-  $("cmpPanel").hidden=false; $("cmpCharts").hidden=false;
-  const rs={}; props.forEach(p=>rs[p.id]=full(p));
-  const lead=(label,score,show)=>{ let best=null,bs=-Infinity; props.forEach(p=>{ const s=score(rs[p.id]); if(s>bs){bs=s;best=p;} }); return `<div class="lead"><span class="cap">${label}</span><span class="who"><i class="sw" style="background:${col(best)}"></i>${esc(best.name||"Untitled")}</span><span class="v">${show(rs[best.id])}</span></div>`; };
-  L.innerHTML=[
-    lead("Highest grade",r=>r.v.ratio*1000+(isFinite(r.m.coc)?r.m.coc:0)/1000,r=>`Grade ${r.g} · ${r.v.pass}/${r.v.n} tests`),
-    lead("Most cash flow",r=>r.m.cfMonth,r=>rand(r.m.cfMonth)+" /m"),
-    lead("Best cash-on-cash",r=>isFinite(r.m.coc)?r.m.coc:(r.m.coc>0?1e9:-1e9),r=>fmt("pct1",r.m.coc)),
-    lead("Most resilient",r=>r.m.cfStorm,r=>rand(r.m.cfStorm)+" /m in the storm"),
-    lead("Least cash required",r=>-r.cashIn,r=>rand(r.cashIn))
-  ].join("");
-  let h=`<thead><tr><th>Metric · target</th>${props.map(p=>`<th><button type="button" data-open="${esc(p.id)}"><i class="sw" style="background:${col(p)}"></i>${esc(p.name||"Untitled")}</button></th>`).join("")}</tr></thead><tbody>`;
+// Rows of the side-by-side table (grade, then every CMP_ROWS group) for these deals (shared with the report).
+function cmpBody(props,rs){
+  let h="";
   h+=`<tr><th scope="row">Grade<small>Share of tests met</small></th>${props.map(p=>{ const r=rs[p.id]; return `<td><span class="gchip g-${r.g}">${r.g}</span> <span style="font-size:12px;color:var(--text-2);margin-left:6px">${verdictText(r.v)}</span></td>`; }).join("")}</tr>`;
   CMP_ROWS.forEach(g=>{
     h+=`<tr class="grp"><th colspan="${props.length+1}">${g.g}<span>${g.gs}</span></th></tr>`;
@@ -1218,6 +1314,30 @@ function renderCompare(){
       h+=`</tr>`;
     });
   });
+  return h;
+}
+/* ================= COMPARE ================= */
+function renderCompare(){
+  const chips=$("chips");
+  if(S.mode==="loading"){ chips.innerHTML=""; return; }
+  const cnt=S.props.filter(p=>p.inCompare).length;
+  chips.innerHTML=S.props.length?[...S.props].sort((a,b)=>(a.created||0)-(b.created||0)).map(p=>`<button type="button" class="chip-t" data-id="${esc(p.id)}" aria-pressed="${!!p.inCompare}" ${(!p.inCompare&&cnt>=MAX_CMP)||S.readOnly?"disabled":""}><span class="box">${p.inCompare?"✓":""}</span>${p.inCompare?`<i class="sw" style="background:${col(p)}"></i>`:""}${esc(p.name||"Untitled")}</button>`).join(""):`<span style="color:var(--muted)">Save some deals first.</span>`;
+  chips.querySelectorAll(".chip-t").forEach(b=>b.addEventListener("click",()=>{ const p=S.props.find(x=>x.id===b.dataset.id); if(toggleCompare(p.id,!p.inCompare)){ renderTop(); renderCompare(); } }));
+  const props=S.props.filter(p=>p.inCompare).sort((a,b)=>(a.created||0)-(b.created||0));
+  const L=$("leaders"), t=$("cmp");
+  if(props.length<2){ L.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Pick at least two deals</b><span>Select deals above to put them side by side.</span></div>`; $("cmpPanel").hidden=true; $("cmpCharts").hidden=true; return; }
+  $("cmpPanel").hidden=false; $("cmpCharts").hidden=false;
+  const rs={}; props.forEach(p=>rs[p.id]=full(p));
+  const lead=(label,score,show)=>{ let best=null,bs=-Infinity; props.forEach(p=>{ const s=score(rs[p.id]); if(s>bs){bs=s;best=p;} }); return `<div class="lead"><span class="cap">${label}</span><span class="who"><i class="sw" style="background:${col(best)}"></i>${esc(best.name||"Untitled")}</span><span class="v">${show(rs[best.id])}</span></div>`; };
+  L.innerHTML=[
+    lead("Highest grade",r=>r.v.ratio*1000+(isFinite(r.m.coc)?r.m.coc:0)/1000,r=>`Grade ${r.g} · ${r.v.pass}/${r.v.n} tests`),
+    lead("Most cash flow",r=>r.m.cfMonth,r=>rand(r.m.cfMonth)+" /m"),
+    lead("Best cash-on-cash",r=>isFinite(r.m.coc)?r.m.coc:(r.m.coc>0?1e9:-1e9),r=>fmt("pct1",r.m.coc)),
+    lead("Most resilient",r=>r.m.cfStorm,r=>rand(r.m.cfStorm)+" /m in the storm"),
+    lead("Least cash required",r=>-r.cashIn,r=>rand(r.cashIn))
+  ].join("");
+  let h=`<thead><tr><th>Metric · target</th>${props.map(p=>`<th><button type="button" data-open="${esc(p.id)}"><i class="sw" style="background:${col(p)}"></i>${esc(p.name||"Untitled")}</button></th>`).join("")}</tr></thead><tbody>`;
+  h+=cmpBody(props,rs);
   t.innerHTML=h+"</tbody>";
   t.querySelectorAll("thead [data-open]").forEach(b=>b.addEventListener("click",()=>{ S.cur=b.dataset.open; resetCustom(); go("analyse"); }));
   renderBars(props,rs);
@@ -1273,6 +1393,114 @@ function initNotice(){
   $("noticeOk").addEventListener("click",()=>{ $("notice").hidden=true; try{ localStorage.setItem(NOTICE_KEY,"1"); }catch(e){} });
 }
 initNotice();
+
+/* ================= INVESTOR REPORT ================= */
+// A printable document for one deal or several. Built only from the engine and the saved deals; printing to PDF
+// happens in the browser, so nothing leaves the device.
+const REPORT_KEY="buybox-report";
+function loadReportMeta(){ try{ const v=JSON.parse(localStorage.getItem(REPORT_KEY))||{}; return {by:String(v.by||"").slice(0,80),for:String(v.for||"").slice(0,80)}; }catch(e){ return {by:"",for:""}; } }
+let reportMeta=loadReportMeta();
+$("rpt-by").value=reportMeta.by; $("rpt-for").value=reportMeta.for;
+[["rpt-by","by"],["rpt-for","for"]].forEach(([id,k])=>$(id).addEventListener("input",e=>{
+  reportMeta[k]=e.target.value.slice(0,80); try{ localStorage.setItem(REPORT_KEY,JSON.stringify(reportMeta)); }catch(err){}
+  const el=$("rptMeta"); if(el) el.innerHTML=reportMetaHtml();
+}));
+$("rptPrint").addEventListener("click",()=>window.print());
+$("rptBack").addEventListener("click",()=>go(S.report.back||"portfolio"));
+function openReport(ids,back){ S.report={ids:[...ids],back}; go("report"); }
+function reportItems(){
+  return S.report.ids.map(id=>{ const p=id==="draft"?S.draft:S.props.find(x=>x.id===id); return p?{id,p,r:full(p),draft:id==="draft"}:null; }).filter(Boolean);
+}
+const rDate=()=>new Date().toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"});
+function reportMetaHtml(){
+  return `<span>Date <b>${esc(rDate())}</b></span>${reportMeta.by?`<span>Prepared by <b>${esc(reportMeta.by)}</b></span>`:""}${reportMeta.for?`<span>Prepared for <b>${esc(reportMeta.for)}</b></span>`:""}`;
+}
+const rTile=(label,val,cls,sub)=>`<div><span>${label}</span><b class="${cls||""}">${val}</b>${sub?`<small>${sub}</small>`:""}</div>`;
+const cfCls=v=>v<0?"bad":"good";
+function rptCover(items){
+  const T=S.targets, tests=[...TESTS.screens.rows,...TESTS.returns.rows];
+  return `<section class="rpt-cover">
+    <div class="rpt-brand">${LOGO}Buy Box</div>
+    <div><span class="cap">Investor report</span><h1 class="rpt-title">${items.length===1?esc(items[0].p.name||"Untitled"):`${items.length} rental property deals`}</h1></div>
+    <div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div>
+    <div class="tablebox"><table class="rpt-t" data-r="deals"><thead><tr><th>#</th><th>Deal</th><th>Area</th><th>Grade</th><th class="num">Cash flow /m</th><th class="num">Cash required</th></tr></thead><tbody>${items.map((it,i)=>`<tr><td>${i+1}</td><td><i class="sw" style="background:${it.draft?"var(--muted)":col(it.p)}"></i> <b>${esc(it.p.name||"Untitled")}</b>${it.draft?" <small>(draft, not saved)</small>":""}</td><td>${esc(it.p.area||"–")}</td><td><span class="gchip g-${it.r.g}">${it.r.g}</span></td><td class="num ${cfCls(it.r.m.cfMonth)}">${rand(it.r.m.cfMonth)}</td><td class="num">${rand(it.r.cashIn)}</td></tr>`).join("")}</tbody></table></div>
+    <div><h3>Basis of this report</h3>
+      <p>Each deal is graded A to E against the targets below: a test met scores 1 point, a test that is close scores half. A = 90%+, B = 75%+, C = 55%+, D = 35%+, E below that. Prime lending rate used for new deals: <b>${pct(T.prime,2)}</b>. Built-in figures (prime rate and SARS transfer duty table) last checked ${esc(MARKET_CHECKED.long)}.</p>
+      <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.map(row=>`<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td></tr>`).join("")}</tbody></table></div>
+    </div>
+  </section>`;
+}
+function rptSummary(items){
+  const rs={}, props=items.map(it=>{ rs[it.id]=it.r; return {...it.p,id:it.id}; });
+  const sum=f=>items.reduce((a,it)=>a+f(it.r),0), ys=items.map(it=>it.r.m.grossYield).filter(isFinite);
+  let h=`<section class="rpt-deal" data-r="summary"><span class="cap">Portfolio summary</span><h2>${items.length} deals together</h2>
+    <div class="rpt-kpis" data-r="totals">${rTile("Combined price",rand(sum(r=>r.price)))}${rTile("Total cash required",rand(sum(r=>r.cashIn)))}${rTile("Combined cash flow",rand(sum(r=>r.m.cfMonth)),cfCls(sum(r=>r.m.cfMonth)),"per month, year 1")}${rTile("In a perfect storm",rand(sum(r=>r.m.cfStorm)),cfCls(sum(r=>r.m.cfStorm)),"per month")}
+    ${rTile("Average gross yield",fmt("pct1",ys.length?ys.reduce((a,b)=>a+b,0)/ys.length:NaN))}${rTile("Cash-flow positive",`${items.filter(it=>it.r.m.cfMonth>=0).length} / ${items.length}`,"","year 1, after the bond")}${rTile("Combined bond",rand(sum(r=>r.loan)))}${rTile("Combined repayments",rand(sum(r=>r.pmt)),"","per month")}</div>`;
+  for(let i=0;i<props.length;i+=3){
+    const chunk=props.slice(i,i+3);
+    h+=`<h3>Side by side${props.length>3?` (${i+1}–${i+chunk.length} of ${props.length})`:""}</h3><div class="tablebox"><table class="cmp" data-r="cmp"><thead><tr><th>Metric · target</th>${chunk.map(p=>`<th><i class="sw" style="background:${p.id==="draft"?"var(--muted)":col(p)}"></i> ${esc(p.name||"Untitled")}</th>`).join("")}</tr></thead><tbody>${cmpBody(chunk,rs)}</tbody></table></div>`;
+  }
+  return h+`</section>`;
+}
+function rptDeal(it,i,n){
+  const p={...DEFAULTS,...it.p}, r=it.r, v=r.v, c=r.costs, M=x=>rand(x/12), A=x=>rand(x);
+  const line=(label,a,cls,sub)=>`<tr${cls==="tot"?` class="tot"`:""}><th>${label}${sub?`<small>${sub}</small>`:""}</th><td class="num">${M(a)}</td><td class="num">${A(a)}</td></tr>`;
+  let h=`<section class="rpt-deal" data-r="deal" data-id="${esc(it.id)}">
+    <header class="rpt-dh"><div><span class="cap">Deal ${i+1} of ${n}</span><h2>${esc(p.name||"Untitled")}</h2>
+      <p><i class="sw" style="background:${it.draft?"var(--muted)":col(it.p)}"></i> ${esc(p.area||"No area set")} · ${p.newDev?"New development":"Resale"}${it.draft?" · Draft, not saved":""}</p></div>
+      <div class="rpt-grade"><span class="gchip g-${r.g}" data-r="grade">${r.g}</span><b class="${v.cls==="pass"?"good":v.cls==="close"?"warn":"bad"}">${verdictText(v)}</b><small>${v.pass} of ${v.n} tests met · ${v.close} close</small></div></header>
+    <div class="rpt-kpis" data-r="kpis">${rTile("Price",rand(r.price))}${rTile("Cash required",rand(r.cashIn))}${rTile("Cash flow",rand(r.m.cfMonth),cfCls(r.m.cfMonth),"per month, year 1")}${rTile("Cash-on-cash",fmt("pct1",r.m.coc))}
+    ${rTile("Gross yield",fmt("pct1",r.m.grossYield))}${rTile("Cap rate",fmt("pct1",r.m.capRate))}${rTile("Debt cover (DSCR)",fmt("x",r.m.dscr))}${rTile(r.H+"-year return (IRR)",fmt("pct1",r.m.irr))}</div>
+    <div class="rpt-cols"><div><h3>Income and running costs</h3><div class="tablebox"><table class="rpt-t" data-r="ie"><thead><tr><th></th><th class="num">Monthly</th><th class="num">Annual</th></tr></thead><tbody>
+      ${line("Rent",c.rentA)}${c.otherIncomeA?line("Other income",c.otherIncomeA):""}${line("Vacancy",-c.vacancyA,"",`${num(p.vacancy)}% of the year empty`)}${line("Income collected",r.effA,"tot")}
+      ${line("Levy",-c.levyA)}${line("Rates and taxes",-c.ratesA)}${line("Insurance",-c.insuranceA)}${c.otherExpA?line("Other costs",-c.otherExpA):""}${line("Management",-c.mgmtA,"",`${num(p.mgmt)}% of income collected`)}${line("Maintenance",-c.maintA,"",`${num(p.maint)}% of rent`)}
+      ${line("Net operating income",r.noi,"tot")}${line("Bond repayment",-r.debtA)}
+      <tr class="tot"><th>Cash flow</th><td class="num ${cfCls(r.cfA)}">${M(r.cfA)}</td><td class="num ${cfCls(r.cfA)}">${A(r.cfA)}</td></tr>
+      ${r.taxR>0?`<tr><th>After tax<small>At ${Math.round(r.taxR*100)}% on NOI less bond interest</small></th><td class="num ${cfCls(r.afterTaxCfM)}">${rand(r.afterTaxCfM)}</td><td class="num ${cfCls(r.afterTaxCfM)}">${rand(r.afterTaxCfM*12)}</td></tr>`:""}
+    </tbody></table></div></div>
+    <div><h3>Cash needed and the bond</h3><div class="tablebox"><table class="rpt-t" data-r="cash"><tbody>
+      <tr><th>Deposit<small>${num(p.deposit)}% of the price</small></th><td class="num">${rand(r.deposit)}</td></tr>
+      <tr><th>Transfer duty${p.newDev?"<small>None on a new development</small>":""}</th><td class="num">${rand(r.duty)}</td></tr>
+      <tr><th>Attorney and bond fees${r.legalBlank&&r.legal>0?"<small>Estimate; get a quote</small>":""}</th><td class="num">${rand(r.legal)}</td></tr>
+      <tr><th>Repairs upfront</th><td class="num">${rand(r.reno)}</td></tr>
+      <tr class="tot"><th>Cash required</th><td class="num">${rand(r.cashIn)}</td></tr>
+      <tr><th>Bond amount</th><td class="num">${rand(r.loan)}</td></tr>
+      <tr><th>Interest rate</th><td class="num">${r.loan>0?pct(r.ratePct,2):"–"}</td></tr>
+      <tr><th>Term</th><td class="num">${r.loan>0?Math.round(r.termM/12)+" years":"–"}</td></tr>
+      <tr class="tot"><th>Monthly repayment</th><td class="num">${rand(r.pmt)}</td></tr>
+      ${p.marketValue!==""&&num(p.marketValue)>0?`<tr><th>Market value</th><td class="num">${rand(num(p.marketValue))}</td></tr>`:""}
+    </tbody></table></div></div></div>
+    <h3>The ten tests</h3><div class="tablebox"><table class="rpt-t" data-r="tests"><thead><tr><th>Test</th><th class="num">Value</th><th class="num">Target</th><th>Result</th></tr></thead><tbody>`;
+  [...TESTS.screens.rows,...TESTS.returns.rows].forEach(row=>{
+    const val=r.m[row.k], t=S.targets[row.k], st=status(row,val,t);
+    h+=`<tr data-k="${row.k}"><th>${row.label}<small>${row.sub}</small></th><td class="num">${row.k==="discount"&&val==null?"–":fmt(row.f,val)}</td><td class="num">${tgtText(row,t)}</td><td><span class="pill ${st}">${st==="pass"?"Meets":st==="close"?"Close":st==="fail"?"Misses":"n/a"}</span></td></tr>`;
+  });
+  h+=`</tbody></table></div>
+    <h3>Stress test</h3><p>Each scenario re-runs the whole deal with one thing made worse.</p><div class="tablebox"><table class="rpt-t" data-r="scen"><thead><tr><th>Scenario</th><th class="num">Cash flow /m</th><th class="num">CoC</th><th class="num">DSCR</th><th class="num">IRR</th><th>Grade</th></tr></thead><tbody>
+    ${scenarioRows(it.p).map(({s,x})=>`<tr data-k="${s.k}"><th>${s.label}<small>${s.sub}</small></th><td class="num ${cfCls(x.m.cfMonth)}">${rand(x.m.cfMonth)}</td><td class="num">${fmt("pct1",x.m.coc)}</td><td class="num">${fmt("x",x.m.dscr)}</td><td class="num">${fmt("pct1",x.m.irr)}</td><td><span class="gchip g-${x.g}">${x.g}</span></td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="rpt-cards" data-r="breaks">${breakCards(it.p,r).map(([st,q,a,sub])=>`<div><span>${esc(q)}</span><b class="${st}">${esc(a)}</b><small>${esc(sub)}</small></div>`).join("")}</div>`;
+  const tl=timeline(it.p,20,S.targets.discountRate), sm=ieSummary(tl), labels=["Rent covers all costs","Cash you top up","Net over 20 years","Worth today"];
+  h+=`<h3>The next 20 years</h3><div class="rpt-cards c4" data-r="ie20">${sm.map(([st,a,sub],k)=>`<div><span>${labels[k]}</span><b class="${st}">${esc(a)}</b><small>${esc(sub)}</small></div>`).join("")}</div>
+    <div class="rpt-legend">${ieLegendHtml()}</div><div class="rpt-chart">${ieChart(tl,860).s}</svg></div>
+    <div class="tablebox"><table class="rpt-t" data-r="years"><thead><tr><th>Year</th><th class="num">Rent collected</th><th class="num">Running costs</th><th class="num">Bond</th><th class="num">Net</th><th class="num">Running total</th></tr></thead><tbody>${tl.rows.map(y=>`<tr><th>${y.y}</th><td class="num">${rand(y.income)}</td><td class="num">${rand(y.running)}</td><td class="num">${rand(y.bond)}</td><td class="num ${cfCls(y.net)}">${rand(y.net)}</td><td class="num">${rand(y.cum)}</td></tr>`).join("")}</tbody></table></div>
+    <h3>Assumptions</h3><div class="tablebox"><table class="rpt-t" data-r="assume"><tbody>
+      <tr><th>Rent growth</th><td class="num">${num(p.rentGrowth)}% a year</td><th>Hold period</th><td class="num">${r.H} years</td></tr>
+      <tr><th>Cost growth</th><td class="num">${num(p.costGrowth)}% a year</td><th>Selling costs</th><td class="num">${num(p.sellCost)}%</td></tr>
+      <tr><th>Capital growth</th><td class="num">${num(p.capGrowth)}% a year</td><th>Tax rate</th><td class="num">${r.taxR>0?Math.round(r.taxR*100)+"%":"Not set"}</td></tr>
+      <tr><th>Net gain if sold</th><td class="num">${rand(r.m.netGain)}</td><th>Break-even rent</th><td class="num">${rand(r.m.breakEven)}</td></tr>
+    </tbody></table></div>
+    ${String(p.notes||"").trim()?`<h3>Notes</h3><p class="rpt-notes">${esc(String(p.notes).trim())}</p>`:""}
+    <p class="rpt-dfoot">Figures for ${esc(p.name||"this deal")} are based only on the numbers entered on ${esc(rDate())}. A calculator, not financial advice.</p>
+  </section>`;
+  return h;
+}
+function renderReport(){
+  const doc=$("reportDoc"), items=reportItems();
+  if(!items.length){ doc.innerHTML=`<div class="empty"><b>No deals chosen for a report</b><span>Tick deals in the Report column on Portfolio, or open a deal and choose Investor report.</span><a class="btn primary" href="#portfolio">Go to Portfolio</a></div>`; return; }
+  doc.innerHTML=rptCover(items)+(items.length>1?rptSummary(items):"")+items.map((it,i)=>rptDeal(it,i,items.length)).join("")+
+    `<footer class="rpt-end"><p><b>Not financial advice.</b> This report was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. Interest rates, transfer duty, fees, rents and costs change; built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Check every number and speak to qualified professionals before you buy. See the Terms &amp; privacy page on the Buy Box site.</p></footer>`;
+}
 
 /* ================= charts ================= */
 function niceTicks(min,max,count){
