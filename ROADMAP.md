@@ -33,7 +33,7 @@ Only once people ask for it, because it brings a backend, privacy obligations an
 3. **Light and dark themes.** Dark stays the default; a switch in the sidebar and the mobile top bar changes to a light theme and remembers the choice. Both themes are contrast-checked in the tests.
 4. **Legal clean-up.** Made-up example deals instead of real developments, no real investors named, a Terms & privacy page, an accurate note on what GitHub Pages logs, and "last checked" dates on the prime rate and duty table.
 
-5. **Investor reports.** A printable report for one deal (from Analyse) or any number of deals ticked on Portfolio (or the Compare set), saved as PDF from the browser's print screen. Cover with optional Prepared by/for, a portfolio summary, and per deal: income and costs, cash and bond, the ten tests, stress test, breaking points, 20-year view, assumptions and notes.
+5. **Investor pack.** A designed, printable pack for one deal (from Analyse) or any number of deals (Portfolio tick boxes or the Compare set), saved as PDF from the browser: a dark brass cover, an executive summary, a portfolio sheet, one sheet per deal with a cash-flow waterfall, "where every R100 goes", the ten tests, stress test and 20-year view, and plain-language commentary on every section (never advice), then the basis and disclaimer.
 
 ## Future offers (not a priority now)
 

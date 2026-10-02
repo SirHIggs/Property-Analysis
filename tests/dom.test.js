@@ -13,6 +13,8 @@ const server=http.createServer((q,r)=>{
 });
 const src=html.split('/*ENGINE-START*/')[1].split('/*ENGINE-END*/')[0];
 const E=new Function(src+';return {DEFAULTS,DEFAULT_TARGETS,analyse,SCENARIOS,scenario,breakPoints,verdict,status,timeline};')();
+const narrSrc=html.split('/*NARRATIVE-START*/')[1].split('/*NARRATIVE-END*/')[0];
+const NN=new Function(src+narrSrc+';return {dealContext,narrateDeal,narratePortfolio};')();
 const T=E.DEFAULT_TARGETS;
 const EX=require('../data/deals.json').deals; // a first visit starts with these example deals
 
@@ -271,6 +273,27 @@ function rnd(i){
       ie20:t('[data-r=ie20] b').map(b=>b.textContent), title:document.querySelector('#crumbs h1').textContent };
   });
   ok(rp.n===1,'report from Analyse has one deal',rp.n);
+  // the pack: dark cover first, executive summary next, commentary on every section, visuals that add up
+  const pk=await p.evaluate(()=>{
+    const sheets=[...document.querySelectorAll('#reportDoc .sheet')], cover=sheets[0], deal=document.querySelector('[data-r=deal]');
+    const wf=[...deal.querySelectorAll('[data-r=waterfall] rect[data-step]')].map(r=>Number(r.dataset.v));
+    return { first:cover.dataset.r, second:sheets[1].dataset.r, last:sheets[sheets.length-1].dataset.r, coverBg:getComputedStyle(cover).getPropertyValue('--bg').trim(), docBg:getComputedStyle(document.getElementById('reportDoc')).getPropertyValue('--bg').trim(),
+      exec:document.querySelector('[data-r=exec-headline]').textContent, dealHl:deal.querySelector('[data-r=deal-headline]').textContent,
+      notes:[...deal.querySelectorAll('[data-note]')].map(n=>n.dataset.note), noteText:[...deal.querySelectorAll('[data-note] .txt')].map(n=>n.textContent),
+      wf, split:[...deal.querySelectorAll('[data-r=split] .bar i')].map(i=>Number(i.dataset.v)),
+      serif:document.fonts.check('40px "Instrument Serif"'), coverPage:getComputedStyle(cover).page, dealPage:getComputedStyle(deal).page };
+  });
+  const n1=NN.narrateDeal(NN.dealContext(await deal('ex-townhouse'),TT));
+  ok(pk.first==='cover'&&pk.second==='exec'&&pk.last==='method','pack order: cover, executive summary, …, basis',[pk.first,pk.second,pk.last].join());
+  ok(pk.coverBg.toUpperCase()==='#0A0F0E'&&pk.docBg.toUpperCase()==='#F6F3EC','dark cover on light paper',pk.coverBg+' / '+pk.docBg);
+  ok(pk.exec===n1.headline&&pk.dealHl===n1.headline,'executive summary and deal headline match the commentary module',pk.exec);
+  ok(['cashFlow','cash','returns','tests','stress','offer','longTerm'].every(k=>pk.notes.includes(k)),'commentary on every section',pk.notes.join());
+  ok(pk.noteText.includes(n1.sections.cashFlow.text),'cash flow commentary shown in full','');
+  ok(pk.wf.length===6&&Math.abs(pk.wf[0]+pk.wf[1]+pk.wf[2]-pk.wf[3])<1e-6&&Math.abs(pk.wf[3]+pk.wf[4]-pk.wf[5])<1e-6,'waterfall steps add up',JSON.stringify(pk.wf));
+  cmpR(String(pk.wf[5]),r1.m.cfMonth,'waterfall ends at the cash flow');
+  ok(n1.split&&pk.split.reduce((a,b)=>a+b,0)===(n1.split.left>0?100:100-n1.split.left),'R100 bar shows the whole split',JSON.stringify(pk.split));
+  ok(pk.serif,'serif display font loads','');
+  ok(pk.coverPage==='cover'&&pk.dealPage==='report','full-bleed cover page, then report pages',pk.coverPage+' / '+pk.dealPage);
   ok(rp.title==='Investor report · 1 deal','report title',rp.title);
   ok(rp.grade===grade(r1.v),'report grade',rp.grade+' vs '+grade(r1.v));
   cmpR(rp.kpis[0],r1.price,'report price'); cmpR(rp.kpis[1],r1.cashIn,'report cash required'); cmpR(rp.kpis[2],r1.m.cfMonth,'report cash flow');
@@ -296,10 +319,12 @@ function rnd(i){
   await p.click('#rptSel'); await p.waitForTimeout(700);
   const ids2=['ex-below-value','ex-townhouse'], ds2=[], rs2=[];
   for(const id of ids2){ const d={...E.DEFAULTS,...(await deal(id))}; ds2.push(d); const r=E.analyse(d); r.storm=E.scenario(d,'storm').m.cfMonth; rs2.push(r); }
-  const mp=await p.evaluate(()=>({ deals:[...document.querySelectorAll('[data-r=deal]')].map(e=>e.dataset.id), cover:document.querySelectorAll('[data-r=deals] tbody tr').length,
+  const mp=await p.evaluate(()=>({ deals:[...document.querySelectorAll('[data-r=deal]')].map(e=>e.dataset.id), cover:document.querySelectorAll('[data-r=deals] .dcard').length, exec:document.querySelector('[data-r=exec-headline]').textContent,
     totals:[...document.querySelectorAll('[data-r=totals] b')].map(b=>b.textContent), cmpCols:[...document.querySelectorAll('[data-r=cmp] thead th')].length-1 }));
   ok(JSON.stringify(mp.deals)===JSON.stringify(ids2),'one section per selected deal, in order',JSON.stringify(mp.deals));
-  ok(mp.cover===2,'cover lists the selected deals',mp.cover);
+  ok(mp.cover===2,'executive summary lists the selected deals',mp.cover);
+  const ctx2=[]; for(const id of ids2) ctx2.push(NN.dealContext(await deal(id),TT));
+  ok(mp.exec===NN.narratePortfolio(ctx2).headline,'executive summary headline matches the commentary module',mp.exec);
   ok(mp.cmpCols===2,'summary compares the selected deals',mp.cmpCols);
   const sum2=f=>rs2.reduce((a,r)=>a+f(r),0);
   cmpR(mp.totals[0],sum2(r=>r.price),'report combined price'); cmpR(mp.totals[1],sum2(r=>r.cashIn),'report total cash');
@@ -314,6 +339,7 @@ function rnd(i){
     return {side:vis('.side'),tabbar:vis('.tabbar'),bar:vis('.rpt-bar'),top:vis('.topbar'),doc:vis('#reportDoc'),breaks:[...document.querySelectorAll('.rpt-deal')].map(e=>getComputedStyle(e).breakBefore)}; });
   ok(!pr2.side&&!pr2.tabbar&&!pr2.bar&&!pr2.top&&pr2.doc,'printing shows only the report',JSON.stringify(pr2));
   ok(pr2.breaks.length===3&&pr2.breaks.every(b=>b==='page'),'summary and each deal start a new page',JSON.stringify(pr2.breaks));
+  ok(await p.evaluate(()=>[...document.querySelectorAll('#reportDoc .sheet')].slice(1).every(e=>getComputedStyle(e).breakBefore==='page')),'every sheet after the cover starts a new page','');
   await p.emulateMedia({media:'screen'});
   // select all, including deals with hostile names from the import test
   await p.goto(BASE+'#portfolio'); await p.waitForTimeout(500);
