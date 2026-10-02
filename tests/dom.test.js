@@ -275,11 +275,12 @@ function rnd(i){
   ok(rp.n===1,'report from Analyse has one deal',rp.n);
   // the pack: dark cover first, executive summary next, commentary on every section, visuals that add up
   const pk=await p.evaluate(()=>{
+    const sp=t=>t.replace(/\u00a0/g,' '); // the pack keeps amounts on one line with no-break spaces
     const sheets=[...document.querySelectorAll('#reportDoc .sheet')], cover=sheets[0], deal=document.querySelector('[data-r=deal]');
     const wf=[...deal.querySelectorAll('[data-r=waterfall] rect[data-step]')].map(r=>Number(r.dataset.v));
     return { first:cover.dataset.r, second:sheets[1].dataset.r, last:sheets[sheets.length-1].dataset.r, coverBg:getComputedStyle(cover).getPropertyValue('--bg').trim(), docBg:getComputedStyle(document.getElementById('reportDoc')).getPropertyValue('--bg').trim(),
-      exec:document.querySelector('[data-r=exec-headline]').textContent, dealHl:deal.querySelector('[data-r=deal-headline]').textContent,
-      notes:[...deal.querySelectorAll('[data-note]')].map(n=>n.dataset.note), noteText:[...deal.querySelectorAll('[data-note] .txt')].map(n=>n.textContent),
+      exec:sp(document.querySelector('[data-r=exec-headline]').textContent), dealHl:sp(deal.querySelector('[data-r=deal-headline]').textContent),
+      notes:[...deal.querySelectorAll('[data-note]')].map(n=>n.dataset.note), noteText:[...deal.querySelectorAll('[data-note] .txt')].map(n=>sp(n.textContent)),
       wf, split:[...deal.querySelectorAll('[data-r=split] .bar i')].map(i=>Number(i.dataset.v)),
       serif:document.fonts.check('40px "Instrument Serif"'), coverPage:getComputedStyle(cover).page, dealPage:getComputedStyle(deal).page };
   });
@@ -294,6 +295,30 @@ function rnd(i){
   ok(n1.split&&pk.split.reduce((a,b)=>a+b,0)===(n1.split.left>0?100:100-n1.split.left),'R100 bar shows the whole split',JSON.stringify(pk.split));
   ok(pk.serif,'serif display font loads','');
   ok(pk.coverPage==='cover'&&pk.dealPage==='report','full-bleed cover page, then report pages',pk.coverPage+' / '+pk.dealPage);
+  // readability: no italics, a minimum text size (8pt printed; body 10pt, tables 9.5pt), dark greys, commentary closes its section
+  const rd=await p.evaluate(()=>{
+    const doc=document.getElementById('reportDoc'), all=[...doc.querySelectorAll('*')], px=e=>parseFloat(getComputedStyle(e).fontSize);
+    const own=e=>[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
+    const size=e=>{ if(e instanceof SVGTextElement||e instanceof SVGTextPathElement){ const svg=e.ownerSVGElement, vb=svg.viewBox.baseVal; return px(e)*(vb&&vb.width?svg.getBoundingClientRect().width/vb.width:1); } return px(e); };
+    const small=all.filter(e=>own(e)&&e.getClientRects().length&&size(e)<10.9).map(e=>(e.getAttribute('class')||e.tagName)+' '+size(e).toFixed(1));
+    const body=[...doc.querySelectorAll('.note .txt,.lede,.sw2 li,.rpt-notes')].filter(e=>px(e)<13.3).map(e=>e.className+' '+px(e));
+    const table=[...doc.querySelectorAll('.rpt-t td,.rpt-t tbody th')].filter(e=>px(e)<12.6).map(e=>e.className+' '+px(e));
+    const lum=h=>{ const c=h.replace('#','').match(/\w\w/g).map(x=>parseInt(x,16)/255).map(x=>x<=.03928?x/12.92:((x+.055)/1.055)**2.4); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
+    const cr=(el,a,b)=>{ const cs=getComputedStyle(el), x=lum(cs.getPropertyValue(a).trim()), y=lum(cs.getPropertyValue(b).trim()); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); };
+    const hero=doc.querySelector('.hero'), con={};
+    ['--text','--text-2','--muted'].forEach(t=>{ con['paper '+t]=cr(doc,t,'--surface'); con['dark band '+t]=cr(hero,t,'--surface'); });
+    const secs=[...doc.querySelectorAll('.psec')].filter(x=>x.querySelector(':scope>.note'));
+    return { italic:all.filter(e=>getComputedStyle(e).fontStyle!=='normal').map(e=>e.getAttribute('class')||e.tagName), small, body, table, con,
+      loose:[...doc.querySelectorAll('[data-r=deal] .note')].filter(n=>!n.closest('.psec')).map(n=>n.dataset.note),
+      notLast:secs.filter(x=>!x.lastElementChild.classList.contains('note')).map(x=>x.dataset.sec||x.querySelector('.kick').textContent) };
+  });
+  ok(rd.italic.length===0,'no italic text in the pack',rd.italic.slice(0,5).join());
+  ok(rd.small.length===0,'no pack text below 8pt',rd.small.slice(0,8).join(' | '));
+  ok(rd.body.length===0,'commentary and summaries at 10pt or more',rd.body.slice(0,5).join());
+  ok(rd.table.length===0,'table text at 9.5pt or more',rd.table.slice(0,5).join());
+  Object.entries(rd.con).forEach(([k,v])=>ok(v>=7,'pack contrast '+k,v.toFixed(2)));
+  ok(rd.loose.length===0,'every commentary box sits in its section',rd.loose.join());
+  ok(rd.notLast.length===0,'commentary closes its section',rd.notLast.join());
   ok(rp.title==='Investor report · 1 deal','report title',rp.title);
   ok(rp.grade===grade(r1.v),'report grade',rp.grade+' vs '+grade(r1.v));
   cmpR(rp.kpis[0],r1.price,'report price'); cmpR(rp.kpis[1],r1.cashIn,'report cash required'); cmpR(rp.kpis[2],r1.m.cfMonth,'report cash flow');
@@ -320,7 +345,7 @@ function rnd(i){
   await p.click('#rptSel'); await p.waitForTimeout(700);
   const ids2=['ex-below-value','ex-townhouse'], ds2=[], rs2=[];
   for(const id of ids2){ const d={...E.DEFAULTS,...(await deal(id))}; ds2.push(d); const r=E.analyse(d); r.storm=E.scenario(d,'storm').m.cfMonth; rs2.push(r); }
-  const mp=await p.evaluate(()=>({ deals:[...document.querySelectorAll('[data-r=deal]')].map(e=>e.dataset.id), cover:document.querySelectorAll('[data-r=deals] .dcard').length, exec:document.querySelector('[data-r=exec-headline]').textContent,
+  const mp=await p.evaluate(()=>({ deals:[...document.querySelectorAll('[data-r=deal]')].map(e=>e.dataset.id), cover:document.querySelectorAll('[data-r=deals] .dcard').length, exec:document.querySelector('[data-r=exec-headline]').textContent.replace(/\u00a0/g,' '),
     totals:[...document.querySelectorAll('[data-r=totals] b')].map(b=>b.textContent), cmpCols:[...document.querySelectorAll('[data-r=cmp] thead th')].length-1 }));
   ok(JSON.stringify(mp.deals)===JSON.stringify(ids2),'one section per selected deal, in order',JSON.stringify(mp.deals));
   ok(mp.cover===2,'executive summary lists the selected deals',mp.cover);
