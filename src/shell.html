@@ -1,7 +1,7 @@
 <title>Buy Box</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300..700&family=Inter:opsz,wght@14..32,300..700&display=swap">
 <style>
 /* Buy Box: a single committed dark product look (ledger green + brass), painted explicitly for every host theme. */
 :root,.rpt-dark{
@@ -18,7 +18,7 @@
   --glow-1:rgba(201,164,92,.075); --glow-2:rgba(25,158,112,.05); --glow-cover:rgba(201,164,92,.17); --sheet-shadow:rgba(0,0,0,.42);
   --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
   --side:236px;
 }
 /* Light theme: the same ledger-and-brass look on warm paper. Every text colour keeps at least 4.5:1 contrast and every
@@ -371,7 +371,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
    - spacing: --sp-1…--sp-8 = 4 8 12 16 24 32 48 64px. Paragraphs sit --sp-3 apart, blocks in a section --sp-5,
      sections --sp-7; a section is a label, its content, then its commentary;
    - no italics anywhere: emphasis comes from weight, size and colour. */
-.report-doc{--pk-display:var(--serif); --pk-text:var(--sans); --pk-num:var(--mono); --pk-num-ls:-.01em;
+.report-doc{--pk-display:var(--serif); --pk-text:"Inter",var(--sans); --pk-num:"Inter",var(--sans); --pk-num-ls:0;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
   --fs-label:11px; --fs-small:11.5px; --fs-table:13px; --fs-body:13.5px; --fs-lede:15.5px; --ls-caps:.1em;
   --muted:#4C5854; --text-2:#3A4642;
@@ -487,7 +487,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .rpt-cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--sp-5) var(--sp-6); align-items:start}
 .rpt-cols .kick{margin-bottom:var(--sp-3)}
 .rpt-t{width:100%; font-size:var(--fs-table); line-height:1.35}
-.rpt-t th,.rpt-t td{padding:var(--sp-2) var(--sp-2); border-bottom:1px solid var(--line); vertical-align:top}
+.rpt-t th,.rpt-t td{padding:calc(var(--sp-2) - 2px) var(--sp-2); border-bottom:1px solid var(--line); vertical-align:top}
 .rpt-t th:first-child{padding-left:0} .rpt-t td:last-child{padding-right:0}
 .rpt-t thead th{font-size:var(--fs-label); font-weight:600; letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--muted); border-bottom:1.5px solid var(--text); vertical-align:bottom}
 .rpt-t tbody th{font-weight:500; text-align:left}
@@ -501,7 +501,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .rpt-cards>div{border-top:2px solid var(--line-2); padding:var(--sp-3) 0 0; min-width:0}
 .rpt-cards span{display:block; font-size:12px; font-weight:500; color:var(--text-2)}
 .rpt-cards b{display:block; font-family:var(--pk-display); font-weight:400; font-size:22px; line-height:1.25; margin-top:var(--sp-1)}
-.rpt-cards small{display:block; color:var(--muted); font-size:var(--fs-small); line-height:1.45; margin-top:2px}
+.rpt-cards small{display:block; color:var(--muted); font-size:var(--fs-small); line-height:1.35; margin-top:2px}
 .rpt-chart svg text{font-family:var(--pk-text); font-size:13.5px; fill:var(--muted)} .rpt-chart svg text.ann{fill:var(--brass)}
 .rpt-legend{display:flex; flex-wrap:wrap; gap:var(--sp-2) var(--sp-4); font-size:12px; color:var(--text-2); margin-bottom:var(--sp-3)!important}
 .rpt-legend i{display:inline-block; width:14px; border-top:2.5px solid; margin-right:6px; vertical-align:middle}
@@ -550,8 +550,8 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 @page cover{size:A4; margin:0}
 /* Page margins print white (Chrome otherwise paints them with the app's dark background). */
 @page report{size:A4; margin:14mm 14mm 18mm; background:#fff;
-  @bottom-left{content:"Buy Box investor pack · A calculator, not financial advice"; font-size:8pt; color:#4C5854}
-  @bottom-right{content:"Page " counter(page) " of " counter(pages); font-size:8pt; color:#4C5854}
+  @bottom-left{content:"Buy Box investor pack · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
+  @bottom-right{content:"Page " counter(page) " of " counter(pages); font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
 }
 
 .guide-body{padding:0 18px 18px; color:var(--text-2); font-size:13.5px; line-height:1.55; max-width:760px}

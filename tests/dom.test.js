@@ -282,7 +282,7 @@ function rnd(i){
       exec:sp(document.querySelector('[data-r=exec-headline]').textContent), dealHl:sp(deal.querySelector('[data-r=deal-headline]').textContent),
       notes:[...deal.querySelectorAll('[data-note]')].map(n=>n.dataset.note), noteText:[...deal.querySelectorAll('[data-note] .txt')].map(n=>sp(n.textContent)),
       wf, split:[...deal.querySelectorAll('[data-r=split] .bar i')].map(i=>Number(i.dataset.v)),
-      serif:document.fonts.check('40px "Instrument Serif"'), coverPage:getComputedStyle(cover).page, dealPage:getComputedStyle(deal).page };
+      serif:['Fraunces','Inter'].every(n=>[...document.fonts].some(f=>f.family.replace(/"/g,'')===n&&f.status==='loaded')), coverPage:getComputedStyle(cover).page, dealPage:getComputedStyle(deal).page };
   });
   const n1=NN.narrateDeal(NN.dealContext(await deal('ex-townhouse'),TT));
   ok(pk.first==='cover'&&pk.second==='exec'&&pk.last==='method','pack order: cover, executive summary, …, basis',[pk.first,pk.second,pk.last].join());
@@ -293,7 +293,7 @@ function rnd(i){
   ok(pk.wf.length===6&&Math.abs(pk.wf[0]+pk.wf[1]+pk.wf[2]-pk.wf[3])<1e-6&&Math.abs(pk.wf[3]+pk.wf[4]-pk.wf[5])<1e-6,'waterfall steps add up',JSON.stringify(pk.wf));
   cmpR(String(pk.wf[5]),r1.m.cfMonth,'waterfall ends at the cash flow');
   ok(n1.split&&pk.split.reduce((a,b)=>a+b,0)===(n1.split.left>0?100:100-n1.split.left),'R100 bar shows the whole split',JSON.stringify(pk.split));
-  ok(pk.serif,'serif display font loads','');
+  ok(pk.serif,'pack fonts load (Fraunces and Inter)','');
   ok(pk.coverPage==='cover'&&pk.dealPage==='report','full-bleed cover page, then report pages',pk.coverPage+' / '+pk.dealPage);
   // readability: no italics, a minimum text size (8pt printed; body 10pt, tables 9.5pt), dark greys, commentary closes its section
   const rd=await p.evaluate(()=>{

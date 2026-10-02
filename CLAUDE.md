@@ -13,7 +13,8 @@ build.js           Injects engine.js, narrative.js and the example deals from da
 dist/buy-box.html  The built page as one self-contained fragment (claude.ai artifact; what the tests open).
 dist/index.html    The public website: the same page as a full HTML document with meta tags, self-hosted fonts and a
                    Content Security Policy.
-src/fonts/         Geist, Geist Mono and Instrument Serif (SIL Open Font License), copied to dist/fonts for the website.
+src/fonts/         Geist and Geist Mono (the app), Fraunces and Inter (the investor pack), all SIL Open Font License, copied to
+                   dist/fonts for the website.
 tests/engine.test.js  ~50,000 checks on the engine (bond maths vs month-by-month simulation, SARS transfer duty,
                       IRR/NPV, break-even, breaking points, offer prices, 20-year timeline, present value, fuzzing, monotonicity).
 tests/narrative.test.js  ~320,000 checks on the commentary: readable, never advice, figures match the engine, sign-correct
@@ -66,11 +67,26 @@ Deals use the same field names as `DEFAULTS` in engine.js, plus `id`, `created`,
 
 Analyse, Portfolio, Compare, Buy box & method (`settings`), How grades work (`guide`), Terms & privacy (`terms`, static text with a "last updated" date; update the date whenever the wording changes) and Investor report (`report`, not in the nav). Each is a `<section class="view" id="v-…">`, listed in `VIEWS`, rendered from `renderView()` and titled in `renderTop()`. The guide's test table is built from `TESTS` and the live targets. A first-visit "not financial advice" notice sits above Analyse until dismissed (`buybox-notice` in localStorage).
 
-**Investor pack.** `openReport(ids, back)` sets `S.report` and opens `#report`; `renderReport()` builds `.report-doc` as a stack of A4 `.sheet`s: a dark cover (`rptCover`, with `coverOrnament`), 01 Executive summary (`rptExec`), 02 The portfolio when there are 2+ deals (`rptSummary`), one sheet per deal (`rptDeal`: dark hero band, headline figures, cash flow waterfall and "where every R100 goes", tables, the ten tests with bullet bars, stress test, 20-year view (chart, summary and every 5th year), assumptions) and Basis of this pack (`rptMethod`). Entry points: the Analyse topbar (drafts included), the Report tick boxes on Portfolio (`S.reportSel`, with Select all) and the Compare topbar. Users save it with Print → Save as PDF. Prepared by/for live in localStorage (`buybox-report`).
+**Investor pack.** `openReport(ids, back)` sets `S.report` and opens `#report`; `renderReport()` builds `.report-doc` as a stack of A4 `.sheet`s: a dark cover (`rptCover`, with `coverOrnament`), 01 Executive summary (`rptExec`), 02 The portfolio when there are 2+ deals (`rptSummary`), one sheet per deal (`rptDeal`: dark hero band, headline figures and summary, then sections for cash flow (waterfall and "where every R100 goes"), returns, income, costs and the bond, assumptions, the ten tests with bullet bars, stress test, where it breaks and the offer price, and the 20-year view (chart, summary and every 5th year)) and Basis of this pack (`rptMethod`). Entry points: the Analyse topbar (drafts included), the Report tick boxes on Portfolio (`S.reportSel`, with Select all) and the Compare topbar. Users save it with Print → Save as PDF. Prepared by/for live in localStorage (`buybox-report`).
 
 Commentary comes only from `src/narrative.js`: `dealContext()` gathers engine results, `narrateDeal()` returns a headline, summary, strengths, watch-outs and a note per section (cash flow, cash, returns, tests, stress, offer, long term), `narratePortfolio()` the executive summary for several deals, and `rentSplit()` the R100 split. Rules: describe what the numbers say, never advise (no "should", "recommend", "buy"); the sign decides the wording; judgements only against the user's own targets; no NaN/Infinity text. Its strings can contain deal names, so always `esc()` them. Add a rule → add checks in tests/narrative.test.js.
 
-The pack reuses the screen builders (`breakCards()`, `scenarioRows()`, `ieSummary()`, `ieChart()`/`ieLegendHtml()`, `cmpBody()`, `sealSvg()`, `bulletHtml()`), so a figure can't differ between screen and pack. Sheets use the light tokens (`.report-doc` shares the light-theme selector); the cover and deal hero use the dark tokens (`.rpt-dark` shares the `:root` selector). Display type is `--serif` (Instrument Serif). Print: `@media print` scoped to `html[data-view="report"]`, every sheet after the cover starts a page, `@page cover` is full-bleed and `@page report` adds the footer and page numbers.
+The pack reuses the screen builders (`breakCards()`, `scenarioRows()`, `ieSummary()`, `ieChart()`/`ieLegendHtml()`, `cmpBody()`, `sealSvg()`, `bulletHtml()`), so a figure can't differ between screen and pack. Sheets use the light tokens (`.report-doc` shares the light-theme selector); the cover and deal hero use the dark tokens (`.rpt-dark` shares the `:root` selector). Pack type and spacing live on `.report-doc`:
+- fonts: `--pk-display` (Fraunces, headings and big figures), `--pk-text` and `--pk-num` (Inter, with tabular figures in tables). The Fraunces file has an empty minus sign, so build.js serves U+2212 from Inter under the Fraunces name.
+- no italics anywhere in the pack.
+- minimum sizes: nothing below 11px (8pt printed), body 13.5px (10pt), tables 13px.
+- darker greys: `--muted` and `--text-2` at 7:1 or more.
+- spacing tokens `--sp-1…--sp-8` (4–64px).
+- sections: each is a `<section class="psec">` (label `.kick`, content blocks `--sp-5` apart, its commentary `.note` last), sections `--sp-7` apart, and the opening block is `.intro`.
+
+The dom suite checks the italics, sizes, contrast and commentary placement.
+
+Print: `@media print` is scoped to `html[data-view="report"]`, every sheet after the cover starts a page, `@page cover` is full-bleed and `@page report` adds the footer and page numbers. Breaks:
+- short sections (`.psec.keep`) move to the next page whole;
+- longer ones break only between blocks, never inside a table, chart or commentary box;
+- a label never ends a page and commentary stays with the block before it.
+
+After changing the pack, print a 1-deal and a 3-deal pack and look at the page breaks.
 
 ## Security
 
@@ -81,7 +97,7 @@ The pack reuses the screen builders (`breakCards()`, `scenarioRows()`, `ieSummar
 
 ## Design
 
-Ledger-green surfaces with a brass accent (`--brass #C9A45C`). Dark is the default; a light theme (warm paper, darker brass) is set with `data-theme="light"` on `<html>` by the switch in the sidebar and mobile top bar, and remembered in localStorage (`buybox-theme`). Every colour is a token on `:root`, redefined under `:root[data-theme="light"]`: never hard-code a colour, add a token to both blocks. The dom suite checks text (4.5:1) and series (3:1) contrast in both themes. Fonts are Geist and Geist Mono. Series colours `--s1…--s8` are a colour-blind-checked categorical palette, assigned per deal and kept with that deal. Status colours (good, warn, bad) are separate from the series colours and never reused as them. Keep new UI in the same token system.
+Ledger-green surfaces with a brass accent (`--brass #C9A45C`). Dark is the default; a light theme (warm paper, darker brass) is set with `data-theme="light"` on `<html>` by the switch in the sidebar and mobile top bar, and remembered in localStorage (`buybox-theme`). Every colour is a token on `:root`, redefined under `:root[data-theme="light"]`: never hard-code a colour, add a token to both blocks. The dom suite checks text (4.5:1) and series (3:1) contrast in both themes. Fonts are Geist and Geist Mono (the investor pack uses Fraunces and Inter). Series colours `--s1…--s8` are a colour-blind-checked categorical palette, assigned per deal and kept with that deal. Status colours (good, warn, bad) are separate from the series colours and never reused as them. Keep new UI in the same token system.
 
 ## Known simplifications
 
