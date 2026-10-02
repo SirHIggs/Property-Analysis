@@ -67,6 +67,19 @@ group('Cash flow built up by hand (new-development 1-bed)', () => {
   ok(near(r.m.coc, r.cfA / 112000 * 100, 1e-9), 'cash-on-cash');
 });
 
+group('Cost breakdown reconciles with the totals', () => {
+  for (let k = 0; k < 2000; k++) {
+    const d = rand(), r = E.analyse(d), c = r.costs;
+    const items = c.levyA + c.ratesA + c.insuranceA + c.otherExpA + c.mgmtA + c.maintA;
+    ok(Math.abs(c.rentA + c.otherIncomeA - c.grossA) < 1e-6, 'rent plus other income is gross income');
+    ok(Math.abs(c.grossA - c.vacancyA - r.effA) < 1e-6, 'gross less vacancy is income collected');
+    ok(Math.abs(items - c.opexA) < 1e-6, 'cost items add up to running costs', items + ' vs ' + c.opexA);
+    ok(Math.abs(r.effA - items - r.noi) < 1e-6, 'income collected less cost items is NOI');
+    ok(Math.abs(r.noi - r.debtA - r.cfA) < 1e-6, 'NOI less a year of bond is cash flow');
+    ok(Math.abs(r.deposit + r.duty + r.legal + r.reno - r.cashIn) < 1e-6, 'cash in adds up');
+  }
+});
+
 group('Break-even rent really breaks even', () => {
   for (let k = 0; k < 300; k++) {
     const d = rand();

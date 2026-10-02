@@ -76,6 +76,11 @@ function analyse(raw,lite){
   const coc = cashIn>0 ? cfA/cashIn*100 : (cfA>=0?Infinity:-Infinity);
   return {
     price, rent, effA, loan, duty, legal, legalEst, legalBlank, cashIn, totalCost, noi, pmt, cfA, H, series, flows, fixedM, interest1, taxR,
+    deposit:price*dep, reno, ratePct:r*1200, termM:N, debtA,
+    // Line items behind effA and opexA (annual), from the same clamped inputs, for reports.
+    costs:{rentA:rent*12, otherIncomeA:other*12, grossA, vacancyA:grossA-effA,
+      levyA:Math.max(0,num(p.levy))*12, ratesA:Math.max(0,num(p.rates))*12, insuranceA:Math.max(0,num(p.insurance))*12, otherExpA:Math.max(0,num(p.otherExp))*12,
+      mgmtA:mg*effA, maintA:mt*grossA, opexA},
     afterTaxCfM:(cfA-taxDue)/12,
     m:{
       onePct: price>0?rent/price*100:NaN,

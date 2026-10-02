@@ -9,16 +9,18 @@
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-4u84aJT6oxflz12HhaZXakmZAJ4weIfSA8baKxt2FgY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-bS4Tm47H+AOKk9d/Pf9QuJs2ovYp/edNcsVugO1f8Hs='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>Buy Box</title>
 <style>
 @font-face{font-family:"Geist";src:url("fonts/Geist-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}
 @font-face{font-family:"Geist Mono";src:url("fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
 </style>
 <style>
 /* Buy Box: a single committed dark product look (ledger green + brass), painted explicitly for every host theme. */
-:root{
+:root,.rpt-dark{
   color-scheme:dark;
   --bg:#0A0F0E; --surface:#101816; --surface-2:#141F1C; --surface-3:#1A2724; --hover:#1E2D29;
   --line:#1F2E2A; --line-2:#2B3D37;
@@ -29,14 +31,15 @@
   --grid:#1C2925; --axis:#34463F;
   --side-bg:rgba(10,15,14,.6); --bar-bg:rgba(13,20,18,.96); --top-fade:rgba(10,15,14,.88); --btn-hover-line:#3A5049;
   --tip-bg:#0C1311; --inset:rgba(255,255,255,.025); --row-tint:rgba(255,255,255,.02); --shadow:rgba(0,0,0,.45);
-  --glow-1:rgba(201,164,92,.075); --glow-2:rgba(25,158,112,.05);
+  --glow-1:rgba(201,164,92,.075); --glow-2:rgba(25,158,112,.05); --glow-cover:rgba(201,164,92,.17); --sheet-shadow:rgba(0,0,0,.42);
   --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
   --side:236px;
 }
 /* Light theme: the same ledger-and-brass look on warm paper. Every text colour keeps at least 4.5:1 contrast and every
    series colour at least 4:1 on the panels, so charts stay readable. Chosen with the switch in the sidebar or top bar. */
-:root[data-theme="light"]{
+:root[data-theme="light"],.report-doc{
   color-scheme:light;
   --bg:#F6F3EC; --surface:#FFFFFF; --surface-2:#F4F1EA; --surface-3:#ECE7DC; --hover:#E8E2D5;
   --line:#E3DDD0; --line-2:#CFC7B6;
@@ -47,7 +50,7 @@
   --grid:#ECE7DC; --axis:#B9B09E;
   --side-bg:rgba(255,255,255,.55); --bar-bg:rgba(255,255,255,.96); --top-fade:rgba(246,243,236,.9); --btn-hover-line:#B9B09E;
   --tip-bg:#FFFFFF; --inset:rgba(255,255,255,.6); --row-tint:rgba(21,32,29,.025); --shadow:rgba(21,32,29,.14);
-  --glow-1:rgba(138,101,38,.07); --glow-2:rgba(19,132,92,.05);
+  --glow-1:rgba(138,101,38,.07); --glow-2:rgba(19,132,92,.05); --glow-cover:rgba(138,101,38,.12); --sheet-shadow:rgba(21,32,29,.16);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -373,6 +376,170 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .method dd{color:var(--text-2); font-size:13px}
 .method code{font-family:var(--mono); font-size:12px; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:0 5px; border-radius:4px}
 .method ul{margin:0; padding-left:18px}
+/* ---------- investor pack ---------- */
+.rpt-bar{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:flex-end; margin-bottom:8px}
+.rpt-bar .field{flex:1 1 220px}
+.rpt-bar .btns{display:flex; gap:8px; margin-left:auto}
+.rpt-tip{padding:0 0 18px; margin:0}
+.report-doc{display:flex; flex-direction:column; align-items:center; gap:30px; width:100%; min-width:0; overflow-wrap:anywhere; color:var(--text); font-size:13px; line-height:1.55; font-variant-numeric:tabular-nums}
+.sheet{position:relative; width:100%; max-width:820px; background:var(--surface); color:var(--text); border-radius:4px; padding:56px 60px 48px; box-shadow:0 30px 70px var(--sheet-shadow)}
+.report-doc .num{font-family:var(--mono); white-space:nowrap; text-align:right}
+.report-doc p{margin:0}
+/* cover */
+.sheet.cover{aspect-ratio:210/297; padding:0; overflow:hidden;
+  background:radial-gradient(120% 70% at 92% 0%,var(--glow-cover),transparent 58%),radial-gradient(90% 60% at 0% 100%,var(--glow-2),transparent 60%),linear-gradient(165deg,var(--surface) 0%,var(--bg) 72%)}
+.cv{position:absolute; inset:24px; border:1px solid var(--brass-line); border-radius:2px; display:flex; flex-direction:column; padding:44px 46px 32px}
+.cv::before{content:""; position:absolute; inset:5px; border:1px solid var(--brass-soft); pointer-events:none}
+.cv-orn{position:absolute; top:9%; left:50%; transform:translateX(-50%); width:min(390px,66%); height:auto; aspect-ratio:1; pointer-events:none}
+.cv-orn text{font-family:var(--sans); font-size:10.5px; letter-spacing:.42em; fill:var(--brass)}
+.cv-orn .big{font-family:var(--serif); font-size:150px; letter-spacing:0; fill:none; stroke:var(--brass); stroke-width:1}
+.cv-orn .small{font-family:var(--sans); font-size:10px; letter-spacing:.3em; fill:var(--brass-2)}
+.cv-top{position:relative; display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--brass-2)}
+.cv-brand{display:flex; align-items:center; gap:10px; font-weight:600}
+.cv-main{margin-top:auto; position:relative}
+.cv-eyebrow{font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--brass)}
+.cv-rule{width:56px; height:1px; background:var(--brass); margin:20px 0 0}
+.cv-title{font-family:var(--serif); font-weight:400; font-size:clamp(40px,7.2vw,70px); line-height:1.02; letter-spacing:-.012em; margin:16px 0 0; color:var(--text); text-wrap:balance}
+.cv-sub{font-family:var(--serif); font-style:italic; font-size:clamp(18px,2.5vw,24px); line-height:1.3; color:var(--brass-2); margin-top:20px; max-width:30ch; text-wrap:pretty}
+.cv-seals{display:flex; flex-wrap:wrap; gap:14px 26px; margin-top:34px}
+.cv-seal{display:flex; align-items:center; gap:12px; min-width:0}
+.cv-seal .seal{width:62px; height:62px; flex:none} .cv-seal .seal .letter{font-size:27px}
+.cv-seal b{display:block; font-size:12.5px; font-weight:600; color:var(--text); max-width:18ch}
+.cv-seal small{display:block; color:var(--muted); font-size:11px}
+.cv-stats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--brass-line); margin-top:32px}
+.cv-stats div{padding:16px 12px 0 0; min-width:0}
+.cv-stats div+div{padding-left:18px; border-left:1px solid var(--line-2)}
+.cv-stats span{display:block; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted)}
+.cv-stats small{display:block; font-size:11px; color:var(--muted); margin-top:2px}
+.cv-stats b{display:block; font-family:var(--serif); font-weight:400; font-size:clamp(22px,3.5vw,34px); line-height:1.1; margin-top:6px; color:var(--brass-2); white-space:nowrap}
+.cv-foot{display:flex; justify-content:space-between; align-items:flex-end; gap:8px 20px; flex-wrap:wrap; margin-top:28px; font-size:11.5px; color:var(--text-2)}
+.cv-foot .rpt-meta{display:flex; flex-wrap:wrap; gap:4px 18px} .cv-foot b{color:var(--text); font-weight:600}
+.cv-foot .fine2{font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+/* sheet furniture */
+.sh-head{display:flex; align-items:baseline; gap:14px; padding-bottom:14px; margin-bottom:28px; border-bottom:1px solid var(--line)}
+.sh-num{font-family:var(--serif); font-size:17px; color:var(--brass)}
+.sh-title{font-size:10.5px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--muted)}
+.sh-head .r{margin-left:auto; font-size:11px; color:var(--muted)}
+.pull{font-family:var(--serif); font-weight:400; font-size:clamp(28px,4.4vw,44px); line-height:1.1; letter-spacing:-.01em; margin:0 0 18px; color:var(--text); text-wrap:balance}
+.lede{font-size:15px; line-height:1.65; color:var(--text-2); max-width:64ch; margin-bottom:28px!important}
+.kick{display:flex; align-items:center; gap:14px; margin:34px 0 14px; font-size:10.5px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--brass); break-after:avoid}
+.kick::after{content:""; flex:1; height:1px; background:var(--line)}
+.band{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1.5px solid var(--text); border-bottom:1px solid var(--line); margin-bottom:8px}
+.band.b4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.band>div{padding:14px 12px 14px 0; min-width:0}
+.band:not(.b4)>div:not(:nth-child(3n+1)),.band.b4>div:not(:nth-child(4n+1)){padding-left:16px; border-left:1px solid var(--line)}
+.band:not(.b4)>div:nth-child(n+4),.band.b4>div:nth-child(n+5){border-top:1px solid var(--line)}
+.band span{display:block; font-size:10px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+.band b{display:block; font-family:var(--serif); font-weight:400; font-size:clamp(20px,2.9vw,28px); line-height:1.15; margin-top:4px; white-space:nowrap}
+.band small{display:block; font-size:11px; color:var(--muted)}
+.note{margin:20px 0 4px; padding:2px 0 2px 18px; border-left:2px solid var(--brass); break-inside:avoid}
+.note .k{font-size:9.5px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--brass)}
+.note .nlead{font-family:var(--serif); font-style:italic; font-size:21px; line-height:1.25; margin:4px 0 6px; color:var(--text)}
+.note .txt{font-size:13.5px; line-height:1.62; color:var(--text-2); max-width:72ch}
+/* executive summary */
+.dcards{display:grid; gap:10px}
+.dcard{display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:16px; align-items:center; padding:14px 18px; border:1px solid var(--line); border-radius:8px}
+.dcard .seal{width:56px; height:56px} .dcard .seal .letter{font-size:24px}
+.dcard h4{margin:0; font-size:14.5px; font-weight:600}
+.dcard .hl{font-family:var(--serif); font-style:italic; font-size:15.5px; line-height:1.3; color:var(--text-2); margin-top:2px}
+.dcard .mini{display:flex; gap:20px; text-align:right}
+.dcard .mini span{display:block; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.dcard .mini b{font-family:var(--mono); font-size:13px; font-weight:600; white-space:nowrap}
+.sw2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:30px}
+.sw2 h4{margin:0 0 12px; font-size:10.5px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--muted)}
+.sw2 ul{list-style:none; margin:0; padding:0; display:grid; gap:11px}
+.sw2 li{position:relative; padding-left:22px; font-size:13.5px; line-height:1.45}
+.sw2 li::before{content:""; position:absolute; left:0; top:.42em; width:9px; height:9px; border-radius:50%; border:2px solid var(--brass)}
+.sw2 .watch li::before{border-color:var(--bad); background:var(--bad)}
+.leaders2{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px}
+.leaders2>div{border-top:2px solid var(--brass); padding-top:10px; min-width:0}
+.leaders2 span{font-size:9.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+.leaders2 b{display:block; font-size:13.5px; font-weight:600; margin:4px 0 2px}
+.leaders2 small{font-family:var(--mono); font-size:12px; color:var(--text-2)}
+/* deal sheet */
+.hero{margin:-56px -60px 26px; padding:38px 60px 28px; border-radius:4px 4px 0 0; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 24px;
+  background:radial-gradient(70% 140% at 95% 0%,var(--glow-cover),transparent 62%),linear-gradient(165deg,var(--surface),var(--bg)); color:var(--text)}
+.hero .sh-title{color:var(--brass-2)}
+.hero h2{font-family:var(--serif); font-weight:400; font-size:clamp(30px,4.8vw,46px); line-height:1.04; margin:8px 0 6px; text-wrap:balance}
+.hero .where{font-size:12.5px; color:var(--text-2)}
+.hero .gr{display:flex; align-items:center; gap:14px; text-align:right; align-self:start}
+.hero .gr .seal{width:78px; height:78px; flex:none} .hero .gr .seal .letter{font-size:34px}
+.hero .gr b{display:block; font-size:13px; font-weight:600} .hero .gr small{display:block; color:var(--muted); font-size:11.5px}
+.hero .cfline{grid-column:1/-1; display:flex; align-items:baseline; gap:8px 18px; flex-wrap:wrap; border-top:1px solid var(--line-2); padding-top:16px; margin-top:12px}
+.hero .cfbig{font-family:var(--serif); font-size:clamp(38px,6vw,58px); line-height:1; white-space:nowrap}
+.hero .cfbig small{font-family:var(--sans); font-size:13px; color:var(--muted); margin-left:6px; letter-spacing:.04em}
+.hero .hl{font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.3; color:var(--brass-2); flex:1 1 260px}
+.viz2{display:flex; gap:30px; align-items:flex-start}
+.viz2>.wf{flex:1.15 1 0; min-width:0} .viz2>.split{flex:1 1 0; min-width:0}
+.viz-cap{font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:8px!important}
+.wf svg{display:inline-block; vertical-align:top; width:100%; height:auto} /* inline-block: Chrome pushes a block SVG to the next printed page */ .wf text{font-size:10px; fill:var(--muted)} .wf text.v{font-family:var(--mono); fill:var(--text); font-size:10.5px}
+.split .bar{display:flex; height:22px; border-radius:4px; overflow:hidden; position:relative; background:var(--surface-3)}
+.split .bar i{display:block; height:100%}
+.split .mark{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--text)}
+.split ul{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:7px}
+.split li{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--text-2)}
+.split li i{width:10px; height:10px; border-radius:2px; flex:none}
+.split li b{font-family:var(--mono); color:var(--text); min-width:44px}
+.rpt-cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 30px}
+.rpt-t{width:100%; font-size:12.5px}
+.rpt-t th,.rpt-t td{padding:7px 8px; border-bottom:1px solid var(--line)}
+.rpt-t thead th{font-size:9.5px; letter-spacing:.14em; color:var(--muted); border-bottom:1.5px solid var(--text)}
+.rpt-t tbody th{font-weight:500; text-align:left}
+.rpt-t th small{display:block; color:var(--muted); font-weight:400; font-size:11px}
+.rpt-t tr.tot th,.rpt-t tr.tot td{font-weight:650; border-top:1.5px solid var(--line-2)}
+.rpt-t td.bul{width:26%; min-width:90px}
+.rpt-t.compact th,.rpt-t.compact td{padding:3.5px 8px; font-size:11.5px}
+.rpt-cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px}
+.rpt-cards.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.rpt-cards>div{border-top:2px solid var(--line-2); padding:9px 2px 0; min-width:0}
+.rpt-cards span{display:block; font-size:11px; color:var(--text-2)}
+.rpt-cards b{display:block; font-family:var(--serif); font-weight:400; font-size:22px; line-height:1.2}
+.rpt-cards small{display:block; color:var(--muted); font-size:11px; line-height:1.4}
+.rpt-chart svg text{font-size:10px; fill:var(--muted)} .rpt-chart svg text.ann{fill:var(--brass)}
+.rpt-legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:11.5px; color:var(--text-2); margin:14px 0 4px}
+.rpt-legend i{display:inline-block; width:14px; border-top:2.5px solid; margin-right:6px; vertical-align:middle}
+.rpt-notes{margin:0 0 6px!important; white-space:pre-wrap; font-family:var(--serif); font-style:italic; font-size:16px; line-height:1.45; color:var(--text-2); border-left:2px solid var(--line-2); padding-left:14px}
+.rpt-end{font-size:11.5px; line-height:1.6; color:var(--text-2)}
+.rpt-end p+p{margin-top:8px}
+.report-doc .tablebox{overflow-x:auto}
+.report-doc .cmp{min-width:0; table-layout:fixed}
+.report-doc .cmp thead th{font-size:12px; white-space:normal; vertical-align:bottom}
+.report-doc .cmp tbody th{position:static; min-width:0; width:30%; font-size:12px; background:var(--surface)}
+.report-doc .cmp td.v{white-space:normal}
+.report-doc .cmp td.v .val{flex-wrap:wrap; gap:4px; font-size:12px}
+.report-doc .cmp .pill,.report-doc .cmp .best{font-size:10.5px; padding:1px 6px}
+@media screen and (max-width:700px){
+  .sheet{padding:30px 18px 26px} .hero{margin:-30px -18px 22px; padding:26px 18px 20px; grid-template-columns:minmax(0,1fr)} .hero .gr{text-align:left}
+  .sheet.cover{aspect-ratio:auto} .cv{position:relative; inset:auto; margin:12px; padding:24px 20px 20px} .cv-orn{position:relative; top:auto; left:auto; transform:none; display:block; width:78%; margin:22px auto 6px} .cv-main{margin-top:10px} .cv-stats{grid-template-columns:minmax(0,1fr)} .cv-stats div+div{padding-left:0; border-left:0; border-top:1px solid var(--line-2)}
+  .band,.band.b4{grid-template-columns:repeat(2,minmax(0,1fr))} .band>div{padding-left:0!important; border-left:0!important}
+  .viz2{flex-direction:column} .viz2>.wf,.viz2>.split{flex:none; width:100%} .rpt-cols,.sw2{grid-template-columns:minmax(0,1fr)} .leaders2{grid-template-columns:repeat(2,minmax(0,1fr))} .rpt-cards,.rpt-cards.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dcard{grid-template-columns:48px minmax(0,1fr)} .dcard .mini{grid-column:1/-1; justify-content:flex-start; text-align:left}
+}
+/* Printing a pack: only the sheets, on A4, colours kept; a full-bleed cover, then pages with a footer. Other screens print as they are. */
+.report-doc,.sheet{page:report}
+.sheet.cover{page:cover}
+@media print{
+  html[data-view="report"],html[data-view="report"] body{background:#fff!important}
+  html[data-view="report"] .side,html[data-view="report"] .topbar,html[data-view="report"] .tabbar,html[data-view="report"] .notice,html[data-view="report"] .toast,html[data-view="report"] .rpt-bar,html[data-view="report"] .rpt-tip{display:none!important}
+  html[data-view="report"] .app{display:block}
+  html[data-view="report"] .main{padding:0}
+  .report-doc{display:block; font-size:11.5px}
+  .sheet{max-width:none; box-shadow:none; border-radius:0; padding:0; break-before:page}
+  .sheet:first-child{break-before:auto}
+  .sheet.cover{width:210mm; height:297mm; aspect-ratio:auto}
+  .hero{margin:0 0 22px; padding:26px 28px 22px; border-radius:6px}
+  .note,.dcard,.band,.rpt-cards,.rpt-chart,.viz2,.report-doc tr,.hero,.sw2,.leaders2{break-inside:avoid}
+  .kick{break-after:avoid}
+  .report-doc,.report-doc *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .report-doc .tablebox{overflow:visible}
+}
+@page cover{size:A4; margin:0}
+/* Page margins print white (Chrome otherwise paints them with the app's dark background). */
+@page report{size:A4; margin:14mm 14mm 16mm; background:#fff;
+  @bottom-left{content:"Buy Box investor pack · A calculator, not financial advice"; font-size:8pt; color:#6b7772}
+  @bottom-right{content:"Page " counter(page) " of " counter(pages); font-size:8pt; color:#6b7772}
+}
+
 .guide-body{padding:0 18px 18px; color:var(--text-2); font-size:13.5px; line-height:1.55; max-width:760px}
 .guide-body p{margin:0 0 10px}
 .guide-body strong{color:var(--text)}
@@ -617,6 +784,15 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
         </div>
       </section>
     </section>
+    <section class="view" id="v-report" aria-label="Investor report" hidden>
+      <div class="rpt-bar">
+        <div class="field"><label for="rpt-by">Prepared by</label><div class="inp"><input type="text" id="rpt-by" maxlength="80" placeholder="Your name (optional)"></div></div>
+        <div class="field"><label for="rpt-for">Prepared for</label><div class="inp"><input type="text" id="rpt-for" maxlength="80" placeholder="A partner, co-investor or your bank (optional)"></div></div>
+        <div class="btns"><button type="button" class="btn" id="rptBack">Back</button><button type="button" class="btn primary" id="rptPrint">Print / Save as PDF</button></div>
+      </div>
+      <p class="fine rpt-tip">In the print screen, choose <b>Save as PDF</b> as the printer to keep a copy or send it on. The report is built in your browser; nothing is uploaded.</p>
+      <article class="report-doc" id="reportDoc"></article>
+    </section>
     <section class="view" id="v-terms" aria-label="Terms and privacy" hidden>
       <section class="panel">
         <div class="panel-h"><h2>Terms of use</h2><p>Last updated 28 September 2026</p></div>
@@ -736,6 +912,11 @@ function analyse(raw,lite){
   const coc = cashIn>0 ? cfA/cashIn*100 : (cfA>=0?Infinity:-Infinity);
   return {
     price, rent, effA, loan, duty, legal, legalEst, legalBlank, cashIn, totalCost, noi, pmt, cfA, H, series, flows, fixedM, interest1, taxR,
+    deposit:price*dep, reno, ratePct:r*1200, termM:N, debtA,
+    // Line items behind effA and opexA (annual), from the same clamped inputs, for reports.
+    costs:{rentA:rent*12, otherIncomeA:other*12, grossA, vacancyA:grossA-effA,
+      levyA:Math.max(0,num(p.levy))*12, ratesA:Math.max(0,num(p.rates))*12, insuranceA:Math.max(0,num(p.insurance))*12, otherExpA:Math.max(0,num(p.otherExp))*12,
+      mgmtA:mg*effA, maintA:mt*grossA, opexA},
     afterTaxCfM:(cfA-taxDue)/12,
     m:{
       onePct: price>0?rent/price*100:NaN,
@@ -826,13 +1007,213 @@ function timeline(raw,years,discPct){
   return {rows,crossover,topUp,net:cum,pv,discRate:d*100,income:inc,expenses:exp,bondFreeYear,firstPositive:(rows.find(r=>r.net>=0)||{}).y||null};
 }
 /*ENGINE-END*/
+/*NARRATIVE-START*/
+// Plain-language commentary for the investor pack. Pure functions over engine results: no DOM, no maths of its own.
+// It describes what the numbers say and where the risks are. It never advises: no "buy", "should" or "recommend".
+// Strings may contain deal names, so callers must escape them before putting them into HTML.
+
+const NARR_LABELS = {onePct:"the 1% rule", expRatio:"the expense ratio", cfMonth:"monthly cash flow", capRate:"cap rate",
+  dscr:"debt cover (DSCR)", grossYield:"gross yield", effYield:"effective yield", coc:"cash-on-cash", discount:"the discount to value", irr:"annualised return"};
+const nSp = n => String(Math.round(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+const nR = n => (Math.round(n) < 0 ? "−R " : "R ") + nSp(n);     // same as the page's rand()
+const nRa = n => "R " + nSp(n);                                     // size of an amount, sign said in words
+const nP = (n, dp) => (n < 0 ? "−" : "") + Math.abs(n).toFixed(dp == null ? 1 : dp) + "%";
+const nVal = (k, v) => k === "cfMonth" ? nR(v) : k === "dscr" ? v.toFixed(2) + "×" : nP(v, k === "onePct" ? 2 : 1);
+const nTgt = (k, dir, t) => k === "cfMonth" ? nR(t) : k === "dscr" ? t + "×" : t + "%";
+const nGoal = dir => dir === "lo" ? "limit" : "target";
+const plural = (n, one, many) => n + " " + (n === 1 ? one : (many || one + "s"));
+const gradeLetter = ratio => ratio >= 0.9 ? "A" : ratio >= 0.75 ? "B" : ratio >= 0.55 ? "C" : ratio >= 0.35 ? "D" : "E";
+
+// Everything the commentary needs for one deal, from the engine alone.
+function dealContext(raw, T) {
+  const d = {...DEFAULTS, ...raw}, r = analyse(d), v = verdict(r, T), g = gradeLetter(v.ratio);
+  const scen = {}; SCENARIOS.forEach(s => { scen[s.k] = analyse(s.apply(d)).m.cfMonth; });
+  const bp = breakPoints(d, T), tl = timeline(d, 20, T.discountRate), tlH = timeline(d, r.H, 0);
+  return {d, r, v, g, scen, bp, tl, tlH, T, name: String(d.name || "Untitled")};
+}
+
+// Where each R100 of rent goes. Whole rands that always add up to exactly 100; "left" is negative when you top up.
+function rentSplit(r) {
+  const c = r.costs, gross = c.grossA;
+  if (!(gross > 0)) return null;
+  const vacancy = Math.round(c.vacancyA / gross * 100), running = Math.round(c.opexA / gross * 100), bond = Math.round(r.debtA / gross * 100);
+  return {vacancy, running, bond, left: 100 - vacancy - running - bond};
+}
+
+// How far past (or short of) its target each graded test is, so the best and worst can be named.
+function testScores(ctx) {
+  const {r, T} = ctx, out = [];
+  SCORED.forEach(row => {
+    const val = r.m[row.k], t = T[row.k], st = status(row, val, t);
+    if (st === "na" || !isFinite(val)) return;
+    let score;
+    if (row.dir === "lo") score = val > 0 ? t / val : 3;
+    else if (row.k === "cfMonth" || !(t > 0)) score = 1 + (val - t) / 2000;
+    else score = val / t;
+    out.push({k: row.k, dir: row.dir, val, t, st, score});
+  });
+  return out;
+}
+
+function narrateDeal(ctx) {
+  const {r, v, g, scen, bp, tl, tlH, T, d} = ctx, cf = r.m.cfMonth, c = r.costs, H = r.H, split = rentSplit(r);
+  const noRent = !(c.grossA > 0), hasBond = r.loan > 0;
+  const S = {};
+
+  // ---- cash flow
+  if (noRent) S.cashFlow = {lead: "No rent entered yet.", text: "There is no rent or other income, so the deal has nothing to pay its costs with. Enter the expected rent to see the picture."};
+  else {
+    let lead, text;
+    if (cf >= 50) { lead = hasBond ? "The rent pays for everything." : "No bond, and the rent covers the costs.";
+      text = `After ${hasBond ? "the bond and " : ""}every running cost, about ${nRa(cf)} a month (${nRa(r.cfA)} a year) is left over before tax.`; }
+    else if (cf > -50) { lead = "It roughly breaks even.";
+      text = `Rent collected almost exactly covers ${hasBond ? "the bond and " : ""}the running costs, so there is little room for surprises.`; }
+    else { lead = `You top up ${nRa(-cf)} a month.`;
+      text = `The rent doesn't cover ${hasBond ? "the bond and " : ""}the running costs, so you would add about ${nRa(-cf)} a month (${nRa(-r.cfA)} a year) from your pocket in year 1.`
+        + (tl.crossover ? ` On these growth assumptions the rent catches up in year ${tl.crossover}.` : " On these assumptions the rent doesn't catch up within 20 years."); }
+    if (split) text += split.left >= 0
+      ? ` Of every R100 of rent, about R${split.vacancy} is lost to empty months, R${split.running} goes to running costs${hasBond ? ` and R${split.bond} to the bond` : ""}, leaving R${split.left}.`
+      : ` Of every R100 of rent, about R${split.vacancy} is lost to empty months, R${split.running} goes to running costs and R${split.bond} would go to the bond, so you add about R${-split.left} for every R100 the property earns.`;
+    S.cashFlow = {lead, text};
+  }
+
+  // ---- cash needed
+  if (r.cashIn <= 0) S.cash = {lead: "No cash goes in upfront.", text: "On these inputs the deal needs no money from you at the start, so cash-on-cash can't be measured."};
+  else {
+    const parts = [[r.deposit, "the deposit"], [r.duty, "transfer duty"], [r.legal, r.legalBlank ? "estimated attorney and bond fees" : "attorney and bond fees"], [r.reno, "repairs"]]
+      .filter(([a]) => a > 0).map(([a, l]) => `${l} (${nRa(a)})`);
+    const list = parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts[0];
+    let text = `That covers ${list}.`;
+    if (r.cfA > 0) text += ` At year-1 cash flow it comes back in about ${(r.cashIn / r.cfA).toFixed(1)} years: a ${nP(r.m.coc)} cash-on-cash return, ${r.m.coc >= T.coc ? "above" : "below"} your ${T.coc}% target.`;
+    else text += ` Because the deal costs money each month in year 1, that cash earns no cash return yet (cash-on-cash ${nP(r.m.coc)}).`;
+    S.cash = {lead: `You need ${nRa(r.cashIn)} upfront.`, text};
+  }
+
+  // ---- returns: yields, IRR, and how much rests on the sale
+  if (!(r.price > 0)) S.returns = {lead: "No price entered.", text: "Yields and returns need a purchase price."};
+  else {
+    const irr = r.m.irr, rentTotal = tlH.net, last = tlH.rows[H - 1].net, sale = r.flows[H] - last;
+    let lead;
+    if (!isFinite(irr) || irr <= -99.9) lead = "The money doesn't come back.";
+    else lead = `${nP(irr)} a year over ${plural(H, "year")}.`;
+    let text = `Gross yield is ${nP(r.m.grossYield)}; after running costs, duty and fees the effective yield is ${nP(r.m.effYield)}.`;
+    const cg = num(d.capGrowth);
+    if (sale > 0 && rentTotal <= 0) text += ` All of the return depends on selling: over ${plural(H, "year")} the rent falls ${nRa(-rentTotal)} short in total, and the sale is assumed to bring in ${nRa(sale)} after the bond and selling costs, with ${cg}% a year growth.`;
+    else if (sale > 0 && rentTotal > 0) {
+      const share = Math.round(sale / (sale + rentTotal) * 100);
+      text += share >= 60 ? ` About ${share}% of the money you get back comes from the sale, so the result leans on the ${cg}% a year growth assumption.`
+        : ` Most of the money you get back comes from rent (${100 - share}%), so the result depends less on how fast the value grows.`;
+    } else if (sale <= 0) text += " The sale is not assumed to return any money after the bond and selling costs.";
+    if (isFinite(irr) && irr > -99.9) text += ` That is ${irr >= T.irr ? "above" : "below"} your ${T.irr}% target.`;
+    S.returns = {lead, text};
+  }
+
+  // ---- the ten tests
+  const scores = testScores(ctx), passed = scores.filter(s => s.st === "pass").sort((a, b) => b.score - a.score), failed = scores.filter(s => s.st === "fail").sort((a, b) => a.score - b.score);
+  {
+    let text = passed.length ? `Its strongest result is ${NARR_LABELS[passed[0].k]} at ${nVal(passed[0].k, passed[0].val)} against a ${nGoal(passed[0].dir)} of ${nTgt(passed[0].k, passed[0].dir, passed[0].t)}.` : "None of the tests is met outright.";
+    text += failed.length ? ` The biggest gap is ${NARR_LABELS[failed[0].k]}: ${nVal(failed[0].k, failed[0].val)} against a ${nGoal(failed[0].dir)} of ${nTgt(failed[0].k, failed[0].dir, failed[0].t)}.` : " Nothing misses its target outright.";
+    if (v.n < 10) text += ` ${plural(10 - v.n, "test")} couldn't be worked out${r.m.discount == null ? " (the discount needs a market value)" : ""}.`;
+    S.tests = {lead: `Grade ${g}: meets ${v.pass} of ${v.n} tests${v.close ? `, ${v.close} close` : ""}.`, text};
+  }
+
+  // ---- stress
+  if (noRent) S.stress = {lead: "Nothing to stress yet.", text: "Stress tests need a rent."};
+  else {
+    const lead = cf < 0 ? "Already short before any stress." : scen.storm >= 0 ? "Holds up in a bad year." : (!hasBond || scen.rate2 >= 0) ? "Survives a rate rise, not a perfect storm." : "Sensitive to interest rates.";
+    let text = hasBond ? `If prime rises 2 percentage points, monthly cash flow goes from ${nR(cf)} to ${nR(scen.rate2)}.` : "With no bond, interest-rate rises don't affect it.";
+    text += ` In a perfect storm (rates up 2 points, rent down 10%, two months empty and levies up 25%) it would be ${nR(scen.storm)} a month.`;
+    if (bp.rate.kind === "ok") text += ` Cash flow turns negative if the interest rate reaches ${bp.rate.v.toFixed(2)}%.`;
+    else if (bp.rate.kind === "never") text += " Even at very high interest rates the rent still covers the costs.";
+    if (isFinite(bp.rentDrop) && bp.rentDrop >= 0 && cf >= 0) text += ` The rent could fall ${bp.rentDrop.toFixed(0)}% before the deal stops paying for itself.`;
+    S.stress = {lead, text};
+  }
+
+  // ---- price
+  {
+    const price = r.price, oc = bp.offerCf, oq = bp.offerCoc, cfName = T.cfMonth === 0 ? "break even" : `make ${nR(T.cfMonth)} a month`;
+    const say = (o, goal) => o.kind === "never" ? `No price lets it ${goal}, because the rent can't cover the running costs.`
+      : (o.kind === "above" || o.v >= price) ? `At this price it already manages to ${goal}.`
+      : `To ${goal} the price would need to be about ${nRa(o.v)}, ${Math.round((1 - o.v / price) * 100)}% below ${nRa(price)}.`;
+    const lead = oc.kind === "never" ? "Price alone can't fix it." : (oc.kind === "above" || oc.v >= price) ? "The price already works for cash flow." : `Breaks even at about ${nRa(oc.v)}.`;
+    let text = say(oc, cfName);
+    if (r.cashIn > 0) text += " " + say(oq, `reach your ${T.coc}% cash-on-cash target`);
+    S.offer = {lead, text};
+  }
+
+  // ---- the long view
+  {
+    const lead = tl.crossover === 1 ? "Positive from year one." : tl.crossover ? `Rent catches up in year ${tl.crossover}.` : "Rent doesn't catch up in 20 years.";
+    let text = tl.topUp > 0 ? `Until then you would top up about ${nRa(tl.topUp)} in total. ` : "";
+    text += `Over 20 years the rent brings in ${nRa(tl.income)} against ${nRa(tl.expenses)} of costs and bond: a net ${tl.net >= 0 ? "surplus" : "shortfall"} of ${nRa(Math.abs(tl.net))}, not counting the sale.`;
+    if (tl.bondFreeYear && tl.bondFreeYear > 1 && tl.bondFreeYear <= 20) text += ` The bond is paid off in year ${tl.bondFreeYear - 1}.`;
+    text += tl.pv >= 0 ? ` In today's money, at ${tl.discRate.toFixed(2)}% a year, those 20 years of cash are worth ${nR(tl.pv)}.` : ` In today's money, at ${tl.discRate.toFixed(2)}% a year, those 20 years of cash come to a net cost of ${nRa(-tl.pv)}.`;
+    S.longTerm = {lead, text};
+  }
+
+  // ---- headline and summary
+  const headline = noRent ? "No rent entered yet."
+    : cf >= 50 ? `Pays for itself from day one, with ${nRa(cf)} a month to spare.`
+    : cf > -50 ? "Roughly breaks even from day one."
+    : tl.crossover ? `Needs ${nRa(-cf)} a month from your pocket until the rent catches up in year ${tl.crossover}.`
+    : `Needs ${nRa(-cf)} a month from your pocket, and the rent doesn't catch up within 20 years.`;
+  let summary = `Grade ${g}: it meets ${v.pass} of ${v.n} tests${v.close ? ` and is close on ${v.close}` : ""}.`;
+  summary += r.cashIn > 0 ? ` It needs ${nRa(r.cashIn)} upfront` : " It needs no cash upfront";
+  summary += isFinite(r.m.irr) && r.m.irr > -99.9 ? ` and returns ${nP(r.m.irr)} a year over ${plural(H, "year")} on these assumptions.` : ", and on these assumptions the money doesn't come back.";
+  if (!noRent) summary += ` In a perfect storm it would ${scen.storm >= 0 ? `still leave ${nRa(scen.storm)} a month` : `cost ${nRa(-scen.storm)} a month`}.`;
+
+  // ---- strengths and watch-outs (watch-outs only from missed tests and real risks; strengths only from met tests and real buffers)
+  const strengths = [], watch = [];
+  if (!noRent && cf >= 50) strengths.push(`Leaves ${nRa(cf)} a month after every cost.`);
+  if (!noRent && scen.storm >= 0) strengths.push("Still cash-positive in a perfect storm.");
+  if (!noRent && cf <= -50) watch.push(`Costs you ${nRa(-cf)} a month in year 1.`);
+  if (!noRent && tl.crossover === null) watch.push("The rent doesn't catch up with the costs within 20 years.");
+  if (!noRent && cf >= 0 && scen.storm < 0) watch.push(`Turns negative in a perfect storm (${nR(scen.storm)} a month).`);
+  // Monthly cash flow is already covered by the cash-flow lines above, so it isn't repeated as a test.
+  passed.filter(s => s.k !== "cfMonth").forEach(s => strengths.push(s.dir === "lo" ? `${cap(NARR_LABELS[s.k])} of ${nVal(s.k, s.val)} is inside your ${nTgt(s.k, s.dir, s.t)} limit.` : `${cap(NARR_LABELS[s.k])} of ${nVal(s.k, s.val)} beats your ${nTgt(s.k, s.dir, s.t)} target.`));
+  failed.filter(s => s.k !== "cfMonth").forEach(s => watch.push(`${cap(NARR_LABELS[s.k])} is ${nVal(s.k, s.val)} against your ${nTgt(s.k, s.dir, s.t)} ${nGoal(s.dir)}.`));
+  if (r.legalBlank && r.legal > 0 && watch.length < 3) watch.push("Attorney and bond fees are an estimate; a quote may differ.");
+
+  return {headline, summary, sections: S, strengths: strengths.slice(0, 3), watch: watch.slice(0, 3), split};
+}
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+// The executive summary for two or more deals.
+function narratePortfolio(ctxs) {
+  const n = ctxs.length, fit = ctxs.filter(c => c.v.cls === "pass").length;
+  const sumCash = ctxs.reduce((a, c) => a + c.r.cashIn, 0), sumCf = ctxs.reduce((a, c) => a + c.r.m.cfMonth, 0);
+  const pos = ctxs.filter(c => c.r.m.cfMonth >= 0).length;
+  const best = (f) => ctxs.reduce((b, c) => (b === null || f(c) > f(b)) ? c : b, null);
+  const lead = {
+    grade: best(c => c.v.ratio * 1000 + (isFinite(c.r.m.coc) ? c.r.m.coc : 0) / 1000),
+    cash: best(c => c.r.m.cfMonth),
+    coc: best(c => isFinite(c.r.m.coc) ? c.r.m.coc : (c.r.m.coc > 0 ? 1e9 : -1e9)),
+    storm: best(c => c.scen.storm),
+    least: best(c => -c.r.cashIn)
+  };
+  const headline = fit === n ? `All ${n} deals fit your buy box.` : fit === 0 ? `None of the ${n} deals fits your buy box yet.` : `${fit} of ${n} deals ${fit === 1 ? "fits" : "fit"} your buy box.`;
+  let summary = `Together they need ${nRa(sumCash)} upfront and, in year 1, ${sumCf >= 0 ? `leave ${nRa(sumCf)} a month after all costs` : `cost ${nRa(-sumCf)} a month more than the rent brings in`}. ${pos === n ? "Every deal pays for itself" : pos === 0 ? "None pays for itself" : pos === 1 ? `1 of ${n} pays for itself` : `${pos} of ${n} pay for themselves`} from day one.`;
+  const leaders = [
+    {label: "Highest grade", name: lead.grade.name, value: `Grade ${lead.grade.g}`},
+    {label: "Most cash flow", name: lead.cash.name, value: nR(lead.cash.r.m.cfMonth) + " /m"},
+    {label: "Best cash-on-cash", name: lead.coc.name, value: isFinite(lead.coc.r.m.coc) ? nP(lead.coc.r.m.coc) : "No cash in"},
+    {label: "Most resilient", name: lead.storm.name, value: nR(lead.storm.scen.storm) + " /m in a storm"},
+    {label: "Least cash needed", name: lead.least.name, value: nRa(lead.least.r.cashIn)}
+  ];
+  const trade = lead.least !== lead.cash
+    ? `The trade-off: ${lead.least.name} asks for the least money upfront (${nRa(lead.least.r.cashIn)}), while ${lead.cash.name} does best month to month (${nR(lead.cash.r.m.cfMonth)}).`
+    : `${lead.cash.name} needs the least cash upfront and also does best month to month.`;
+  return {headline, summary, leaders, trade, fit, pos, sumCash, sumCf};
+}
+/*NARRATIVE-END*/
+
 
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const DRAFT_KEY="buybox-draft", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings","guide","terms"];
+const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report"];
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -906,7 +1287,7 @@ const CMP_ROWS=[
 // Example deals for a first visit, injected from data/deals.json by build.js.
 const SEED_DEALS=[{"area":"Example only · Gauteng","capGrowth":5,"costGrowth":7,"created":1758740000001,"deposit":10,"hold":10,"id":"ex-newbuild","inCompare":true,"insurance":100,"legal":"","levy":1100,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: new-build 1-bed","newDev":true,"notes":"Made-up example, not a real listing. A typical new-build 1-bed: no transfer duty and low repairs, but the bond is bigger than the rent can cover. Delete it once you have added your own deals.","otherExp":0,"otherIncome":0,"price":950000,"rate":10.75,"rates":450,"reno":0,"rent":8500,"rentGrowth":6,"sellCost":7,"slot":0,"taxRate":0,"term":20,"updated":1790290000000,"vacancy":4},{"area":"Example only · Western Cape","capGrowth":5,"costGrowth":7,"created":1758740000002,"deposit":20,"hold":10,"id":"ex-below-value","inCompare":true,"insurance":150,"legal":"","levy":1800,"maint":5,"marketValue":1500000,"mgmt":11.5,"name":"Example: older 2-bed bought below value","newDev":false,"notes":"Made-up example, not a real listing. An older, under-rented 2-bed bought 23% below its value, with R60k of repairs and the rent brought up to market. It shows how the price you pay changes every number.","otherExp":0,"otherIncome":0,"price":1150000,"rate":10.75,"rates":900,"reno":60000,"rent":13000,"rentGrowth":6,"sellCost":7,"slot":1,"taxRate":0,"term":20,"updated":1790286400000,"vacancy":4},{"area":"Example only · KwaZulu-Natal","capGrowth":5,"costGrowth":7,"created":1758740000003,"deposit":40,"hold":10,"id":"ex-townhouse","inCompare":true,"insurance":200,"legal":"","levy":1500,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: townhouse with a bigger deposit","newDev":false,"notes":"Made-up example, not a real listing. A 40% deposit makes the monthly cash flow easier but ties up more of your own money. Compare its cash-on-cash with the others.","otherExp":0,"otherIncome":0,"price":1350000,"rate":10.75,"rates":850,"reno":0,"rent":16000,"rentGrowth":6,"sellCost":7,"slot":2,"taxRate":0,"term":20,"updated":1790282800000,"vacancy":5},{"area":"Example only · Free State","capGrowth":5,"costGrowth":7,"created":1758740000004,"deposit":10,"hold":10,"id":"ex-studio","inCompare":false,"insurance":80,"legal":"","levy":950,"maint":5,"marketValue":"","mgmt":12,"name":"Example: studio near a campus","newDev":false,"notes":"Made-up example, not a real listing. Student lets can empty out between terms, so the vacancy is set higher. Tick it into Compare to see it next to the others.","otherExp":0,"otherIncome":0,"price":720000,"rate":10.75,"rates":350,"reno":0,"rent":7200,"rentGrowth":6,"sellCost":7,"slot":3,"taxRate":0,"term":20,"updated":1790279200000,"vacancy":8}];
 
-const S={props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
+const S={report:{ids:[],back:"portfolio"},reportSel:new Set(),props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
 const dirty=new Set(); let targetsDirty=false;
 const custom={rate:0,rent:0,vac:null,levy:0,vacTouched:false};
 
@@ -942,7 +1323,7 @@ function storeDraft(){ try{ if(S.draft) localStorage.setItem(DRAFT_KEY,JSON.stri
 function setView(v){
   if(v==="deals") v="portfolio";
   if(!VIEWS.includes(v)) v="analyse";
-  S.view=v;
+  S.view=v; document.documentElement.dataset.view=v;
   VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("[data-v]").forEach(a=>a.setAttribute("aria-current",a.dataset.v===v?"page":"false"));
   renderView(true);
@@ -958,6 +1339,7 @@ function renderView(rebuild){
   else if(S.view==="compare") renderCompare();
   else if(S.view==="guide") renderGuide();
   else if(S.view==="terms"){}
+  else if(S.view==="report") renderReport();
   else renderSettings();
 }
 const TOGGLE_M=`<button type="button" class="themebtn m" data-theme-toggle aria-label="Switch light or dark mode"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg></button>`;
@@ -973,19 +1355,27 @@ function renderTopInner(){
     savedOrder().forEach(p=>opts.push(`<option value="${esc(p.id)}" ${p.id===S.cur?"selected":""}>${esc(p.name||"Untitled")}</option>`));
     c.innerHTML=`${mb}<span class="cap">Analyse</span><span class="sep">/</span><select class="pick" id="dealPick" aria-label="Deal on the desk">${opts.join("")}</select>`;
     const d=curDeal();
-    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
-    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
+    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
+    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
     $("dealPick")&&$("dealPick").addEventListener("change",e=>{ S.cur=e.target.value; resetCustom(); renderView(true); });
     $("newDeal").addEventListener("click",newDeal);
+    $("rptOne").addEventListener("click",()=>{ if(curDeal()) openReport([S.cur],"analyse"); });
     if(S.cur==="draft"){ $("saveDeal").addEventListener("click",saveDraft); $("discard").addEventListener("click",e=>confirmThen(e.currentTarget,"Discard draft?",discardDraft)); }
     else if(d){ $("inCmp").addEventListener("change",e=>{ if(!toggleCompare(d.id,e.target.checked)) e.target.checked=false; }); $("dupDeal").addEventListener("click",()=>duplicate(d.id)); $("delDeal").addEventListener("click",e=>confirmThen(e.currentTarget,"Delete deal?",()=>deleteDeal(d.id))); }
   } else if(S.view==="portfolio"){
     c.innerHTML=`${mb}<span class="cap">Portfolio</span><span class="sep">/</span><h1>${S.props.length} deal${S.props.length===1?"":"s"} analysed</h1>`;
-    a.innerHTML=`<button type="button" class="btn primary" id="newDeal">Analyse a new deal</button>`;
+    const sel=S.props.filter(p=>S.reportSel.has(p.id)).map(p=>p.id);
+    a.innerHTML=`<button type="button" class="btn" id="rptSel" ${sel.length?"":"disabled"} title="Tick deals in the Report column first">Investor report (${sel.length})</button><button type="button" class="btn primary" id="newDeal">Analyse a new deal</button>`;
     $("newDeal").addEventListener("click",newDeal);
+    $("rptSel").addEventListener("click",()=>{ const ids=savedOrder().filter(p=>S.reportSel.has(p.id)).map(p=>p.id); if(ids.length) openReport(ids,"portfolio"); });
   } else if(S.view==="compare"){
     const n=S.props.filter(p=>p.inCompare).length;
     c.innerHTML=`${mb}<span class="cap">Compare</span><span class="sep">/</span><h1>${n} deal${n===1?"":"s"} side by side</h1>`;
+    a.innerHTML=n?`<button type="button" class="btn" id="rptCmp">Investor report</button>`:"";
+    if(n) $("rptCmp").addEventListener("click",()=>openReport(S.props.filter(p=>p.inCompare).sort((x,y)=>(x.created||0)-(y.created||0)).map(p=>p.id),"compare"));
+  } else if(S.view==="report"){
+    const n=reportItems().length;
+    c.innerHTML=`${mb}<span class="cap">Report</span><span class="sep">/</span><h1>Investor report${n?` · ${n} deal${n===1?"":"s"}`:""}</h1>`;
     a.innerHTML="";
   } else if(S.view==="terms"){
     c.innerHTML=`${mb}<span class="cap">About</span><span class="sep">/</span><h1>Terms &amp; privacy</h1>`;
@@ -1129,7 +1519,8 @@ function renderReadout(r){
   el.innerHTML=`<div><span>Transfer duty</span><b>${rand(r.duty)}</b></div><div><span>Attorney & bond fees</span><b>${rand(r.legal)}${r.legalBlank&&r.legal>0?" est.":""}</b></div><div><span>Bond amount</span><b>${rand(r.loan)}</b></div><div><span>Bond /month</span><b>${rand(r.pmt)}</b></div>`;
   const d=curDeal(), lh=$("legalHint"); if(lh&&d) lh.textContent=d.newDev?"Usually paid by developer":`Blank = est. ${compactR(r.legalEst)}`;
 }
-function renderStress(d,r){
+// Breaking points and max offer prices as [status, question, answer, detail] cards (shared with the report).
+function breakCards(d,r){
   const bp=breakPoints(d,S.targets), price=r.price, rate=num(({...DEFAULTS,...d}).rate);
   const c=[];
   if(bp.rate.kind==="nobond") c.push(["good","Rate it survives","No bond","Cash purchase"]);
@@ -1150,8 +1541,14 @@ function renderStress(d,r){
   };
   c.push(offer(bp.offerCoc,`Max price for ${S.targets.coc}% CoC`,true));
   c.push(offer(bp.offerCf,S.targets.cfMonth===0?"Max price to break even":`Max price for ${rand(S.targets.cfMonth)}/m`));
+  return c;
+}
+// Every stress scenario, re-run and graded (shared with the report).
+function scenarioRows(d){ return SCENARIOS.map(s=>{ const x=analyse(s.apply({...DEFAULTS,...d})); x.v=verdict(x,S.targets); x.g=grade(x.v); return {s,x}; }); }
+function renderStress(d,r){
+  const c=breakCards(d,r);
   $("bps").innerHTML=c.map(([s,q,a,sub])=>`<div class="bpc"><span class="q"><i class="dot ${s==="good"?"pass":s==="warn"?"close":"fail"}"></i>${esc(q)}</span><span class="a ${s}">${esc(a)}</span><span class="s">${esc(sub)}</span></div>`).join("");
-  const rows=SCENARIOS.map(s=>{ const x=analyse(s.apply({...DEFAULTS,...d})); x.v=verdict(x,S.targets); x.g=grade(x.v); return {s,x}; });
+  const rows=scenarioRows(d);
   const maxAbs=Math.max(1,...rows.map(o=>Math.abs(o.x.m.cfMonth)));
   let h=`<thead><tr><th>Scenario</th><th>Cash flow /m</th><th>CoC</th><th>DSCR</th><th>IRR</th><th>Grade</th></tr></thead><tbody>`;
   rows.forEach(({s,x})=>{
@@ -1185,8 +1582,9 @@ $("csReset").addEventListener("click",()=>{ resetCustom(); renderCustom(); });
 
 /* income vs expenses, 20 years */
 $("ie-disc").addEventListener("input",e=>{ if(S.readOnly||e.target.value==="") return; const n=Number(e.target.value); if(!isFinite(n)||n<0) return; S.targets.discountRate=n; scheduleSave("settings/targets"); const d=curDeal(); if(d&&S.view==="analyse"&&!S.db) renderIE(d); });
-function renderIE(d){
-  const tl=timeline(d,20,S.targets.discountRate), rows=tl.rows;
+// The four 20-year headline answers as [status, answer, detail] (shared with the report).
+function ieSummary(tl){
+  const rows=tl.rows;
   let c1;
   if(tl.crossover===1) c1=["good","From year 1","Rent covers every cost from the start"];
   else if(tl.crossover) c1=[tl.crossover<=5?"warn":"bad","Year "+tl.crossover,`Rent covers running costs and the bond from year ${tl.crossover} on`];
@@ -1195,22 +1593,25 @@ function renderIE(d){
   const topC=tl.topUp===0?"good":tl.topUp<50000?"warn":"bad";
   const netC=tl.net>=0?"good":"bad";
   const bf=tl.bondFreeYear;
-  const setA=(id,cls,txt)=>{ const el=$(id); el.className="a "+cls; el.textContent=txt; };
-  setA("ie1a",c1[0],c1[1]); $("ie1s").textContent=c1[2];
-  setA("ie2a",topC,tl.topUp===0?"R 0":rand(tl.topUp)); $("ie2s").textContent=tl.topUp===0?"The deal never needs money from your pocket":"Total of every shortfall year you'd fund yourself";
-  setA("ie3a",netC,rand(tl.net)); $("ie3s").textContent=`${compactR(tl.income)} rent in, ${compactR(tl.expenses)} costs out${bf&&bf>1&&bf<=20?` · bond-free from year ${bf}`:""}. Excludes the sale`;
-  setA("ie4a",tl.pv>=0?"good":"bad",rand(tl.pv));
-  $("ie4s").textContent=tl.discRate>0?`What those 20 years of cash are worth today at ${tl.discRate.toFixed(2)}% a year. ${tl.pv<0&&tl.net>0?"In today's money the early shortfalls outweigh the later surpluses":tl.pv<tl.net&&tl.net>0?`R ${sp(tl.net-tl.pv)} less than the raw total`:""}`:"No discounting at 0%";
-  const di=$("ie-disc"); if(di!==document.activeElement) di.value=num(S.targets.discountRate);
-  const box=$("ieChart"), fig=$("figIE");
-  const W=Math.max(300,box.clientWidth||600), narrow=W<520;
+  return [
+    c1,
+    [topC,tl.topUp===0?"R 0":rand(tl.topUp),tl.topUp===0?"The deal never needs money from your pocket":"Total of every shortfall year you'd fund yourself"],
+    [netC,rand(tl.net),`${compactR(tl.income)} rent in, ${compactR(tl.expenses)} costs out${bf&&bf>1&&bf<=20?` · bond-free from year ${bf}`:""}. Excludes the sale`],
+    [tl.pv>=0?"good":"bad",rand(tl.pv),tl.discRate>0?`What those 20 years of cash are worth today at ${tl.discRate.toFixed(2)}% a year. ${tl.pv<0&&tl.net>0?"In today's money the early shortfalls outweigh the later surpluses":tl.pv<tl.net&&tl.net>0?`R ${sp(tl.net-tl.pv)} less than the raw total`:""}`:"No discounting at 0%"]
+  ];
+}
+// The 20-year income vs costs chart as SVG markup without its closing tag, plus the geometry the hover layer needs
+// (shared with the report, which closes it with "</svg>").
+const IE_COL={income:"var(--s3)",running:"var(--s2)",bond:"var(--s1)"};
+function ieLegendHtml(){ const COL=IE_COL; return `<span><i style="border-color:${COL.income}"></i>Rent collected</span><span><i style="border-color:${COL.running};border-top-width:8px;width:10px"></i>Running costs</span><span><i style="border-color:${COL.bond};border-top-width:8px;width:10px"></i>Bond repayment</span>`; }
+function ieChart(tl,W){
+  const rows=tl.rows, narrow=W<520;
   const padL=narrow?46:58, padR=10, top=24, bottom=28, H=narrow?240:290;
   const maxV=Math.max(...rows.map(r=>Math.max(r.income,r.expenses)));
   const ticks=niceTicks(0,maxV,5), yMax=ticks[ticks.length-1];
   const n=rows.length, band=(W-padL-padR)/n, bw=Math.max(4,band*0.62);
   const cx=i=>padL+band*i+band/2, y=v=>top+(1-v/yMax)*(H-top-bottom);
-  const COL={income:"var(--s3)",running:"var(--s2)",bond:"var(--s1)"};
-  $("ieLegend").innerHTML=`<span><i style="border-color:${COL.income}"></i>Rent collected</span><span><i style="border-color:${COL.running};border-top-width:8px;width:10px"></i>Running costs</span><span><i style="border-color:${COL.bond};border-top-width:8px;width:10px"></i>Bond repayment</span>`;
+  const COL=IE_COL;
   let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Rent collected against running costs and bond repayments over 20 years">`;
   ticks.forEach(t=>{ s+=`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="${t===0?"var(--axis)":"var(--grid)"}"/><text x="${padL-8}" y="${y(t)+4}" text-anchor="end">${compactR(t)}</text>`; });
   rows.forEach((r,i)=>{
@@ -1227,6 +1628,17 @@ function renderIE(d){
   s+=`<polyline fill="none" stroke="var(--surface)" stroke-width="5" stroke-linejoin="round" points="${rows.map((r,i)=>cx(i)+","+y(r.income)).join(" ")}"/>`;
   s+=`<polyline fill="none" stroke="${COL.income}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${rows.map((r,i)=>cx(i)+","+y(r.income)).join(" ")}"/>`;
   s+=`<circle cx="${cx(n-1)}" cy="${y(rows[n-1].income)}" r="4" fill="${COL.income}" stroke="var(--surface)" stroke-width="2"/>`;
+  return {s,padL,padR,top,bottom,H,n,band,cx,y,COL};
+}
+function renderIE(d){
+  const tl=timeline(d,20,S.targets.discountRate), rows=tl.rows, sum=ieSummary(tl);
+  const setA=(id,cls,txt)=>{ const el=$(id); el.className="a "+cls; el.textContent=txt; };
+  sum.forEach(([cls,a,sub],i)=>{ setA("ie"+(i+1)+"a",cls,a); $("ie"+(i+1)+"s").textContent=sub; });
+  const di=$("ie-disc"); if(di!==document.activeElement) di.value=num(S.targets.discountRate);
+  const box=$("ieChart"), fig=$("figIE");
+  const W=Math.max(300,box.clientWidth||600);
+  $("ieLegend").innerHTML=ieLegendHtml();
+  let {s,padL,padR,top,bottom,H,n,band,cx,y,COL}=ieChart(tl,W);
   s+=`<line class="xh" x1="0" x2="0" y1="${top}" y2="${H-bottom}" stroke="var(--text-2)" stroke-dasharray="3 3" visibility="hidden"/><g class="dots"></g><rect class="hitr" x="${padL}" y="${top}" width="${W-padL-padR}" height="${H-top-bottom}" fill="transparent"/></svg>`;
   box.innerHTML=s;
   const svg=box.querySelector("svg"), hit=svg.querySelector(".hitr"), xh=svg.querySelector(".xh"), dots=svg.querySelector(".dots");
@@ -1327,6 +1739,7 @@ function renderPortfolio(){
   if(S.mode==="loading"){ st.innerHTML=""; t.innerHTML=""; return; }
   const rs=new Map(S.props.map(p=>[p.id,full(p)]));
   const n=S.props.length, all=[...rs.values()];
+  S.reportSel.forEach(id=>{ if(!rs.has(id)) S.reportSel.delete(id); });
   const ys=all.map(r=>r.m.grossYield).filter(isFinite), tot=all.reduce((a,r)=>a+r.price,0), avgY=ys.length?ys.reduce((a,b)=>a+b,0)/ys.length:NaN;
   const pos=all.filter(r=>r.m.cfMonth>=0).length, best=all.reduce((b,r)=>!b||r.v.ratio>b.v.ratio?r:b,null);
   st.innerHTML=`<div class="stat"><span class="cap">Deals analysed</span><b>${n}</b><small>${S.props.filter(p=>p.inCompare).length} in comparison</small></div>
@@ -1337,7 +1750,7 @@ function renderPortfolio(){
   if(!n){ t.innerHTML=`<tbody><tr><td><div class="empty"><b>No deals yet</b><span>Analyse a deal and save it to build your portfolio.</span><button class="btn primary" type="button" id="emptyNew">Analyse a new deal</button></div></td></tr></tbody>`; $("emptyNew").addEventListener("click",newDeal); return; }
   const c=PCOLS.find(x=>x.k===S.sort.k)||PCOLS[PCOLS.length-1];
   const list=[...S.props].sort((a,b)=>{ const va=c.v(a,rs.get(a.id)), vb=c.v(b,rs.get(b.id)); return (va>vb?1:va<vb?-1:0)*S.sort.dir; });
-  let h=`<thead><tr>${PCOLS.map(x=>`<th class="${x.r?"r":""}" ${S.sort.k===x.k?`aria-sort="${S.sort.dir>0?"ascending":"descending"}"`:""}><button type="button" data-sort="${x.k}">${x.l}${S.sort.k===x.k?(S.sort.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}<th class="r">Compare</th></tr></thead><tbody>`;
+  let h=`<thead><tr>${PCOLS.map(x=>`<th class="${x.r?"r":""}" ${S.sort.k===x.k?`aria-sort="${S.sort.dir>0?"ascending":"descending"}"`:""}><button type="button" data-sort="${x.k}">${x.l}${S.sort.k===x.k?(S.sort.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}<th class="r">Compare</th><th class="r"><label class="toggle rsel-all" style="padding:3px 8px" title="Select all for the report"><input type="checkbox" id="rselAll" ${n&&S.props.every(p=>S.reportSel.has(p.id))?"checked":""}> Report</label></th></tr></thead><tbody>`;
   list.forEach(p=>{
     const r=rs.get(p.id);
     h+=`<tr data-open="${esc(p.id)}">
@@ -1349,35 +1762,20 @@ function renderPortfolio(){
       <td class="r ${r.m.cfStorm<0?"bad":"good"}">${rand(r.m.cfStorm)}</td>
       <td class="r">${rand(r.cashIn)}</td><td class="r" style="font-family:var(--sans);color:var(--muted)">${ago(p.updated||p.created)}</td>
       <td class="r"><label class="toggle" style="padding:3px 8px" data-stop><input type="checkbox" data-cmp="${esc(p.id)}" ${p.inCompare?"checked":""} ${S.readOnly?"disabled":""}><span class="sw" style="background:${p.inCompare?col(p):"var(--line-2)"}"></span></label></td>
+      <td class="r" data-stop><input type="checkbox" class="rsel" data-rsel="${esc(p.id)}" aria-label="Include ${esc(p.name||"Untitled")} in the investor report" ${S.reportSel.has(p.id)?"checked":""}></td>
     </tr>`;
   });
   t.innerHTML=h+"</tbody>";
   t.querySelectorAll("[data-sort]").forEach(b=>b.addEventListener("click",()=>{ const k=b.dataset.sort; S.sort = S.sort.k===k?{k,dir:-S.sort.dir}:{k,dir:(k==="name"||k==="price"||k==="cash")?1:-1}; renderPortfolio(); }));
   t.querySelectorAll("tbody tr[data-open]").forEach(tr=>tr.addEventListener("click",e=>{ if(e.target.closest("[data-stop]")) return; S.cur=tr.dataset.open; resetCustom(); go("analyse"); }));
   t.querySelectorAll("[data-cmp]").forEach(cb=>cb.addEventListener("change",()=>{ if(!toggleCompare(cb.dataset.cmp,cb.checked)) cb.checked=false; renderPortfolio(); }));
+  t.querySelectorAll("[data-rsel]").forEach(cb=>cb.addEventListener("change",()=>{ if(cb.checked) S.reportSel.add(cb.dataset.rsel); else S.reportSel.delete(cb.dataset.rsel); renderTop(); const all=$("rselAll"); if(all) all.checked=S.props.every(p=>S.reportSel.has(p.id)); }));
+  const allBox=$("rselAll"); if(allBox) allBox.addEventListener("change",()=>{ if(allBox.checked) S.props.forEach(p=>S.reportSel.add(p.id)); else S.reportSel.clear(); renderPortfolio(); renderTop(); });
 }
 
-/* ================= COMPARE ================= */
-function renderCompare(){
-  const chips=$("chips");
-  if(S.mode==="loading"){ chips.innerHTML=""; return; }
-  const cnt=S.props.filter(p=>p.inCompare).length;
-  chips.innerHTML=S.props.length?[...S.props].sort((a,b)=>(a.created||0)-(b.created||0)).map(p=>`<button type="button" class="chip-t" data-id="${esc(p.id)}" aria-pressed="${!!p.inCompare}" ${(!p.inCompare&&cnt>=MAX_CMP)||S.readOnly?"disabled":""}><span class="box">${p.inCompare?"✓":""}</span>${p.inCompare?`<i class="sw" style="background:${col(p)}"></i>`:""}${esc(p.name||"Untitled")}</button>`).join(""):`<span style="color:var(--muted)">Save some deals first.</span>`;
-  chips.querySelectorAll(".chip-t").forEach(b=>b.addEventListener("click",()=>{ const p=S.props.find(x=>x.id===b.dataset.id); if(toggleCompare(p.id,!p.inCompare)){ renderTop(); renderCompare(); } }));
-  const props=S.props.filter(p=>p.inCompare).sort((a,b)=>(a.created||0)-(b.created||0));
-  const L=$("leaders"), t=$("cmp");
-  if(props.length<2){ L.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Pick at least two deals</b><span>Select deals above to put them side by side.</span></div>`; $("cmpPanel").hidden=true; $("cmpCharts").hidden=true; return; }
-  $("cmpPanel").hidden=false; $("cmpCharts").hidden=false;
-  const rs={}; props.forEach(p=>rs[p.id]=full(p));
-  const lead=(label,score,show)=>{ let best=null,bs=-Infinity; props.forEach(p=>{ const s=score(rs[p.id]); if(s>bs){bs=s;best=p;} }); return `<div class="lead"><span class="cap">${label}</span><span class="who"><i class="sw" style="background:${col(best)}"></i>${esc(best.name||"Untitled")}</span><span class="v">${show(rs[best.id])}</span></div>`; };
-  L.innerHTML=[
-    lead("Highest grade",r=>r.v.ratio*1000+(isFinite(r.m.coc)?r.m.coc:0)/1000,r=>`Grade ${r.g} · ${r.v.pass}/${r.v.n} tests`),
-    lead("Most cash flow",r=>r.m.cfMonth,r=>rand(r.m.cfMonth)+" /m"),
-    lead("Best cash-on-cash",r=>isFinite(r.m.coc)?r.m.coc:(r.m.coc>0?1e9:-1e9),r=>fmt("pct1",r.m.coc)),
-    lead("Most resilient",r=>r.m.cfStorm,r=>rand(r.m.cfStorm)+" /m in the storm"),
-    lead("Least cash required",r=>-r.cashIn,r=>rand(r.cashIn))
-  ].join("");
-  let h=`<thead><tr><th>Metric · target</th>${props.map(p=>`<th><button type="button" data-open="${esc(p.id)}"><i class="sw" style="background:${col(p)}"></i>${esc(p.name||"Untitled")}</button></th>`).join("")}</tr></thead><tbody>`;
+// Rows of the side-by-side table (grade, then every CMP_ROWS group) for these deals (shared with the report).
+function cmpBody(props,rs){
+  let h="";
   h+=`<tr><th scope="row">Grade<small>Share of tests met</small></th>${props.map(p=>{ const r=rs[p.id]; return `<td><span class="gchip g-${r.g}">${r.g}</span> <span style="font-size:12px;color:var(--text-2);margin-left:6px">${verdictText(r.v)}</span></td>`; }).join("")}</tr>`;
   CMP_ROWS.forEach(g=>{
     h+=`<tr class="grp"><th colspan="${props.length+1}">${g.g}<span>${g.gs}</span></th></tr>`;
@@ -1399,6 +1797,30 @@ function renderCompare(){
       h+=`</tr>`;
     });
   });
+  return h;
+}
+/* ================= COMPARE ================= */
+function renderCompare(){
+  const chips=$("chips");
+  if(S.mode==="loading"){ chips.innerHTML=""; return; }
+  const cnt=S.props.filter(p=>p.inCompare).length;
+  chips.innerHTML=S.props.length?[...S.props].sort((a,b)=>(a.created||0)-(b.created||0)).map(p=>`<button type="button" class="chip-t" data-id="${esc(p.id)}" aria-pressed="${!!p.inCompare}" ${(!p.inCompare&&cnt>=MAX_CMP)||S.readOnly?"disabled":""}><span class="box">${p.inCompare?"✓":""}</span>${p.inCompare?`<i class="sw" style="background:${col(p)}"></i>`:""}${esc(p.name||"Untitled")}</button>`).join(""):`<span style="color:var(--muted)">Save some deals first.</span>`;
+  chips.querySelectorAll(".chip-t").forEach(b=>b.addEventListener("click",()=>{ const p=S.props.find(x=>x.id===b.dataset.id); if(toggleCompare(p.id,!p.inCompare)){ renderTop(); renderCompare(); } }));
+  const props=S.props.filter(p=>p.inCompare).sort((a,b)=>(a.created||0)-(b.created||0));
+  const L=$("leaders"), t=$("cmp");
+  if(props.length<2){ L.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Pick at least two deals</b><span>Select deals above to put them side by side.</span></div>`; $("cmpPanel").hidden=true; $("cmpCharts").hidden=true; return; }
+  $("cmpPanel").hidden=false; $("cmpCharts").hidden=false;
+  const rs={}; props.forEach(p=>rs[p.id]=full(p));
+  const lead=(label,score,show)=>{ let best=null,bs=-Infinity; props.forEach(p=>{ const s=score(rs[p.id]); if(s>bs){bs=s;best=p;} }); return `<div class="lead"><span class="cap">${label}</span><span class="who"><i class="sw" style="background:${col(best)}"></i>${esc(best.name||"Untitled")}</span><span class="v">${show(rs[best.id])}</span></div>`; };
+  L.innerHTML=[
+    lead("Highest grade",r=>r.v.ratio*1000+(isFinite(r.m.coc)?r.m.coc:0)/1000,r=>`Grade ${r.g} · ${r.v.pass}/${r.v.n} tests`),
+    lead("Most cash flow",r=>r.m.cfMonth,r=>rand(r.m.cfMonth)+" /m"),
+    lead("Best cash-on-cash",r=>isFinite(r.m.coc)?r.m.coc:(r.m.coc>0?1e9:-1e9),r=>fmt("pct1",r.m.coc)),
+    lead("Most resilient",r=>r.m.cfStorm,r=>rand(r.m.cfStorm)+" /m in the storm"),
+    lead("Least cash required",r=>-r.cashIn,r=>rand(r.cashIn))
+  ].join("");
+  let h=`<thead><tr><th>Metric · target</th>${props.map(p=>`<th><button type="button" data-open="${esc(p.id)}"><i class="sw" style="background:${col(p)}"></i>${esc(p.name||"Untitled")}</button></th>`).join("")}</tr></thead><tbody>`;
+  h+=cmpBody(props,rs);
   t.innerHTML=h+"</tbody>";
   t.querySelectorAll("thead [data-open]").forEach(b=>b.addEventListener("click",()=>{ S.cur=b.dataset.open; resetCustom(); go("analyse"); }));
   renderBars(props,rs);
@@ -1454,6 +1876,218 @@ function initNotice(){
   $("noticeOk").addEventListener("click",()=>{ $("notice").hidden=true; try{ localStorage.setItem(NOTICE_KEY,"1"); }catch(e){} });
 }
 initNotice();
+
+/* ================= INVESTOR REPORT ================= */
+// A printable document for one deal or several. Built only from the engine and the saved deals; printing to PDF
+// happens in the browser, so nothing leaves the device.
+const REPORT_KEY="buybox-report";
+function loadReportMeta(){ try{ const v=JSON.parse(localStorage.getItem(REPORT_KEY))||{}; return {by:String(v.by||"").slice(0,80),for:String(v.for||"").slice(0,80)}; }catch(e){ return {by:"",for:""}; } }
+let reportMeta=loadReportMeta();
+$("rpt-by").value=reportMeta.by; $("rpt-for").value=reportMeta.for;
+[["rpt-by","by"],["rpt-for","for"]].forEach(([id,k])=>$(id).addEventListener("input",e=>{
+  reportMeta[k]=e.target.value.slice(0,80); try{ localStorage.setItem(REPORT_KEY,JSON.stringify(reportMeta)); }catch(err){}
+  const el=$("rptMeta"); if(el) el.innerHTML=reportMetaHtml();
+}));
+$("rptPrint").addEventListener("click",()=>window.print());
+$("rptBack").addEventListener("click",()=>go(S.report.back||"portfolio"));
+function openReport(ids,back){ S.report={ids:[...ids],back}; go("report"); }
+function reportItems(){
+  return S.report.ids.map(id=>{ const p=id==="draft"?S.draft:S.props.find(x=>x.id===id); return p?{id,p,r:full(p),draft:id==="draft"}:null; }).filter(Boolean);
+}
+const rDate=()=>new Date().toLocaleDateString("en-ZA",{day:"numeric",month:"long",year:"numeric"});
+function reportMetaHtml(){
+  return `<span>Date <b>${esc(rDate())}</b></span>${reportMeta.by?`<span>Prepared by <b>${esc(reportMeta.by)}</b></span>`:""}${reportMeta.for?`<span>Prepared for <b>${esc(reportMeta.for)}</b></span>`:""}`;
+}
+const cfCls=v=>v<0?"bad":"good";
+const rBand=(label,val,cls,sub)=>`<div><span>${label}</span><b class="${cls||""}">${val}</b>${sub?`<small>${sub}</small>`:""}</div>`;
+const rNote=(n,key)=>`<aside class="note" data-note="${key}"><span class="k">What the numbers say</span><p class="nlead">${esc(n.lead)}</p><p class="txt">${esc(n.text)}</p></aside>`;
+const rSeal=(ratio,g)=>`<div class="seal g-${g}" role="img" aria-label="Grade ${g}">${sealSvg(ratio,g)}</div>`;
+const rHead=(num,title,right)=>`<header class="sh-head"><span class="sh-num">${num}</span><span class="sh-title">${title}</span>${right?`<span class="r">${right}</span>`:""}</header>`;
+const two=i=>String(i).padStart(2,"0");
+const swatch=it=>`<i class="sw" style="background:${it.draft?"var(--muted)":col(it.p)}"></i>`;
+
+// Monthly cash flow as a waterfall: rent, less empty months, running costs, the bond, down to what's left.
+function waterfallSvg(r){
+  const c=r.costs, M=x=>x/12;
+  const steps=[{l:"Rent",v:M(c.grossA),t:1,f:"var(--s3)"},{l:"Vacancy",v:-M(c.vacancyA),f:"var(--s7)"},{l:"Running",v:-M(c.opexA),f:"var(--s2)"},
+    {l:"NOI",v:M(r.noi),t:1,f:"var(--brass)"},{l:"Bond",v:-M(r.debtA),f:"var(--s1)"},{l:"Cash flow",v:M(r.cfA),t:1,f:r.cfA<0?"var(--bad)":"var(--good)"}];
+  let run=0; const bars=steps.map(st=>{ let y0,y1; if(st.t){ y0=0; y1=st.v; run=st.v; } else { y0=run; y1=run+st.v; run=y1; } return {...st,y0,y1}; });
+  const lo=Math.min(0,...bars.map(b=>Math.min(b.y0,b.y1))), hi=Math.max(1,...bars.map(b=>Math.max(b.y0,b.y1)));
+  const W=420,H=230,top=22,bottom=34,padX=6,n=bars.length,band=(W-2*padX)/n,bw=band*0.58,y=v=>top+(hi-v)/(hi-lo)*(H-top-bottom);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Monthly cash flow from rent down to what is left after the bond"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--axis)"/>`;
+  bars.forEach((b,i)=>{
+    const x=padX+band*i+(band-bw)/2, yt=y(Math.max(b.y0,b.y1)), h=Math.max(1,Math.abs(y(b.y0)-y(b.y1)));
+    s+=`<rect data-step="${i}" data-v="${b.v}" x="${x}" y="${yt}" width="${bw}" height="${h}" rx="2" fill="${b.f}"/>`;
+    if(i<n-1){ const yy=y(b.t?b.y1:b.y1); s+=`<line x1="${x+bw}" x2="${x+band}" y1="${yy}" y2="${yy}" stroke="var(--line-2)" stroke-dasharray="2 2"/>`; }
+    const ly=b.v>=0||b.t?yt-6:yt+h+12;
+    s+=`<text class="v" x="${x+bw/2}" y="${Math.max(11,Math.min(H-bottom+10,ly))}" text-anchor="middle">${compactR(b.v)}</text><text x="${x+bw/2}" y="${H-12}" text-anchor="middle">${b.l}</text>`;
+  });
+  return s+"</svg>";
+}
+// Where every R100 of rent goes, from the commentary module's split (always adds to 100).
+function splitHtml(sp){
+  if(!sp) return `<p class="txt">No rent entered.</p>`;
+  const parts=[["Empty months",sp.vacancy,"var(--s7)"],["Running costs",sp.running,"var(--s2)"],["Bond",sp.bond,"var(--s1)"]];
+  if(sp.left>0) parts.push(["Left for you",sp.left,"var(--good)"]);
+  const total=sp.left<0?100-sp.left:100;
+  return `<div class="bar">${parts.map(([l,v,c])=>`<i data-v="${v}" title="${l}" style="width:${Math.max(0,v)/total*100}%;background:${c}"></i>`).join("")}${sp.left<0?`<span class="mark" style="left:${100/total*100}%" title="Rent"></span>`:""}</div>
+    <ul>${parts.map(([l,v,c])=>`<li><i style="background:${c}"></i><b>R${v}</b>${l}</li>`).join("")}${sp.left<0?`<li><i style="background:var(--bad)"></i><b>R${-sp.left}</b>You add, beyond the rent</li>`:""}</ul>`;
+}
+
+// A fine brass rosette for the cover: rings, a tick scale, a ring of text and the grade (or deal count) in outline.
+function coverOrnament(big,small){
+  let ticks=""; for(let i=0;i<120;i++){ const a=i/120*2*Math.PI, r1=i%10===0?168:174, r2=180; ticks+=`<line x1="${220+r1*Math.cos(a)}" y1="${220+r1*Math.sin(a)}" x2="${220+r2*Math.cos(a)}" y2="${220+r2*Math.sin(a)}" stroke="var(--brass-line)" stroke-width="1"/>`; }
+  return `<svg class="cv-orn" viewBox="0 0 440 440" aria-hidden="true"><defs><path id="cvRing" d="M220,220 m-150,0 a150,150 0 1,1 300,0 a150,150 0 1,1 -300,0"/></defs>
+    <circle cx="220" cy="220" r="205" fill="none" stroke="var(--brass-soft)"/><circle cx="220" cy="220" r="190" fill="none" stroke="var(--brass-line)"/>${ticks}
+    <circle cx="220" cy="220" r="130" fill="none" stroke="var(--brass-line)"/><circle cx="220" cy="220" r="124" fill="none" stroke="var(--brass-soft)"/>
+    <text><textPath href="#cvRing" startOffset="0">BUY BOX · INVESTOR PACK · RENTAL PROPERTY ANALYSIS · SOUTH AFRICA ·</textPath></text>
+    <text class="big" x="220" y="262" text-anchor="middle">${esc(big)}</text><text class="small" x="220" y="292" text-anchor="middle">${esc(small)}</text></svg>`;
+}
+function rptCover(items,ctxs,port){
+  const one=items.length===1, n1=one?narrateDeal(ctxs[0]):null;
+  const cf=items.reduce((a,it)=>a+it.r.m.cfMonth,0), cash=items.reduce((a,it)=>a+it.r.cashIn,0);
+  const third=one?["Grade",items[0].r.g,`${items[0].r.v.pass} of ${items[0].r.v.n} tests met`]:["Fit your buy box",`${port.fit} of ${items.length}`,""];
+  const seals=items.slice(0,6).map(it=>`<div class="cv-seal">${rSeal(it.r.v.ratio,it.r.g)}<div><b>${esc(it.p.name||"Untitled")}</b><small>${esc(verdictText(it.r.v))}</small></div></div>`).join("")+(items.length>6?`<div class="cv-seal"><small>and ${items.length-6} more</small></div>`:"");
+  return `<section class="sheet cover rpt-dark" data-r="cover"><div class="cv">
+    <div class="cv-top"><span class="cv-brand">${LOGO}Buy Box</span><span>Investor pack</span></div>
+    ${coverOrnament(one?items[0].r.g:String(items.length),one?"GRADE":"DEALS")}
+    <div class="cv-main">
+      <span class="cv-eyebrow">Rental property analysis · South Africa</span><div class="cv-rule"></div>
+      <h1 class="cv-title">${one?esc(items[0].p.name||"Untitled"):`${items.length} rental property deals`}</h1>
+      <p class="cv-sub" data-r="cover-sub">${esc(one?n1.headline:port.headline)}</p>
+      ${one?"":`<div class="cv-seals">${seals}</div>`}
+      <div class="cv-stats">${rBand(one?"Cash flow, month 1":"Cash flow, month 1",rand(cf))}${rBand(one?"Cash required":"Total cash required",rand(cash))}${rBand(third[0],third[1],"",third[2])}</div>
+    </div>
+    <div class="cv-foot"><div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div><span class="fine2">A calculator, not financial advice</span></div>
+  </div></section>`;
+}
+function rptExec(items,ctxs,port){
+  const one=items.length===1;
+  let h=`<section class="sheet" data-r="exec">${rHead("01","Executive summary",esc(rDate()))}`;
+  if(one){
+    const it=items[0], r=it.r, n=narrateDeal(ctxs[0]);
+    h+=`<h2 class="pull" data-r="exec-headline">${esc(n.headline)}</h2><p class="lede">${esc(n.summary)}</p>
+      <div class="band" data-r="exec-band">${rBand("Price",rand(r.price))}${rBand("Cash required",rand(r.cashIn))}${rBand("Cash flow",rand(r.m.cfMonth),cfCls(r.m.cfMonth),"per month, year 1")}
+      ${rBand("Cash-on-cash",fmt("pct1",r.m.coc))}${rBand(r.H+"-year return",fmt("pct1",r.m.irr),"","IRR, incl. the sale")}${rBand("Perfect storm",rand(r.m.cfStorm),cfCls(r.m.cfStorm),"per month")}</div>
+      <div class="kick">At a glance</div>
+      <div class="sw2" data-r="sw"><div><h4>What works</h4><ul>${(n.strengths.length?n.strengths:["Nothing stands out against your targets yet."]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div class="watch"><h4>What to watch</h4><ul>${(n.watch.length?n.watch:["No test misses its target outright."]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+      ${rNote(n.sections.stress,"exec-stress")}`;
+  } else {
+    const ys=items.map(it=>it.r.m.grossYield).filter(isFinite), storm=items.reduce((a,it)=>a+it.r.m.cfStorm,0);
+    h+=`<h2 class="pull" data-r="exec-headline">${esc(port.headline)}</h2><p class="lede">${esc(port.summary)} ${esc(port.trade)}</p>
+      <div class="band" data-r="exec-band">${rBand("Deals",items.length)}${rBand("Combined price",compactR(items.reduce((a,it)=>a+it.r.price,0)))}${rBand("Cash required",compactR(port.sumCash))}
+      ${rBand("Cash flow",rand(port.sumCf),cfCls(port.sumCf),"per month, year 1, together")}${rBand("Perfect storm",rand(storm),cfCls(storm),"per month, together")}${rBand("Average gross yield",fmt("pct1",ys.length?ys.reduce((a,b)=>a+b,0)/ys.length:NaN))}</div>
+      <div class="kick">Who leads</div>
+      <div class="leaders2" data-r="leaders">${port.leaders.map(l=>`<div><span>${esc(l.label)}</span><b>${esc(l.name)}</b><small>${esc(l.value)}</small></div>`).join("")}</div>`;
+  }
+  const order=items.map((it,i)=>({it,i,c:ctxs[i]})).sort((a,b)=>b.it.r.v.ratio-a.it.r.v.ratio||a.i-b.i);
+  h+=`<div class="kick">${one?"The deal":"The deals, best grade first"}</div><div class="dcards" data-r="deals">${order.map(({it,c})=>{ const n=narrateDeal(c); return `<div class="dcard" data-id="${esc(it.id)}">${rSeal(it.r.v.ratio,it.r.g)}<div><h4>${swatch(it)} ${esc(it.p.name||"Untitled")}${it.draft?" <small>(draft)</small>":""}</h4><p class="hl">${esc(n.headline)}</p></div><div class="mini"><div><span>Cash flow</span><b class="${cfCls(it.r.m.cfMonth)}">${rand(it.r.m.cfMonth)}</b></div><div><span>Cash in</span><b>${compactR(it.r.cashIn)}</b></div><div><span>CoC</span><b>${fmt("pct1",it.r.m.coc)}</b></div></div></div>`; }).join("")}</div>`;
+  return h+`</section>`;
+}
+function rptSummary(items,port,sheetNo){
+  const rs={}, props=items.map(it=>{ rs[it.id]=it.r; return {...it.p,id:it.id}; });
+  const sum=f=>items.reduce((a,it)=>a+f(it.r),0), ys=items.map(it=>it.r.m.grossYield).filter(isFinite);
+  let h=`<section class="sheet rpt-deal" data-r="summary">${rHead(two(sheetNo),"The portfolio",`${items.length} deals`)}
+    <h2 class="pull">${esc(port.headline)}</h2>
+    <div class="band b4" data-r="totals">${rBand("Combined price",rand(sum(r=>r.price)))}${rBand("Total cash required",rand(sum(r=>r.cashIn)))}${rBand("Combined cash flow",rand(sum(r=>r.m.cfMonth)),cfCls(sum(r=>r.m.cfMonth)),"per month, year 1")}${rBand("In a perfect storm",rand(sum(r=>r.m.cfStorm)),cfCls(sum(r=>r.m.cfStorm)),"per month")}
+    ${rBand("Average gross yield",fmt("pct1",ys.length?ys.reduce((a,b)=>a+b,0)/ys.length:NaN))}${rBand("Cash-flow positive",`${items.filter(it=>it.r.m.cfMonth>=0).length} / ${items.length}`,"","year 1, after the bond")}${rBand("Combined bond",rand(sum(r=>r.loan)))}${rBand("Combined repayments",rand(sum(r=>r.pmt)),"","per month")}</div>
+    ${rNote({lead:port.headline,text:port.summary+" "+port.trade},"portfolio")}`;
+  for(let i=0;i<props.length;i+=3){
+    const chunk=props.slice(i,i+3);
+    h+=`<div class="kick">Side by side${props.length>3?` · ${i+1}–${i+chunk.length} of ${props.length}`:""}</div><div class="tablebox"><table class="cmp" data-r="cmp"><thead><tr><th>Metric · target</th>${chunk.map(p=>`<th><i class="sw" style="background:${p.id==="draft"?"var(--muted)":col(p)}"></i> ${esc(p.name||"Untitled")}</th>`).join("")}</tr></thead><tbody>${cmpBody(chunk,rs)}</tbody></table></div>`;
+  }
+  return h+`</section>`;
+}
+function rptDeal(it,ctx,i,n,sheetNo){
+  const p={...DEFAULTS,...it.p}, r=it.r, v=r.v, c=r.costs, N=narrateDeal(ctx), NS=N.sections, M=x=>rand(x/12), A=x=>rand(x);
+  const line=(label,a,cls,sub)=>`<tr${cls==="tot"?` class="tot"`:""}><th>${label}${sub?`<small>${sub}</small>`:""}</th><td class="num">${M(a)}</td><td class="num">${A(a)}</td></tr>`;
+  let h=`<section class="sheet rpt-deal" data-r="deal" data-id="${esc(it.id)}">
+    <div class="hero rpt-dark"><div><span class="sh-num">${two(sheetNo)}</span><span class="sh-title" style="margin-left:12px">Deal ${i+1} of ${n}</span>
+      <h2>${esc(p.name||"Untitled")}</h2><p class="where">${swatch(it)} ${esc(p.area||"No area set")} · ${p.newDev?"New development":"Resale"}${it.draft?" · Draft, not saved":""}</p></div>
+      <div class="gr"><div><b class="${v.cls==="pass"?"good":v.cls==="close"?"warn":"bad"}">${verdictText(v)}</b><small>${v.pass} of ${v.n} tests met · ${v.close} close</small><span hidden data-r="grade">${r.g}</span></div>${rSeal(v.ratio,r.g)}</div>
+      <div class="cfline"><span class="cfbig ${cfCls(r.m.cfMonth)}">${rand(r.m.cfMonth)}<small>/ month</small></span><span class="hl" data-r="deal-headline">${esc(N.headline)}</span></div></div>
+    <div class="band b4" data-r="kpis">${rBand("Price",rand(r.price))}${rBand("Cash required",rand(r.cashIn))}${rBand("Cash flow",rand(r.m.cfMonth),cfCls(r.m.cfMonth),"per month, year 1")}${rBand("Cash-on-cash",fmt("pct1",r.m.coc))}
+    ${rBand("Gross yield",fmt("pct1",r.m.grossYield))}${rBand("Cap rate",fmt("pct1",r.m.capRate))}${rBand("Debt cover",fmt("x",r.m.dscr),"","DSCR")}${rBand(r.H+"-year return",fmt("pct1",r.m.irr),"","IRR, incl. the sale")}</div>
+    <p class="lede" style="margin-top:18px">${esc(N.summary)}</p>
+    ${String(p.notes||"").trim()?`<p class="rpt-notes" data-r="notes"><span class="viz-cap" style="display:block;font-style:normal">Your notes</span>${esc(String(p.notes).trim())}</p>`:""}
+
+    <div class="kick">Cash flow</div>
+    <div class="viz2"><div class="wf" data-r="waterfall"><p class="viz-cap">Month 1, from rent to what's left</p>${waterfallSvg(r)}</div>
+      <div class="split" data-r="split"><p class="viz-cap">Where every R100 of rent goes</p>${splitHtml(N.split)}</div></div>
+    ${rNote(NS.cashFlow,"cashFlow")}
+    <div class="rpt-cols"><div><div class="kick">Income and running costs</div><div class="tablebox"><table class="rpt-t" data-r="ie"><thead><tr><th></th><th class="num">Monthly</th><th class="num">Annual</th></tr></thead><tbody>
+      ${line("Rent",c.rentA)}${c.otherIncomeA?line("Other income",c.otherIncomeA):""}${line("Vacancy",-c.vacancyA,"",`${num(p.vacancy)}% of the year empty`)}${line("Income collected",r.effA,"tot")}
+      ${line("Levy",-c.levyA)}${line("Rates and taxes",-c.ratesA)}${line("Insurance",-c.insuranceA)}${c.otherExpA?line("Other costs",-c.otherExpA):""}${line("Management",-c.mgmtA,"",`${num(p.mgmt)}% of income collected`)}${line("Maintenance",-c.maintA,"",`${num(p.maint)}% of rent`)}
+      ${line("Net operating income",r.noi,"tot")}${line("Bond repayment",-r.debtA)}
+      <tr class="tot"><th>Cash flow</th><td class="num ${cfCls(r.cfA)}">${M(r.cfA)}</td><td class="num ${cfCls(r.cfA)}">${A(r.cfA)}</td></tr>
+      ${r.taxR>0?`<tr><th>After tax<small>At ${Math.round(r.taxR*100)}% on NOI less bond interest</small></th><td class="num ${cfCls(r.afterTaxCfM)}">${rand(r.afterTaxCfM)}</td><td class="num ${cfCls(r.afterTaxCfM)}">${rand(r.afterTaxCfM*12)}</td></tr>`:""}
+    </tbody></table></div></div>
+    <div><div class="kick">Cash needed and the bond</div><div class="tablebox"><table class="rpt-t" data-r="cash"><tbody>
+      <tr><th>Deposit<small>${num(p.deposit)}% of the price</small></th><td class="num">${rand(r.deposit)}</td></tr>
+      <tr><th>Transfer duty${p.newDev?"<small>None on a new development</small>":""}</th><td class="num">${rand(r.duty)}</td></tr>
+      <tr><th>Attorney and bond fees${r.legalBlank&&r.legal>0?"<small>Estimate; get a quote</small>":""}</th><td class="num">${rand(r.legal)}</td></tr>
+      <tr><th>Repairs upfront</th><td class="num">${rand(r.reno)}</td></tr>
+      <tr class="tot"><th>Cash required</th><td class="num">${rand(r.cashIn)}</td></tr>
+      <tr><th>Bond amount</th><td class="num">${rand(r.loan)}</td></tr>
+      <tr><th>Interest rate</th><td class="num">${r.loan>0?pct(r.ratePct,2):"–"}</td></tr>
+      <tr><th>Term</th><td class="num">${r.loan>0?Math.round(r.termM/12)+" years":"–"}</td></tr>
+      <tr class="tot"><th>Monthly repayment</th><td class="num">${rand(r.pmt)}</td></tr>
+      ${p.marketValue!==""&&num(p.marketValue)>0?`<tr><th>Market value</th><td class="num">${rand(num(p.marketValue))}</td></tr>`:""}
+    </tbody></table></div></div></div>
+    ${rNote(NS.cash,"cash")}
+
+    <div class="kick">Returns</div>${rNote(NS.returns,"returns")}
+
+    <div class="kick">The ten tests</div><div class="tablebox"><table class="rpt-t" data-r="tests"><thead><tr><th>Test</th><th class="num">Value</th><th></th><th class="num">Target</th><th>Result</th></tr></thead><tbody>`;
+  [...TESTS.screens.rows,...TESTS.returns.rows].forEach(row=>{
+    const val=r.m[row.k], t=S.targets[row.k], st=status(row,val,t);
+    h+=`<tr data-k="${row.k}"><th>${row.label}<small>${row.sub}</small></th><td class="num">${row.k==="discount"&&val==null?"–":fmt(row.f,val)}</td><td class="bul">${bulletHtml(row,val,t,st)}</td><td class="num">${tgtText(row,t)}</td><td><span class="pill ${st}">${st==="pass"?"Meets":st==="close"?"Close":st==="fail"?"Misses":"n/a"}</span></td></tr>`;
+  });
+  const rows=scenarioRows(it.p), maxAbs=Math.max(1,...rows.map(o=>Math.abs(o.x.m.cfMonth)));
+  h+=`</tbody></table></div>${rNote(NS.tests,"tests")}
+
+    <div class="kick">Stress test</div><div class="tablebox"><table class="rpt-t" data-r="scen"><thead><tr><th>Scenario</th><th class="num">Cash flow /m</th><th class="num">CoC</th><th class="num">DSCR</th><th class="num">IRR</th><th>Grade</th></tr></thead><tbody>
+    ${rows.map(({s,x})=>{ const cv=x.m.cfMonth, w=Math.min(50,Math.abs(cv)/maxAbs*50); return `<tr data-k="${s.k}"><th>${s.label}<small>${s.sub}</small></th><td class="num ${cfCls(cv)}"><span class="cfbar" style="justify-content:flex-end"><span class="trk"><span class="fill" style="${cv<0?`right:50%;width:${w}%;background:var(--bad)`:`left:50%;width:${w}%;background:var(--good)`}"></span></span>${rand(cv)}</span></td><td class="num">${fmt("pct1",x.m.coc)}</td><td class="num">${fmt("x",x.m.dscr)}</td><td class="num">${fmt("pct1",x.m.irr)}</td><td><span class="gchip g-${x.g}">${x.g}</span></td></tr>`; }).join("")}
+    </tbody></table></div>
+    <div class="rpt-cards" data-r="breaks">${breakCards(it.p,r).map(([st,q,a,sub])=>`<div><span>${esc(q)}</span><b class="${st}">${esc(a)}</b><small>${esc(sub)}</small></div>`).join("")}</div>
+    ${rNote(NS.stress,"stress")}${rNote(NS.offer,"offer")}`;
+  const tl=timeline(it.p,20,S.targets.discountRate), sm=ieSummary(tl), labels=["Rent covers all costs","Cash you top up","Net over 20 years","Worth today"];
+  h+=`<div class="kick">The next 20 years</div><div class="rpt-cards c4" data-r="ie20">${sm.map(([st,a,sub],k)=>`<div><span>${labels[k]}</span><b class="${st}">${esc(a)}</b><small>${esc(sub)}</small></div>`).join("")}</div>
+    <div class="rpt-legend">${ieLegendHtml()}</div><div class="rpt-chart">${ieChart(tl,860).s}</svg></div>
+    ${rNote(NS.longTerm,"longTerm")}
+    <p class="viz-cap" style="margin-top:18px!important">Every fifth year. The year-by-year view is on the deal's 20-year panel in Buy Box.</p>
+    <div class="tablebox"><table class="rpt-t compact" data-r="years"><thead><tr><th>Year</th><th class="num">Rent collected</th><th class="num">Running costs</th><th class="num">Bond</th><th class="num">Net</th><th class="num">Running total</th></tr></thead><tbody>${tl.rows.filter(y=>y.y===1||y.y%5===0).map(y=>`<tr><th>${y.y}</th><td class="num">${rand(y.income)}</td><td class="num">${rand(y.running)}</td><td class="num">${rand(y.bond)}</td><td class="num ${cfCls(y.net)}">${rand(y.net)}</td><td class="num">${rand(y.cum)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="kick">Assumptions</div><div class="tablebox"><table class="rpt-t" data-r="assume"><tbody>
+      <tr><th>Rent growth</th><td class="num">${num(p.rentGrowth)}% a year</td><th>Hold period</th><td class="num">${r.H} years</td></tr>
+      <tr><th>Cost growth</th><td class="num">${num(p.costGrowth)}% a year</td><th>Selling costs</th><td class="num">${num(p.sellCost)}%</td></tr>
+      <tr><th>Capital growth</th><td class="num">${num(p.capGrowth)}% a year</td><th>Tax rate</th><td class="num">${r.taxR>0?Math.round(r.taxR*100)+"%":"Not set"}</td></tr>
+      <tr><th>Net gain if sold</th><td class="num">${rand(r.m.netGain)}</td><th>Break-even rent</th><td class="num">${rand(r.m.breakEven)}</td></tr>
+    </tbody></table></div>
+  </section>`;
+  return h;
+}
+function rptMethod(sheetNo){
+  const T=S.targets, tests=[...TESTS.screens.rows,...TESTS.returns.rows];
+  return `<section class="sheet" data-r="method">${rHead(two(sheetNo),"Basis of this pack")}
+    <h2 class="pull">How to read this pack</h2>
+    <p class="lede">Each deal is graded A to E against the ten targets below: a test met scores 1 point, a test that is close scores half. A = 90%+, B = 75%+, C = 55%+, D = 35%+, E below that. A and B fit the buy box. The commentary describes what the numbers say; it is not a recommendation.</p>
+    <div class="band b4">${rBand("Prime rate used",pct(T.prime,2),"","for new deals")}${rBand("Discount rate",pct(T.discountRate,2),"","for present value")}${rBand("Figures checked",esc(MARKET_CHECKED.short),"","prime rate and duty table")}${rBand("Generated",esc(rDate()))}</div>
+    <div class="kick">The targets used</div>
+    <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.slice(0,5).map((row,i)=>{ const b=tests[i+5]; return `<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td><th>${b.label}<small>${b.sub}</small></th><td class="num">${tgtText(b,T[b.k])}</td></tr>`; }).join("")}</tbody></table></div>
+    <div class="kick">Not financial advice</div>
+    <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page on the Buy Box site.</p></footer>
+  </section>`;
+}
+function renderReport(){
+  const doc=$("reportDoc"), items=reportItems();
+  if(!items.length){ doc.innerHTML=`<div class="sheet"><div class="empty"><b>No deals chosen for a report</b><span>Tick deals in the Report column on Portfolio, or open a deal and choose Investor report.</span><a class="btn primary" href="#portfolio">Go to Portfolio</a></div></div>`; return; }
+  const ctxs=items.map(it=>dealContext(it.p,S.targets)), port=items.length>1?narratePortfolio(ctxs):null;
+  let no=2, h=rptCover(items,ctxs,port)+rptExec(items,ctxs,port);
+  if(port) h+=rptSummary(items,port,no++);
+  items.forEach((it,i)=>{ h+=rptDeal(it,ctxs[i],i,items.length,no++); });
+  doc.innerHTML=h+rptMethod(no);
+}
 
 /* ================= charts ================= */
 function niceTicks(min,max,count){

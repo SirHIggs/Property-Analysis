@@ -6,14 +6,16 @@ const fs = require('fs');
 const crypto = require('crypto');
 const shell = fs.readFileSync(__dirname + '/src/shell.html', 'utf8');
 const engine = fs.readFileSync(__dirname + '/src/engine.js', 'utf8');
+const narrative = fs.readFileSync(__dirname + '/src/narrative.js', 'utf8');
 const seed = JSON.parse(fs.readFileSync(__dirname + '/data/deals.json', 'utf8')).deals;
-for (const mark of ['%%ENGINE%%', '%%SEED%%']) {
+for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%']) {
   if (!shell.includes(mark)) throw new Error('src/shell.html is missing the ' + mark + ' placeholder');
 }
 // Function replacements, so a "$" in the engine or the deals is never read as a replacement pattern.
 // "<" is escaped so text in the deals can never close the script tag.
 const page = shell
   .replace('%%ENGINE%%', () => engine)
+  .replace('%%NARRATIVE%%', () => narrative)
   .replace('%%SEED%%', () => JSON.stringify(seed).replace(/</g, '\\u003c'));
 
 const description = 'Grade South African rental property deals from A to E against proven investor targets. ' +
@@ -42,6 +44,8 @@ if (!googleFonts.test(page)) throw new Error('src/shell.html font links changed;
 const fontFaces = '<style>\n' +
   '@font-face{font-family:"Geist";src:url("fonts/Geist-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
   '@font-face{font-family:"Geist Mono";src:url("fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
+  '@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}\n' +
+  '@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}\n' +
   '</style>\n';
 const site = page.replace(googleFonts, () => fontFaces);
 
@@ -63,7 +67,7 @@ const csp = [
 ].join('; ');
 
 fs.mkdirSync(__dirname + '/dist/fonts', { recursive: true });
-for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt']) {
+for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt', 'InstrumentSerif-Regular.woff2', 'InstrumentSerif-Italic.woff2', 'OFL-InstrumentSerif.txt']) {
   fs.copyFileSync(__dirname + '/src/fonts/' + f, __dirname + '/dist/fonts/' + f);
 }
 fs.writeFileSync(__dirname + '/dist/buy-box.html', page);

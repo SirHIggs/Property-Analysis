@@ -4,7 +4,7 @@
   "description": "Property deal analysis: grades South African rental deals against common investor rules of thumb, with stress tests, a portfolio and side-by-side comparison.",
   "scripts": {
     "build": "node build.js",
-    "test": "node build.js && node tests/engine.test.js",
+    "test": "node build.js && node tests/engine.test.js && node tests/narrative.test.js",
     "test:ui": "node build.js && node tests/dom.test.js 40"
   },
   "devDependencies": { "playwright": "^1.47.0" }
