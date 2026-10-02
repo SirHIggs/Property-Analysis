@@ -269,7 +269,7 @@ function rnd(i){
       kpis:t('[data-r=kpis] b').map(b=>b.textContent), ie:rowsOf('[data-r=ie]'), cash:rowsOf('[data-r=cash]'),
       tests:t('[data-r=tests] tbody tr').map(tr=>[tr.dataset.k,tr.querySelector('.pill').className.split(' ')[1]]),
       scen:t('[data-r=scen] tbody tr').map(tr=>[tr.dataset.k,tr.querySelectorAll('td')[0].textContent]),
-      years:t('[data-r=years] tbody tr').map(tr=>[...tr.querySelectorAll('td')].map(td=>td.textContent)),
+      years:t('[data-r=years] tbody tr').map(tr=>[tr.querySelector('th').textContent,...[...tr.querySelectorAll('td')].map(td=>td.textContent)]),
       ie20:t('[data-r=ie20] b').map(b=>b.textContent), title:document.querySelector('#crumbs h1').textContent };
   });
   ok(rp.n===1,'report from Analyse has one deal',rp.n);
@@ -309,8 +309,9 @@ function rnd(i){
   ok(rp.scen.length===E.SCENARIOS.length,'report lists every scenario',rp.scen.length);
   rp.scen.forEach(([k,v])=>cmpR(v,E.scenario(d1,k).m.cfMonth,'report scenario '+k));
   const tl1=E.timeline(d1,20,TT.discountRate);
-  ok(rp.years.length===20,'report has 20 years',rp.years.length);
-  cmpR(rp.years[19][4],tl1.net,'report 20-year running total'); cmpR(rp.ie20[2],tl1.net,'report 20-year net'); cmpR(rp.ie20[3],tl1.pv,'report present value');
+  ok(JSON.stringify(rp.years.map(y=>y[0]))==='["1","5","10","15","20"]','pack shows years 1, 5, 10, 15 and 20',JSON.stringify(rp.years.map(y=>y[0])));
+  rp.years.forEach(y=>cmpR(y[5],tl1.rows[Number(y[0])-1].cum,'pack running total, year '+y[0]));
+  cmpR(rp.years[rp.years.length-1][5],tl1.net,'report 20-year running total'); cmpR(rp.ie20[2],tl1.net,'report 20-year net'); cmpR(rp.ie20[3],tl1.pv,'report present value');
   // several deals from Portfolio
   await p.goto(BASE+'#portfolio'); await p.waitForTimeout(600);
   ok(await p.isDisabled('#rptSel'),'report button waits for a selection','');

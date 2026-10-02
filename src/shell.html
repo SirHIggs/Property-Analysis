@@ -453,9 +453,10 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .hero .cfbig{font-family:var(--serif); font-size:clamp(38px,6vw,58px); line-height:1; white-space:nowrap}
 .hero .cfbig small{font-family:var(--sans); font-size:13px; color:var(--muted); margin-left:6px; letter-spacing:.04em}
 .hero .hl{font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.3; color:var(--brass-2); flex:1 1 260px}
-.viz2{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:30px; align-items:start}
+.viz2{display:flex; gap:30px; align-items:flex-start}
+.viz2>.wf{flex:1.15 1 0; min-width:0} .viz2>.split{flex:1 1 0; min-width:0}
 .viz-cap{font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:8px!important}
-.wf svg{display:block; width:100%; height:auto} .wf text{font-size:10px; fill:var(--muted)} .wf text.v{font-family:var(--mono); fill:var(--text); font-size:10.5px}
+.wf svg{display:inline-block; vertical-align:top; width:100%; height:auto} /* inline-block: Chrome pushes a block SVG to the next printed page */ .wf text{font-size:10px; fill:var(--muted)} .wf text.v{font-family:var(--mono); fill:var(--text); font-size:10.5px}
 .split .bar{display:flex; height:22px; border-radius:4px; overflow:hidden; position:relative; background:var(--surface-3)}
 .split .bar i{display:block; height:100%}
 .split .mark{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--text)}
@@ -481,7 +482,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .rpt-chart svg text{font-size:10px; fill:var(--muted)} .rpt-chart svg text.ann{fill:var(--brass)}
 .rpt-legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:11.5px; color:var(--text-2); margin:14px 0 4px}
 .rpt-legend i{display:inline-block; width:14px; border-top:2.5px solid; margin-right:6px; vertical-align:middle}
-.rpt-notes{white-space:pre-wrap; font-family:var(--serif); font-style:italic; font-size:16px; line-height:1.45; color:var(--text-2); border-left:2px solid var(--line-2); padding-left:14px}
+.rpt-notes{margin:0 0 6px!important; white-space:pre-wrap; font-family:var(--serif); font-style:italic; font-size:16px; line-height:1.45; color:var(--text-2); border-left:2px solid var(--line-2); padding-left:14px}
 .rpt-end{font-size:11.5px; line-height:1.6; color:var(--text-2)}
 .rpt-end p+p{margin-top:8px}
 .report-doc .tablebox{overflow-x:auto}
@@ -491,11 +492,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .report-doc .cmp td.v{white-space:normal}
 .report-doc .cmp td.v .val{flex-wrap:wrap; gap:4px; font-size:12px}
 .report-doc .cmp .pill,.report-doc .cmp .best{font-size:10.5px; padding:1px 6px}
-@media (max-width:700px){
+@media screen and (max-width:700px){
   .sheet{padding:30px 18px 26px} .hero{margin:-30px -18px 22px; padding:26px 18px 20px; grid-template-columns:minmax(0,1fr)} .hero .gr{text-align:left}
   .sheet.cover{aspect-ratio:auto} .cv{position:relative; inset:auto; margin:12px; padding:24px 20px 20px} .cv-orn{position:relative; top:auto; left:auto; transform:none; display:block; width:78%; margin:22px auto 6px} .cv-main{margin-top:10px} .cv-stats{grid-template-columns:minmax(0,1fr)} .cv-stats div+div{padding-left:0; border-left:0; border-top:1px solid var(--line-2)}
   .band,.band.b4{grid-template-columns:repeat(2,minmax(0,1fr))} .band>div{padding-left:0!important; border-left:0!important}
-  .viz2,.rpt-cols,.sw2{grid-template-columns:minmax(0,1fr)} .leaders2{grid-template-columns:repeat(2,minmax(0,1fr))} .rpt-cards,.rpt-cards.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .viz2{flex-direction:column} .viz2>.wf,.viz2>.split{flex:none; width:100%} .rpt-cols,.sw2{grid-template-columns:minmax(0,1fr)} .leaders2{grid-template-columns:repeat(2,minmax(0,1fr))} .rpt-cards,.rpt-cards.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
   .dcard{grid-template-columns:48px minmax(0,1fr)} .dcard .mini{grid-column:1/-1; justify-content:flex-start; text-align:left}
 }
 /* Printing a pack: only the sheets, on A4, colours kept; a full-bleed cover, then pages with a footer. Other screens print as they are. */
@@ -517,7 +518,8 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
   .report-doc .tablebox{overflow:visible}
 }
 @page cover{size:A4; margin:0}
-@page report{size:A4; margin:14mm 14mm 16mm;
+/* Page margins print white (Chrome otherwise paints them with the app's dark background). */
+@page report{size:A4; margin:14mm 14mm 16mm; background:#fff;
   @bottom-left{content:"Buy Box investor pack · A calculator, not financial advice"; font-size:8pt; color:#6b7772}
   @bottom-right{content:"Page " counter(page) " of " counter(pages); font-size:8pt; color:#6b7772}
 }
@@ -1525,7 +1527,7 @@ function waterfallSvg(r){
   let run=0; const bars=steps.map(st=>{ let y0,y1; if(st.t){ y0=0; y1=st.v; run=st.v; } else { y0=run; y1=run+st.v; run=y1; } return {...st,y0,y1}; });
   const lo=Math.min(0,...bars.map(b=>Math.min(b.y0,b.y1))), hi=Math.max(1,...bars.map(b=>Math.max(b.y0,b.y1)));
   const W=420,H=230,top=22,bottom=34,padX=6,n=bars.length,band=(W-2*padX)/n,bw=band*0.58,y=v=>top+(hi-v)/(hi-lo)*(H-top-bottom);
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly cash flow from rent down to what is left after the bond"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--axis)"/>`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Monthly cash flow from rent down to what is left after the bond"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--axis)"/>`;
   bars.forEach((b,i)=>{
     const x=padX+band*i+(band-bw)/2, yt=y(Math.max(b.y0,b.y1)), h=Math.max(1,Math.abs(y(b.y0)-y(b.y1)));
     s+=`<rect data-step="${i}" data-v="${b.v}" x="${x}" y="${yt}" width="${bw}" height="${h}" rx="2" fill="${b.f}"/>`;
@@ -1621,6 +1623,7 @@ function rptDeal(it,ctx,i,n,sheetNo){
     <div class="band b4" data-r="kpis">${rBand("Price",rand(r.price))}${rBand("Cash required",rand(r.cashIn))}${rBand("Cash flow",rand(r.m.cfMonth),cfCls(r.m.cfMonth),"per month, year 1")}${rBand("Cash-on-cash",fmt("pct1",r.m.coc))}
     ${rBand("Gross yield",fmt("pct1",r.m.grossYield))}${rBand("Cap rate",fmt("pct1",r.m.capRate))}${rBand("Debt cover",fmt("x",r.m.dscr),"","DSCR")}${rBand(r.H+"-year return",fmt("pct1",r.m.irr),"","IRR, incl. the sale")}</div>
     <p class="lede" style="margin-top:18px">${esc(N.summary)}</p>
+    ${String(p.notes||"").trim()?`<p class="rpt-notes" data-r="notes"><span class="viz-cap" style="display:block;font-style:normal">Your notes</span>${esc(String(p.notes).trim())}</p>`:""}
 
     <div class="kick">Cash flow</div>
     <div class="viz2"><div class="wf" data-r="waterfall"><p class="viz-cap">Month 1, from rent to what's left</p>${waterfallSvg(r)}</div>
@@ -1666,14 +1669,14 @@ function rptDeal(it,ctx,i,n,sheetNo){
   h+=`<div class="kick">The next 20 years</div><div class="rpt-cards c4" data-r="ie20">${sm.map(([st,a,sub],k)=>`<div><span>${labels[k]}</span><b class="${st}">${esc(a)}</b><small>${esc(sub)}</small></div>`).join("")}</div>
     <div class="rpt-legend">${ieLegendHtml()}</div><div class="rpt-chart">${ieChart(tl,860).s}</svg></div>
     ${rNote(NS.longTerm,"longTerm")}
-    <div class="tablebox"><table class="rpt-t compact" data-r="years"><thead><tr><th>Year</th><th class="num">Rent collected</th><th class="num">Running costs</th><th class="num">Bond</th><th class="num">Net</th><th class="num">Running total</th></tr></thead><tbody>${tl.rows.map(y=>`<tr><th>${y.y}</th><td class="num">${rand(y.income)}</td><td class="num">${rand(y.running)}</td><td class="num">${rand(y.bond)}</td><td class="num ${cfCls(y.net)}">${rand(y.net)}</td><td class="num">${rand(y.cum)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="viz-cap" style="margin-top:18px!important">Every fifth year. The year-by-year view is on the deal's 20-year panel in Buy Box.</p>
+    <div class="tablebox"><table class="rpt-t compact" data-r="years"><thead><tr><th>Year</th><th class="num">Rent collected</th><th class="num">Running costs</th><th class="num">Bond</th><th class="num">Net</th><th class="num">Running total</th></tr></thead><tbody>${tl.rows.filter(y=>y.y===1||y.y%5===0).map(y=>`<tr><th>${y.y}</th><td class="num">${rand(y.income)}</td><td class="num">${rand(y.running)}</td><td class="num">${rand(y.bond)}</td><td class="num ${cfCls(y.net)}">${rand(y.net)}</td><td class="num">${rand(y.cum)}</td></tr>`).join("")}</tbody></table></div>
     <div class="kick">Assumptions</div><div class="tablebox"><table class="rpt-t" data-r="assume"><tbody>
       <tr><th>Rent growth</th><td class="num">${num(p.rentGrowth)}% a year</td><th>Hold period</th><td class="num">${r.H} years</td></tr>
       <tr><th>Cost growth</th><td class="num">${num(p.costGrowth)}% a year</td><th>Selling costs</th><td class="num">${num(p.sellCost)}%</td></tr>
       <tr><th>Capital growth</th><td class="num">${num(p.capGrowth)}% a year</td><th>Tax rate</th><td class="num">${r.taxR>0?Math.round(r.taxR*100)+"%":"Not set"}</td></tr>
       <tr><th>Net gain if sold</th><td class="num">${rand(r.m.netGain)}</td><th>Break-even rent</th><td class="num">${rand(r.m.breakEven)}</td></tr>
     </tbody></table></div>
-    ${String(p.notes||"").trim()?`<div class="kick">Notes</div><p class="rpt-notes">${esc(String(p.notes).trim())}</p>`:""}
   </section>`;
   return h;
 }
@@ -1684,7 +1687,7 @@ function rptMethod(sheetNo){
     <p class="lede">Each deal is graded A to E against the ten targets below: a test met scores 1 point, a test that is close scores half. A = 90%+, B = 75%+, C = 55%+, D = 35%+, E below that. A and B fit the buy box. The commentary describes what the numbers say; it is not a recommendation.</p>
     <div class="band b4">${rBand("Prime rate used",pct(T.prime,2),"","for new deals")}${rBand("Discount rate",pct(T.discountRate,2),"","for present value")}${rBand("Figures checked",esc(MARKET_CHECKED.short),"","prime rate and duty table")}${rBand("Generated",esc(rDate()))}</div>
     <div class="kick">The targets used</div>
-    <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.map(row=>`<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td></tr>`).join("")}</tbody></table></div>
+    <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.slice(0,5).map((row,i)=>{ const b=tests[i+5]; return `<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td><th>${b.label}<small>${b.sub}</small></th><td class="num">${tgtText(b,T[b.k])}</td></tr>`; }).join("")}</tbody></table></div>
     <div class="kick">Not financial advice</div>
     <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page on the Buy Box site.</p></footer>
   </section>`;
