@@ -13,7 +13,7 @@ const SITE = 'sirhiggs.github.io/Property-Analysis';
 // Visit counts: the GoatCounter site code (the "buybox" in buybox.goatcounter.com). Empty = counting off. When set, the
 // website gets a <meta name="buybox-count"> tag and its Content Security Policy allows that one counting address as
 // an image; nothing else changes. The page counts views and a few actions, never what people type.
-const GOATCOUNTER = '';
+const GOATCOUNTER = 'buybox';
 // Where the Feedback links go: a web address (a form, or the issues page) or a mailto: link.
 const FEEDBACK = 'https://github.com/SirHIggs/Property-Analysis/issues/new';
 if (GOATCOUNTER && !/^[a-z0-9-]{1,40}$/.test(GOATCOUNTER)) throw new Error('GOATCOUNTER must be a GoatCounter site code');
