@@ -57,7 +57,7 @@ Run both test suites after any change to the maths or to how numbers are display
 
 For accounts and syncing (phase 2 in ROADMAP.md), write another store with the same interface (for example on Supabase) and pick it in `start()`. The rest of the UI doesn't need to change.
 
-The unsaved draft is kept separately in localStorage (`buybox-draft`). **Your data** in the settings view exports every deal and the targets as JSON, and imports the same format (or the data/deals.json format): deals are added, a deal with the same id is replaced, unknown fields and targets are dropped, and Compare is kept to 8 deals with unique colours.
+The unsaved draft is kept separately in localStorage (`buybox-draft`). The Assumptions panel has two forms, **Quick** (the default) and **All inputs**; the choice is remembered in `buybox-form`. Quick shows only the `GROUPS` fields marked `quick:1` (name, price, rent, levy, rates, deposit, new development), and `renderAssumed()` lists every other value the deal is using in plain words. Hidden fields keep the deal's own values, so switching forms never changes a result. **Your data** in the settings view exports every deal and the targets as JSON, and imports the same format (or the data/deals.json format): deals are added, a deal with the same id is replaced, unknown fields and targets are dropped, and Compare is kept to 8 deals with unique colours.
 
 The prime rate lives in the targets object as `prime` (a setting, not a graded test). New deals start at it (`blankDeal()`), and `discountRate` follows it while the two are equal. It is edited under **Market** in the settings view and shown in the sidebar.
 
