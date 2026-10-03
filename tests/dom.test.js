@@ -72,6 +72,20 @@ function rnd(i){
   ok(await p.inputValue('#f-price')!==''&&await p.inputValue('#f-vacancy')===String(E.DEFAULTS.vacancy),'all inputs keep the quick numbers and the assumed values','');
   await p.reload(); await p.waitForTimeout(900);
   ok(await p.getAttribute('#formFull','aria-pressed')==='true','the chosen form is remembered','');
+  // ---------- share image: a square PNG whose figures match the engine ----------
+  {
+    const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#shareImg')]);
+    const buf=require('fs').readFileSync(await dl.path());
+    ok(/^buy-box-[a-z0-9-]+\.png$/.test(dl.suggestedFilename()),'share image file name',dl.suggestedFilename());
+    ok(buf.slice(1,4).toString()==='PNG'&&buf.readUInt32BE(16)===1080&&buf.readUInt32BE(20)===1080,'share image is a 1080×1080 PNG',buf.readUInt32BE(16)+'×'+buf.readUInt32BE(20));
+    // the PNG carries its own description (iTXt "Description"); read it back and check it against the engine
+    let alt=''; for(let o=8;o<buf.length;){ const len=buf.readUInt32BE(o), type=buf.slice(o+4,o+8).toString(); if(type==='iTXt'){ const body=buf.slice(o+8,o+8+len); if(body.slice(0,12).toString()==='Description\0') alt=body.slice(16).toString('utf8'); } o+=12+len; }
+    const d={...E.DEFAULTS,...(await p.evaluate(()=>{ const id=document.getElementById('dealPick').value; return id==='draft'?JSON.parse(localStorage.getItem('buybox-draft')):JSON.parse(localStorage.getItem('buybox-data')).properties[id]; }))}, r=E.analyse(d), v=E.verdict(r,T);
+    const m=alt.match(/grade ([A-E]), .*Cash flow (\S+ [\d ]+) a month in year 1; in a perfect storm (\S+ [\d ]+) a month\. (.*) Analysed with Buy Box · (\S+)\./);
+    ok(!!m,'share image describes itself',alt);
+    if(m){ ok(m[1]===grade(v),'share image grade',m[1]+' vs '+grade(v)); cmpR(m[2],r.m.cfMonth,'share image cash flow'); cmpR(m[3],E.scenario(d,'storm').m.cfMonth,'share image perfect storm');
+      ok(m[4]===NN.narrateDeal(NN.dealContext(d,T)).headline,'share image headline comes from the commentary module',m[4]); ok(/\./.test(m[5]),'share image names the site',m[5]); }
+  }
   await p.click('#newDeal'); await p.waitForTimeout(600);
   const N=Number(process.argv[2]||40);
   for(let i=1;i<=N;i++){
@@ -316,6 +330,7 @@ function rnd(i){
   ok(n1.split&&pk.split.reduce((a,b)=>a+b,0)===(n1.split.left>0?100:100-n1.split.left),'R100 bar shows the whole split',JSON.stringify(pk.split));
   ok(pk.serif,'pack fonts load (Fraunces and Inter)','');
   ok(pk.coverPage==='cover'&&pk.dealPage==='report','full-bleed cover page, then report pages',pk.coverPage+' / '+pk.dealPage);
+  ok(/Analysed with Buy Box · \S+\.\S+/.test(await p.textContent('[data-r=cover-site]'))&&!(await p.content()).includes('%%SITE%%'),'pack cover names where it was made',await p.textContent('[data-r=cover-site]'));
   // readability: no italics, a minimum text size (8pt printed; body 10pt, tables 9.5pt), dark greys, commentary closes its section
   const rd=await p.evaluate(()=>{
     const doc=document.getElementById('reportDoc'), all=[...doc.querySelectorAll('*')], px=e=>parseFloat(getComputedStyle(e).fontSize);
