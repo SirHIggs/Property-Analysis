@@ -15,9 +15,63 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 - [x] Name: keep **Buy Box**.
 - [ ] Custom domain. buybox.co.za is listed for sale on Dan.com (checked 2026-09-28); otherwise a variant such as buyboxsa.co.za.
 
-## Phase 2: accounts and syncing (next step)
+## Growth plan (agreed October 2026)
 
-Only once people ask for it, because it brings a backend, privacy obligations and possibly running costs.
+Based on a business-scaling playbook (offers, leads, money models, one constraint at a time). The tool works; the constraint now is that too few people use it. So build less and get it in front of people first. One rule throughout: work on one constraint at a time, and don't build what users haven't asked for.
+
+**Decisions.**
+- Beginners use Buy Box free.
+- Professionals (agents, bond originators, advisers) are the first to pay.
+- One channel: short videos.
+- Privacy-friendly visit counts.
+- Under an hour a day, so every step below is sized for that.
+
+### Stage A: Improvise (now, about 6 weeks). Ten real users and proof
+- [ ] Watch 10 beginner investors analyse a real listing with Buy Box. Fix only their number 1 complaint, and collect quotes (with permission) for testimonials.
+- [ ] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
+- [ ] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
+- [ ] **Custom domain** (see phase 1), so every share points somewhere we own.
+- [ ] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
+- [ ] **Privacy-friendly counts** with a cookie-free counter such as GoatCounter or Plausible: page views, deals analysed and packs made, never deal figures. Needs:
+  - its origin added to `connect-src`/`script-src` in build.js, on purpose;
+  - a line on the Terms & privacy page (update its date);
+  - a dom-suite check that nothing about a deal is sent.
+
+**Done when:** 10 people have used it on a real deal and at least 5 testimonials are collected.
+
+### Stage B: Advertise. One short video a day for 100 days
+- [ ] **Format:** "I ran this R950k 1-bed through Buy Box: it costs R3 534 a month." Show the grade, the stress test and the offer price. Keep listings generic: no real developments, developers or addresses, and say "a calculator, not advice" in every video.
+- [ ] **Within the hour a day:** about 30 minutes for one video (screen recording plus voice-over), and 15 minutes replying to comments and messages.
+- [ ] **Log daily:** videos posted, views, site visits and packs made. More → Better → New: post more first, then improve the hook where people drop off, and only add a second channel once views flatten.
+- [ ] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase" PDF, linking back to the tool.
+
+**Done when:** 100 videos are posted and visits per week are known and growing.
+
+### Stage C: Monetize. Buy Box Pro for professionals
+- [ ] **Sell by hand before building.** Offer 3 to 5 bond originators or agents a branded investor pack, made by hand from their client's deal. Ask what they would pay monthly.
+- [ ] **The offer, premium first:**
+  - packs with their own logo, name and contact details;
+  - client portfolios;
+  - a lender-style appendix;
+  - unlimited packs.
+
+  Downsell by removing features (for example one template, fewer portfolios), never by cutting the price of the same thing.
+- [ ] **Prove the pay-back.** A customer's first-month profit should cover what it cost to win them. Track CAC, first-month gross profit, churn and lifetime gross profit from the first sale.
+- [ ] **Partners as lead getters:** become the tool inside an originator's or agency's client pack.
+- [ ] **Before charging:**
+  - legal advice on the FAIS Act (Pro must stay a calculator and presentation tool, not advice), the Consumer Protection Act and the ECT Act (business details, cancellation terms);
+  - VAT registration if turnover passes the threshold.
+
+**Done when:** the first 3 professionals are paying.
+
+### Later, only when it becomes the constraint
+- Accounts and syncing (phase 2 below); Pro will need them.
+- The annual data pack (see Future offers).
+- More metrics and features.
+
+## Phase 2: accounts and syncing
+
+Needed for Buy Box Pro (stage C of the growth plan). Build it only then, because it brings a backend, privacy obligations and possibly running costs.
 
 - Sign-in and cloud storage through a hosted backend such as Supabase (or Firebase), so deals follow people across devices.
 - Share a deal, or a comparison, with someone else by link.
