@@ -5,8 +5,10 @@ const { chromium } = require('playwright');
 const dist=path.join(__dirname,'../dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
-// /Property-Analysis/ serves the same files with visit counting switched on, as a build with GOATCOUNTER='bbtest' would.
-const countHtml=html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
+// /Property-Analysis/ serves the site with visit counting on: the real build when GOATCOUNTER is set in build.js,
+// otherwise a copy switched on as a build with GOATCOUNTER='bbtest' would be.
+const GCODE=(html.match(/<meta name="buybox-count" content="([a-z0-9-]+)">/)||[])[1]||'bbtest';
+const countHtml=html.includes('<meta name="buybox-count"')?html:html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
 const server=http.createServer((q,r)=>{
   let f=decodeURIComponent(new URL(q.url,'http://x').pathname);
   if(f==='/Property-Analysis/'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
@@ -53,7 +55,7 @@ function rnd(i){
   const BASE='http://127.0.0.1:'+server.address().port+'/';
   const b=await chromium.launch(), p=await b.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});
   // Any script error, blocked resource or CSP violation fails the run.
-  const errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{ if(m.type()==='error') errs.push('console: '+m.text()); });
+  const errs=[], localCounts=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('request',q=>{ if(/goatcounter/.test(q.url())) localCounts.push(q.url()); }); p.on('console',m=>{ if(m.type()==='error') errs.push('console: '+m.text()); });
   p.on('dialog',d=>{ errs.push('dialog opened: '+d.message()); d.dismiss(); });
   await p.goto(BASE+'#analyse'); await p.waitForTimeout(1200);
   await p.click('#newDeal'); await p.waitForTimeout(900);
@@ -462,14 +464,17 @@ function rnd(i){
   ok(hs.settings.targets.irr===17&&hs.settings.targets.prime===11.5,'import ignores non-numeric targets',JSON.stringify(hs.settings.targets));
 
   // ---------- visit counts: off by default; on the real site only screen and button names, never what people type ----------
-  ok(!(await p.isVisible('[data-count=on]'))&&html.includes('<meta name="buybox-count"')===false,'counting is off unless a GoatCounter code is set','');
+  ok(localCounts.length===0,'nothing is counted away from the real site address',localCounts.slice(0,3).join(' '));
+  await p.goto(BASE+'#terms'); await p.waitForTimeout(300);
+  const on=html.includes('<meta name="buybox-count"');
+  ok(await p.isVisible('[data-count=on]')===on&&await p.isVisible('[data-count=off]')===!on,'privacy notice matches whether counting is set up',String(on));
   {
     const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP sirhiggs.github.io 127.0.0.1']});
     const SITEURL='http://sirhiggs.github.io:'+port+'/Property-Analysis/';
     const run=async(init)=>{
       const ctx=await cb.newContext({viewport:{width:1280,height:900},acceptDownloads:true}); if(init) await ctx.addInitScript(init);
       const cp=await ctx.newPage(), hits=[], cerrs=[]; cp.on('pageerror',e=>cerrs.push(e.message)); cp.on('console',m=>{ if(m.type()==='error') cerrs.push(m.text()); });
-      await cp.route('https://bbtest.goatcounter.com/**',rt=>{ hits.push(new URL(rt.request().url())); rt.fulfill({status:200,contentType:'image/gif',body:Buffer.from('R0lGODlhAQABAAAAACw=','base64')}); });
+      await cp.route('https://'+GCODE+'.goatcounter.com/**',rt=>{ hits.push(new URL(rt.request().url())); rt.fulfill({status:200,contentType:'image/gif',body:Buffer.from('R0lGODlhAQABAAAAACw=','base64')}); });
       return {ctx,cp,hits,cerrs};
     };
     const c=await run();
