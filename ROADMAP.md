@@ -34,6 +34,7 @@ Only once people ask for it, because it brings a backend, privacy obligations an
 4. **Legal clean-up.** Made-up example deals instead of real developments, no real investors named, a Terms & privacy page, an accurate note on what GitHub Pages logs, and "last checked" dates on the prime rate and duty table.
 
 5. **Investor pack.** A designed, printable pack for one deal (from Analyse) or any number of deals (Portfolio tick boxes or the Compare set), saved as PDF from the browser: a dark brass cover, an executive summary, a portfolio sheet, one sheet per deal with a cash-flow waterfall, "where every R100 goes", the ten tests, stress test and 20-year view, and plain-language commentary on every section (never advice), then the basis and disclaimer.
+6. **Pack readability.** Fraunces and Inter instead of a thin display serif, no italics, a minimum printed text size of 8pt (body 10pt), darker greys, one spacing scale, and page breaks that keep each section and its commentary together.
 
 ## Future offers (not a priority now)
 

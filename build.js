@@ -37,15 +37,18 @@ const head = [
   '<link rel="icon" href="' + icon + '">',
 ].join('\n');
 
-// The website serves its own copy of the Geist fonts instead of loading them from Google, so visitors' browsers
+// The website serves its own copy of the fonts instead of loading them from Google, so visitors' browsers
 // talk to no one but this site.
 const googleFonts = /<link rel="preconnect" href="https:\/\/fonts\.googleapis\.com">\n<link rel="preconnect" href="https:\/\/fonts\.gstatic\.com" crossorigin>\n<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com\/[^"]*">\n/;
 if (!googleFonts.test(page)) throw new Error('src/shell.html font links changed; update build.js');
 const fontFaces = '<style>\n' +
   '@font-face{font-family:"Geist";src:url("fonts/Geist-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
   '@font-face{font-family:"Geist Mono";src:url("fonts/GeistMono-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
-  '@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}\n' +
-  '@font-face{font-family:"Instrument Serif";src:url("fonts/InstrumentSerif-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}\n' +
+  // Investor pack: Fraunces for headings and big figures, Inter for text and tables. This Fraunces file has an empty
+  // minus sign (U+2212), so that one character comes from Inter.
+  '@font-face{font-family:"Fraunces";src:url("fonts/Fraunces-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+0000-2211,U+2213-FFFF}\n' +
+  '@font-face{font-family:"Fraunces";src:url("fonts/Inter-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+2212}\n' +
+  '@font-face{font-family:"Inter";src:url("fonts/Inter-Variable.woff2") format("woff2");font-weight:100 900;font-display:swap}\n' +
   '</style>\n';
 const site = page.replace(googleFonts, () => fontFaces);
 
@@ -67,7 +70,7 @@ const csp = [
 ].join('; ');
 
 fs.mkdirSync(__dirname + '/dist/fonts', { recursive: true });
-for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt', 'InstrumentSerif-Regular.woff2', 'InstrumentSerif-Italic.woff2', 'OFL-InstrumentSerif.txt']) {
+for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt', 'Fraunces-Variable.woff2', 'OFL-Fraunces.txt', 'Inter-Variable.woff2', 'OFL-Inter.txt']) {
   fs.copyFileSync(__dirname + '/src/fonts/' + f, __dirname + '/dist/fonts/' + f);
 }
 fs.writeFileSync(__dirname + '/dist/buy-box.html', page);
