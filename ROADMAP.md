@@ -31,8 +31,8 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 - [x] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
 - [x] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
 - [ ] **Custom domain** (see phase 1), so every share points somewhere we own.
-- [ ] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
-- [ ] **Privacy-friendly counts** with a cookie-free counter such as GoatCounter or Plausible: page views, deals analysed and packs made, never deal figures. Needs:
+- [x] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
+- [x] **Privacy-friendly counts** (built; switched on once the GoatCounter site code is set in build.js) with a cookie-free counter such as GoatCounter or Plausible: page views, deals analysed and packs made, never deal figures. Needs:
   - its origin added to `connect-src`/`script-src` in build.js, on purpose;
   - a line on the Terms & privacy page (update its date);
   - a dom-suite check that nothing about a deal is sent.
