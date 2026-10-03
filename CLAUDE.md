@@ -96,6 +96,8 @@ After changing the pack, print a 1-deal and a 3-deal pack and look at the page b
 
 - The website has one inline script. build.js hashes it into the CSP, so adding a second `<script>` or an external script fails the build. Don't add inline event handlers (`onclick="…"`); the CSP blocks them. Attach listeners in JS.
 - `connect-src 'none'`: the page can't make network requests. Phase 2 (a backend) must add its origin to the CSP in build.js on purpose.
+- Visit counts: `GOATCOUNTER` in build.js (empty = off). When set, build.js adds `<meta name="buybox-count">` and allows only `https://CODE.goatcounter.com/count` under `img-src`. `count()` in shell.html sends GoatCounter's pixel only on the real site (`SITE` host), never in a frame, with Do Not Track or Global Privacy Control, or after the opt-out on the privacy notice (`buybox-count` in localStorage). Paths are fixed names: screens (`/analyse` …) and the events in `COUNT_EVENTS`. Never put anything a visitor typed into a count. The privacy notice shows the `data-count="on"` paragraphs only when counting is configured. The dom suite serves a counting copy at `/Property-Analysis/` and checks all of this.
+- Feedback links (`data-feedback`) go to `FEEDBACK` in build.js.
 - Escape all user text with `esc()` before it goes into `innerHTML`. Imported files are untrusted: `cleanDeal()` keeps known fields only, each with the type it has in `DEFAULTS`.
 - Keep the site free of third-party requests (fonts are self-hosted). The dom suite fails if the page loads anything from Google.
 

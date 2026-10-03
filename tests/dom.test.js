@@ -5,8 +5,13 @@ const { chromium } = require('playwright');
 const dist=path.join(__dirname,'../dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
+// /Property-Analysis/ serves the same files with visit counting switched on, as a build with GOATCOUNTER='bbtest' would.
+const countHtml=html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
 const server=http.createServer((q,r)=>{
-  let f=decodeURIComponent(new URL(q.url,'http://x').pathname); if(f.endsWith('/')) f+='index.html';
+  let f=decodeURIComponent(new URL(q.url,'http://x').pathname);
+  if(f==='/Property-Analysis/'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
+  if(f.startsWith('/Property-Analysis/')) f=f.slice('/Property-Analysis'.length);
+  if(f.endsWith('/')) f+='index.html';
   const fp=path.join(dist,path.normalize(f));
   if(!fp.startsWith(dist+path.sep)||!fs.existsSync(fp)){ r.writeHead(404); r.end(); return; }
   r.writeHead(200,{'content-type':TYPES[path.extname(fp)]||'application/octet-stream'}); fs.createReadStream(fp).pipe(r);
@@ -455,6 +460,47 @@ function rnd(i){
   const hs=await p.evaluate(()=>JSON.parse(localStorage.getItem('buybox-data')));
   ok(typeof hs.properties.hostile1.price==='undefined'||typeof hs.properties.hostile1.price==='number','import keeps numbers as numbers',typeof hs.properties.hostile1.price);
   ok(hs.settings.targets.irr===17&&hs.settings.targets.prime===11.5,'import ignores non-numeric targets',JSON.stringify(hs.settings.targets));
+
+  // ---------- visit counts: off by default; on the real site only screen and button names, never what people type ----------
+  ok(!(await p.isVisible('[data-count=on]'))&&html.includes('<meta name="buybox-count"')===false,'counting is off unless a GoatCounter code is set','');
+  {
+    const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP sirhiggs.github.io 127.0.0.1']});
+    const SITEURL='http://sirhiggs.github.io:'+port+'/Property-Analysis/';
+    const run=async(init)=>{
+      const ctx=await cb.newContext({viewport:{width:1280,height:900},acceptDownloads:true}); if(init) await ctx.addInitScript(init);
+      const cp=await ctx.newPage(), hits=[], cerrs=[]; cp.on('pageerror',e=>cerrs.push(e.message)); cp.on('console',m=>{ if(m.type()==='error') cerrs.push(m.text()); });
+      await cp.route('https://bbtest.goatcounter.com/**',rt=>{ hits.push(new URL(rt.request().url())); rt.fulfill({status:200,contentType:'image/gif',body:Buffer.from('R0lGODlhAQABAAAAACw=','base64')}); });
+      return {ctx,cp,hits,cerrs};
+    };
+    const c=await run();
+    await c.cp.goto(SITEURL+'#analyse'); await c.cp.waitForTimeout(1200);
+    await c.cp.goto(SITEURL+'#portfolio'); await c.cp.waitForTimeout(400);
+    await c.cp.goto(SITEURL+'#analyse'); await c.cp.waitForTimeout(400);
+    await c.cp.click('#newDeal'); await c.cp.waitForTimeout(400);
+    await c.cp.fill('#f-name','Secret Street 42'); await c.cp.fill('#f-price','987654'); await c.cp.waitForTimeout(100);
+    await Promise.all([c.cp.waitForEvent('download'),c.cp.click('#shareImg')]); await c.cp.waitForTimeout(200);
+    await c.cp.click('#saveDeal'); await c.cp.waitForTimeout(400);
+    await c.cp.click('#rptOne'); await c.cp.waitForTimeout(600);
+    const P=c.hits.map(u=>u.searchParams.get('p'));
+    ok(P[0]==='/analyse'&&P.includes('/portfolio')&&P.includes('/report'),'counts the screens opened',P.join());
+    ok(['share-image','deal-saved','pack-opened'].every(k=>c.hits.some(u=>u.searchParams.get('p')===k&&u.searchParams.get('e')==='1')),'counts saves, share images and reports as events',P.join());
+    ok(c.hits.every(u=>[...u.searchParams.keys()].every(k=>['p','t','e','r','q','s','b','rnd'].includes(k))),'counts send only GoatCounter fields',c.hits.map(u=>u.search).join(' '));
+    ok(c.hits.every(u=>/^(\/[a-z]+|[a-z-]+)$/.test(u.searchParams.get('p'))&&!/Secret|987|654/.test(decodeURIComponent(u.href))),'counts never include what was typed',c.hits.map(u=>u.search).join(' '));
+    await c.cp.goto(SITEURL+'#terms'); await c.cp.waitForTimeout(400);
+    ok(await c.cp.isVisible('[data-count=on]')&&!(await c.cp.isVisible('[data-count=off]')),'privacy notice explains the counts when they are on','');
+    await c.cp.uncheck('#countOpt'); await c.cp.waitForTimeout(100); const n0=c.hits.length;
+    await c.cp.goto(SITEURL+'#compare'); await c.cp.waitForTimeout(400); await c.cp.reload(); await c.cp.waitForTimeout(800);
+    ok(c.hits.length===n0,'opting out stops the counts',c.hits.length-n0+' more');
+    ok(c.cerrs.length===0,'no CSP or script errors with counting on',c.cerrs.join(' | '));
+    await c.ctx.close();
+    const g=await run('Object.defineProperty(Navigator.prototype,"globalPrivacyControl",{get:()=>true})');
+    await g.cp.goto(SITEURL+'#analyse'); await g.cp.waitForTimeout(1000); await g.cp.goto(SITEURL+'#portfolio'); await g.cp.waitForTimeout(400);
+    ok(g.hits.length===0,'Global Privacy Control stops the counts',g.hits.length); await g.ctx.close();
+    const d=await run('Object.defineProperty(Navigator.prototype,"doNotTrack",{get:()=>"1"})');
+    await d.cp.goto(SITEURL+'#analyse'); await d.cp.waitForTimeout(1000);
+    ok(d.hits.length===0,'Do Not Track stops the counts',d.hits.length); await d.ctx.close();
+    await cb.close();
+  }
 
   console.log(JSON.stringify({deals:N,pass,fail,pageErrors:errs,failures,checkTypes:Object.keys(counts).length},null,1));
   await b.close(); server.close();

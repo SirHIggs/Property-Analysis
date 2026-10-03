@@ -10,13 +10,22 @@ const narrative = fs.readFileSync(__dirname + '/src/narrative.js', 'utf8');
 const seed = JSON.parse(fs.readFileSync(__dirname + '/data/deals.json', 'utf8')).deals;
 // The site's address, printed on investor packs and share images. Change it here when the custom domain is live.
 const SITE = 'sirhiggs.github.io/Property-Analysis';
-for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%']) {
+// Visit counts: the GoatCounter site code (the "buybox" in buybox.goatcounter.com). Empty = counting off. When set, the
+// website gets a <meta name="buybox-count"> tag and its Content Security Policy allows that one counting address as
+// an image; nothing else changes. The page counts views and a few actions, never what people type.
+const GOATCOUNTER = '';
+// Where the Feedback links go: a web address (a form, or the issues page) or a mailto: link.
+const FEEDBACK = 'https://github.com/SirHIggs/Property-Analysis/issues/new';
+if (GOATCOUNTER && !/^[a-z0-9-]{1,40}$/.test(GOATCOUNTER)) throw new Error('GOATCOUNTER must be a GoatCounter site code');
+if (!/^(https:\/\/|mailto:)[^"<>\s]+$/.test(FEEDBACK)) throw new Error('FEEDBACK must be an https:// or mailto: link');
+for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FEEDBACK%%']) {
   if (!shell.includes(mark)) throw new Error('src/shell.html is missing the ' + mark + ' placeholder');
 }
 // Function replacements, so a "$" in the engine or the deals is never read as a replacement pattern.
 // "<" is escaped so text in the deals can never close the script tag.
 const page = shell
   .replaceAll('%%SITE%%', SITE)
+  .replaceAll('%%FEEDBACK%%', FEEDBACK)
   .replace('%%ENGINE%%', () => engine)
   .replace('%%NARRATIVE%%', () => narrative)
   .replace('%%SEED%%', () => JSON.stringify(seed).replace(/</g, '\\u003c'));
@@ -65,7 +74,7 @@ const csp = [
   "script-src 'sha256-" + hash + "'",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob:" + (GOATCOUNTER ? ' https://' + GOATCOUNTER + '.goatcounter.com/count' : ''),
   "connect-src 'none'",
   "object-src 'none'",
   "base-uri 'none'",
@@ -79,5 +88,6 @@ for (const f of ['Geist-Variable.woff2', 'GeistMono-Variable.woff2', 'OFL.txt', 
 fs.writeFileSync(__dirname + '/dist/buy-box.html', page);
 fs.writeFileSync(__dirname + '/dist/index.html',
   head + '\n<meta http-equiv="Content-Security-Policy" content="' + csp + '">\n' +
-  '<meta name="referrer" content="no-referrer">\n' + site + '\n</html>\n');
+  '<meta name="referrer" content="no-referrer">\n' +
+  (GOATCOUNTER ? '<meta name="buybox-count" content="' + GOATCOUNTER + '">\n' : '') + site + '\n</html>\n');
 console.log('Built dist/buy-box.html and dist/index.html');
