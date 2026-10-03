@@ -28,7 +28,7 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 
 ### Stage A: Improvise (now, about 6 weeks). Ten real users and proof
 - [ ] Watch 10 beginner investors analyse a real listing with Buy Box. Fix only their number 1 complaint, and collect quotes (with permission) for testimonials.
-- [ ] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
+- [x] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
 - [ ] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
 - [ ] **Custom domain** (see phase 1), so every share points somewhere we own.
 - [ ] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
