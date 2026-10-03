@@ -17,12 +17,13 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 
 ## Growth plan (agreed October 2026)
 
-Based on a business-scaling playbook (offers, leads, money models, one constraint at a time). The tool works; the constraint now is that too few people use it. So build less and get it in front of people first. One rule throughout: work on one constraint at a time, and don't build what users haven't asked for.
+Based on a business-scaling playbook (offers, leads, money models, one constraint at a time) and a content playbook (give away the know-how, hook → retain → reward, volume, ask rarely). The tool works; the constraint now is that too few people use it. So build less and get it in front of people first. One rule throughout: work on one constraint at a time, and don't build what users haven't asked for.
 
 **Decisions.**
 - Beginners use Buy Box free.
 - Professionals (agents, bond originators, advisers) are the first to pay.
-- One channel: short videos.
+- Short videos, faceless (screen recordings with a voice-over): the same video on TikTok, YouTube Shorts and Instagram Reels, with one home platform for replies and judging hooks.
+- Three content series (see stage B), so ideas never run out.
 - Privacy-friendly visit counts.
 - Under an hour a day, so every step below is sized for that.
 
@@ -32,20 +33,59 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 - [x] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
 - [ ] **Custom domain** (see phase 1), so every share points somewhere we own.
 - [x] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
-- [x] **Privacy-friendly counts** (on: stats at buybox.goatcounter.com) with a cookie-free counter such as GoatCounter or Plausible: page views, deals analysed and packs made, never deal figures. Needs:
-  - its origin added to `connect-src`/`script-src` in build.js, on purpose;
-  - a line on the Terms & privacy page (update its date);
-  - a dom-suite check that nothing about a deal is sent.
+- [x] **Privacy-friendly counts** (on: stats at buybox.goatcounter.com). GoatCounter's image pixel, allowed by one `img-src` address in the CSP: screens viewed, deals saved, packs and share images made, never deal figures. Explained on the Terms & privacy page, with an opt-out, and checked by the dom suite.
 
 **Done when:** 10 people have used it on a real deal and at least 5 testimonials are collected.
 
-### Stage B: Advertise. One short video a day for 100 days
-- [ ] **Format:** "I ran this R950k 1-bed through Buy Box: it costs R3 534 a month." Show the grade, the stress test and the offer price. Keep listings generic: no real developments, developers or addresses, and say "a calculator, not advice" in every video.
-- [ ] **Within the hour a day:** about 30 minutes for one video (screen recording plus voice-over), and 15 minutes replying to comments and messages.
-- [ ] **Log daily:** videos posted, views, site visits and packs made. More → Better → New: post more first, then improve the hook where people drop off, and only add a second channel once views flatten.
+### Stage B: Advertise. Short videos for 100 days, running alongside stage A
+Start now rather than after stage A: the 10 test users are the warm outreach, and their deals and quotes (with permission) become the first content.
+
+**Who it's for (the puddle):** a first-time buy-to-let buyer in South Africa looking at a sectional-title flat or a new-build. One problem: "Will this flat pay for itself, or cost me every month?"
+
+**One video, three platforms.** Record once and post natively to TikTok, YouTube Shorts and Instagram Reels, each with its own caption, cover text and hashtags. Never paste identical text everywhere. Pick a **home platform** (whichever works best in the first weeks) for replying to comments and judging hooks; the other two are distribution only.
+
+**Three series.** Each video is one unit: a hook, something that keeps people watching, and a payoff.
+
+| Series | What it is | Hook | Keeps them watching | Payoff |
+|---|---|---|---|---|
+| **1. Will it pay for itself?** (about 4 a week) | One generic listing run through Buy Box | "This R950k Gauteng 1-bed costs its owner R3 534 a month" | Rent → costs → bond, step by step | The grade, the stress test, the price that works |
+| **2. What if…** (about 2 a week) | One change on one deal: prime up or down, rent drop, special levy, two months empty | "Prime just moved. Here's what it does to a R1m flat" | Before and after | The new cash flow, and where it breaks |
+| **3. Myths and questions** (about 1 a week) | FAQs and objections answered with numbers: "rent covers the bond", "property always goes up", "isn't a bigger deposit a waste?" | "An agent said the rent covers the bond. It doesn't." | A list or steps | The real number, and the one thing to check |
+
+Ideas come from comments and questions (series 3 is where FAQs and objections go) and from stage A users' deals, anonymised.
+
+**Every video:**
+- Opens with proof, promise and plan: "I built a free calculator for SA rental deals. This one costs R3 534 a month. Here are the 3 numbers that show why."
+- Speaks from experience ("how I check it"), never "you should".
+- Keeps listings generic: no developments, developers or addresses.
+- Ends with "a calculator, not advice".
+
+**Cadence, within under an hour a day.**
+- One batch session a week, about 90 minutes: record about 7 screen recordings of the site (quick mode, the summary, the stress test, the share image) with a voice-over.
+- About 15 minutes a day to post on the three platforms and reply on the home platform.
+
+**Calls to action.** Give 10, ask 1, and ask for one thing at a time. The first ask is the free tool ("run your own deal, link in bio"); later, the lead magnet below.
+
+**Checklist:**
+- [ ] Set up the three accounts, with a bio link carrying a campaign tag per platform (`…/Property-Analysis/?utm_source=tiktok`, `youtube`, `instagram`). GoatCounter records these, so visits, deals saved and packs show per platform.
+- [ ] Post for 100 days. Judge results by visits, deals saved and packs per platform, not views.
+- [ ] Monthly self-check:
+  - one person, one problem;
+  - a hook, something that keeps people watching, a payoff;
+  - talking from what I've done;
+  - posting minimum hit;
+  - the right people getting in touch;
+  - giving far more than asking.
 - [ ] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase" PDF, linking back to the tool.
 
-**Done when:** 100 videos are posted and visits per week are known and growing.
+**Done when:** 100 days of posting, with visits per platform known and growing.
+
+### Content, later (after about 100 days, or once there's budget)
+- Run the best-performing organic videos as paid ads: they're the cheapest ad test.
+- Repost winners every few months; most of the audience never saw them.
+- A long-form YouTube teardown as a pillar, cut into shorts.
+- Carousel export (one deal as 5 swipeable slides) and a 9:16 story image, if the share image and screen recordings aren't enough.
+- A professional series on LinkedIn for stage C.
 
 ### Stage C: Monetize. Buy Box Pro for professionals
 - [ ] **Sell by hand before building.** Offer 3 to 5 bond originators or agents a branded investor pack, made by hand from their client's deal. Ask what they would pay monthly.
@@ -78,6 +118,7 @@ Needed for Buy Box Pro (stage C of the growth plan). Build it only then, because
 - The page already talks to storage through one small interface (`browserDb()` in `src/shell.html`, the same shape as the claude.ai `db`). A Supabase version of that interface can be swapped in without touching the rest of the UI.
 - Import existing browser deals into a new account on first sign-in.
 - Comply with POPIA (South Africa's data-protection law): privacy policy, consent, data export and deletion on request.
+- **Owner-only Video mode** for making content: a phone-shaped screen of one deal that reveals the numbers a tap at a time (title → rent → costs → bond → cash flow → stress test → grade → the price that works → end card), for screen recording. Only the owner's account gets it, which is why it waits for accounts.
 - Plan for hosting costs and abuse protection (rate limits, sign-up checks).
 
 ## Done after phase 1
