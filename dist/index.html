@@ -9,7 +9,7 @@
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-QEHrA3t5IdZWvViCVqomZSO2ohfetV5C+E/Vvi82Xks='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-zID0nrNDqxu9oKtFqsxnYY9v/rUG/DXXi0RK7oPjaFc='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>Buy Box</title>
 <style>
@@ -437,7 +437,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .cv-stats b{display:block; font-family:var(--pk-display); font-weight:400; font-size:clamp(22px,3.5vw,32px); line-height:1.15; margin-top:var(--sp-2); color:var(--brass-2); white-space:nowrap}
 .cv-foot{display:flex; justify-content:space-between; align-items:flex-end; gap:var(--sp-2) var(--sp-5); flex-wrap:wrap; margin-top:var(--sp-6); font-size:12px; color:var(--text-2)}
 .cv-foot .rpt-meta{display:flex; flex-wrap:wrap; gap:var(--sp-1) var(--sp-4)} .cv-foot b{color:var(--text); font-weight:600}
-.cv-foot .fine2{font-size:var(--fs-label); letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--muted)}
+.cv-foot .fine2{font-size:var(--fs-label); letter-spacing:var(--ls-caps); text-transform:uppercase; color:var(--muted); text-align:right; line-height:1.6; margin-left:auto}
 /* sheet furniture */
 .sh-head{display:flex; align-items:baseline; gap:var(--sp-3); padding-bottom:var(--sp-3); margin-bottom:var(--sp-6); border-bottom:1px solid var(--line)}
 .sh-num{font-family:var(--pk-display); font-size:18px; color:var(--brass)}
@@ -575,7 +575,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 @page cover{size:A4; margin:0}
 /* Page margins print white (Chrome otherwise paints them with the app's dark background). */
 @page report{size:A4; margin:14mm 14mm 18mm; background:#fff;
-  @bottom-left{content:"Buy Box investor pack · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
+  @bottom-left{content:"Analysed with Buy Box · sirhiggs.github.io/Property-Analysis · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
   @bottom-right{content:"Page " counter(page) " of " counter(pages); font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
 }
 
@@ -1394,11 +1394,12 @@ function renderTopInner(){
     savedOrder().forEach(p=>opts.push(`<option value="${esc(p.id)}" ${p.id===S.cur?"selected":""}>${esc(p.name||"Untitled")}</option>`));
     c.innerHTML=`${mb}<span class="cap">Analyse</span><span class="sep">/</span><select class="pick" id="dealPick" aria-label="Deal on the desk">${opts.join("")}</select>`;
     const d=curDeal();
-    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
-    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
+    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="shareImg">Share image</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
+    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="shareImg">Share image</button><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
     $("dealPick")&&$("dealPick").addEventListener("change",e=>{ S.cur=e.target.value; resetCustom(); renderView(true); });
     $("newDeal").addEventListener("click",newDeal);
     $("rptOne").addEventListener("click",()=>{ if(curDeal()) openReport([S.cur],"analyse"); });
+    $("shareImg").addEventListener("click",()=>{ if(curDeal()) shareImage(curDeal()); });
     if(S.cur==="draft"){ $("saveDeal").addEventListener("click",saveDraft); $("discard").addEventListener("click",e=>confirmThen(e.currentTarget,"Discard draft?",discardDraft)); }
     else if(d){ $("inCmp").addEventListener("change",e=>{ if(!toggleCompare(d.id,e.target.checked)) e.target.checked=false; }); $("dupDeal").addEventListener("click",()=>duplicate(d.id)); $("delDeal").addEventListener("click",e=>confirmThen(e.currentTarget,"Delete deal?",()=>deleteDeal(d.id))); }
   } else if(S.view==="portfolio"){
@@ -2025,7 +2026,7 @@ function rptCover(items,ctxs,port){
       ${one?"":`<div class="cv-seals">${seals}</div>`}
       <div class="cv-stats">${rBand(one?"Cash flow, month 1":"Cash flow, month 1",rand(cf))}${rBand(one?"Cash required":"Total cash required",rand(cash))}${rBand(third[0],third[1],"",third[2])}</div>
     </div>
-    <div class="cv-foot"><div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div><span class="fine2">A calculator, not financial advice</span></div>
+    <div class="cv-foot"><div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div><span class="fine2" data-r="cover-site">Analysed with Buy Box · sirhiggs.github.io/Property-Analysis<br>A calculator, not financial advice</span></div>
   </div></section>`;
 }
 function rptExec(items,ctxs,port){
@@ -2141,7 +2142,7 @@ function rptMethod(sheetNo){
     <section class="psec keep"><div class="kick">The targets used</div>
     <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.slice(0,5).map((row,i)=>{ const b=tests[i+5]; return `<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td><th>${b.label}<small>${b.sub}</small></th><td class="num">${tgtText(b,T[b.k])}</td></tr>`; }).join("")}</tbody></table></div></section>
     <section class="psec keep"><div class="kick">Not financial advice</div>
-    <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page on the Buy Box site.</p></footer></section>
+    <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page at sirhiggs.github.io/Property-Analysis.</p></footer></section>
   </section>`;
 }
 function renderReport(){
@@ -2332,6 +2333,86 @@ function cleanDeal(raw){
   });
   ["id","created","updated","inCompare","slot"].forEach(k=>{ if(k in raw) d[k]=raw[k]; });
   return d;
+}
+/* ================= SHARE IMAGE ================= */
+// A 1080×1080 PNG of one deal for WhatsApp or Instagram, drawn on a canvas in the browser (nothing is uploaded).
+// Colours come from the dark tokens (.rpt-dark) and the fonts are the pack's, so it matches the investor pack cover.
+const SITE="sirhiggs.github.io/Property-Analysis";
+function shareCard(d){
+  const r=analyse(d); r.v=verdict(r,S.targets); r.g=grade(r.v);
+  const n=narrateDeal(dealContext(d,S.targets)), storm=scenario(d,"storm").m.cfMonth;
+  return {name:d.name||"Untitled", where:[d.area||"",d.newDev?"New development":"Resale"].filter(Boolean).join(" · "), g:r.g, ratio:r.v.ratio,
+    verdict:verdictText(r.v), tests:`${r.v.pass} of ${r.v.n} tests met`, cf:r.m.cfMonth, headline:n.headline,
+    stats:[["Price",rand(r.price)],["Cash required",rand(r.cashIn)],["Perfect storm",rand(storm)+"/m"]], storm};
+}
+async function drawShareImage(card){
+  const W=1080, c=document.createElement("canvas"); c.width=W; c.height=W;
+  const x=c.getContext("2d"), probe=document.createElement("div"); probe.className="rpt-dark"; probe.hidden=true; document.body.appendChild(probe);
+  const cs=getComputedStyle(probe), tok={}; ["--surface","--bg","--glow-cover","--brass","--brass-2","--brass-line","--brass-soft","--text","--text-2","--muted","--line-2","--surface-3","--good","--warn","--bad","--good-text","--warn-text","--bad-text"].forEach(k=>tok[k]=cs.getPropertyValue(k).trim()); probe.remove();
+  const t=k=>tok[k];
+  const SERIF='"Fraunces", Georgia, serif', SANS='"Inter", "Geist", system-ui, sans-serif';
+  try{ await Promise.all(["400 80px Fraunces","500 28px Inter","600 28px Inter"].map(f=>document.fonts.load(f))); }catch(e){}
+  // background: the cover's gradient and brass glow, then a double brass frame
+  let g=x.createLinearGradient(0,0,W*.6,W); g.addColorStop(0,t("--surface")); g.addColorStop(.75,t("--bg")); x.fillStyle=g; x.fillRect(0,0,W,W);
+  g=x.createRadialGradient(W*.92,0,0,W*.92,0,W*.8); g.addColorStop(0,t("--glow-cover")); g.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=g; x.fillRect(0,0,W,W);
+  x.strokeStyle=t("--brass-line"); x.lineWidth=2; x.strokeRect(40,40,W-80,W-80); x.strokeStyle=t("--brass-soft"); x.strokeRect(52,52,W-104,W-104);
+  const L=100, R=W-100, txt=(s,X,Y,font,col,align)=>{ x.font=font; x.fillStyle=col; x.textAlign=align||"left"; x.fillText(s,X,Y); };
+  const fit=(s,font,max)=>{ x.font=font; if(x.measureText(s).width<=max) return s; while(s.length>1&&x.measureText(s+"…").width>max) s=s.slice(0,-1); return s+"…"; };
+  const wrap=(s,font,max,lines)=>{ x.font=font; const out=[]; let line=""; s.split(" ").forEach(w=>{ const tst=line?line+" "+w:w; if(x.measureText(tst).width>max&&line){ out.push(line); line=w; } else line=tst; }); if(line) out.push(line);
+    if(out.length>lines){ out.length=lines; out[lines-1]=fit(out[lines-1]+"…",font,max); } return out; };
+  // top bar: brand mark and label
+  x.strokeStyle=t("--brass"); x.lineWidth=3; x.beginPath(); x.roundRect(L,104,40,40,10); x.stroke(); x.fillStyle=t("--brass"); x.beginPath(); x.roundRect(L+11,115,18,18,4); x.fill();
+  txt("BUY BOX",L+58,134,`600 24px ${SANS}`,t("--brass-2"));
+  txt("RENTAL PROPERTY CHECK",R,134,`500 20px ${SANS}`,t("--brass-2"),"right");
+  // deal name and where
+  wrap(card.name,`400 76px ${SERIF}`,R-L-250,2).forEach((s,i)=>txt(s,L,262+i*84,`400 76px ${SERIF}`,t("--text")));
+  if(card.where) txt(fit(card.where,`500 26px ${SANS}`,R-L-250),L,card.name&&wrap(card.name,`400 76px ${SERIF}`,R-L-250,2).length>1?392:312,`500 26px ${SANS}`,t("--text-2"));
+  // grade seal: ring filled to the score, letter in the middle
+  const cx=R-95, cy=272, rr=84, col=card.g==="A"||card.g==="B"?t("--good"):card.g==="C"?t("--warn"):t("--bad"), colT=card.g==="A"||card.g==="B"?t("--good-text"):card.g==="C"?t("--warn-text"):t("--bad-text");
+  x.lineWidth=10; x.strokeStyle=t("--surface-3"); x.beginPath(); x.arc(cx,cy,rr,0,2*Math.PI); x.stroke();
+  x.strokeStyle=col; x.lineCap="round"; x.beginPath(); x.arc(cx,cy,rr,-Math.PI/2,-Math.PI/2+2*Math.PI*Math.max(.001,Math.min(1,card.ratio))); x.stroke(); x.lineCap="butt";
+  txt(card.g,cx,cy+34,`600 96px ${SANS}`,colT,"center");
+  txt(card.tests,cx,cy+rr+46,`500 22px ${SANS}`,t("--text-2"),"center");
+  // the monthly cash flow, big
+  const y0=520; x.fillStyle=t("--line-2"); x.fillRect(L,y0-70,R-L,2);
+  txt("CASH FLOW · MONTH 1",L,y0-22,`600 22px ${SANS}`,t("--muted"));
+  const big=(card.cf<0?"−":card.cf>0?"+":"")+rand(Math.abs(card.cf));
+  txt(big,L,y0+92,`400 132px ${SERIF}`,card.cf<0?t("--bad-text"):t("--good-text")); x.font=`400 132px ${SERIF}`; const bw=x.measureText(big).width;
+  txt("/ month",L+bw+18,y0+92,`500 30px ${SANS}`,t("--muted"));
+  // the headline from the commentary module
+  wrap(card.headline,`400 34px ${SERIF}`,R-L,2).forEach((s,i)=>txt(s,L,y0+168+i*46,`400 34px ${SERIF}`,t("--brass-2")));
+  // three figures
+  const y1=820, cw=(R-L)/3; x.fillStyle=t("--brass-line"); x.fillRect(L,y1-50,R-L,2);
+  card.stats.forEach(([k,v],i)=>{ const X=L+i*cw+(i?24:0); if(i){ x.fillStyle=t("--line-2"); x.fillRect(L+i*cw,y1-30,2,90); }
+    txt(k.toUpperCase(),X,y1,`600 20px ${SANS}`,t("--muted")); txt(fit(v,`400 44px ${SERIF}`,cw-36),X,y1+54,`400 44px ${SERIF}`,i===2&&card.storm<0?t("--bad-text"):t("--brass-2")); });
+  // footer: where it came from, and what it is
+  txt("Analysed with Buy Box · "+SITE,L,W-128,`600 22px ${SANS}`,t("--text-2"));
+  txt("A calculator, not financial advice. Figures are only as good as the numbers entered.",L,W-94,`500 19px ${SANS}`,t("--muted"));
+  return c;
+}
+// A plain-text description of the card, used as alt text: stored in the PNG (an iTXt "Description" chunk) and sent
+// with the share sheet.
+const shareAlt=card=>`${card.name}: grade ${card.g}, ${card.tests}. Cash flow ${rand(card.cf)} a month in year 1; in a perfect storm ${rand(card.storm)} a month. ${card.headline} Analysed with Buy Box · ${SITE}. A calculator, not financial advice.`;
+let CRC_T=null;
+function crc32(b){ if(!CRC_T){ CRC_T=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; CRC_T[n]=c>>>0; } }
+  let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c=CRC_T[(c^b[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+async function pngWithText(blob,key,text){
+  const png=new Uint8Array(await blob.arrayBuffer()), enc=new TextEncoder();
+  const body=new Uint8Array([...enc.encode("iTXt"),...enc.encode(key),0,0,0,0,0,...enc.encode(text)]);
+  const chunk=new Uint8Array(body.length+8), dv=new DataView(chunk.buffer);
+  dv.setUint32(0,body.length-4); chunk.set(body,4); dv.setUint32(body.length+4,crc32(body));
+  const iend=png.length-12; // IEND is always the last 12 bytes
+  return new Blob([png.slice(0,iend),chunk,png.slice(iend)],{type:"image/png"});
+}
+async function shareImage(d){
+  const card=shareCard({...DEFAULTS,...d}), c=await drawShareImage(card), alt=shareAlt(card);
+  let blob=await new Promise(res=>c.toBlob(res,"image/png")); if(!blob){ toast("Couldn't make the image"); return; }
+  try{ blob=await pngWithText(blob,"Description",alt); }catch(e){}
+  const file="buy-box-"+(card.name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"deal")+".png";
+  // On phones, open the share sheet (WhatsApp, Instagram…); elsewhere, download the PNG.
+  try{ const f=new File([blob],file,{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[f]})&&matchMedia("(pointer:coarse)").matches){ await navigator.share({files:[f],title:card.name,text:alt}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=file; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast("Image saved: "+file);
 }
 function exportData(){
   const day=new Date().toISOString().slice(0,10);

@@ -8,12 +8,15 @@ const shell = fs.readFileSync(__dirname + '/src/shell.html', 'utf8');
 const engine = fs.readFileSync(__dirname + '/src/engine.js', 'utf8');
 const narrative = fs.readFileSync(__dirname + '/src/narrative.js', 'utf8');
 const seed = JSON.parse(fs.readFileSync(__dirname + '/data/deals.json', 'utf8')).deals;
-for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%']) {
+// The site's address, printed on investor packs and share images. Change it here when the custom domain is live.
+const SITE = 'sirhiggs.github.io/Property-Analysis';
+for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%']) {
   if (!shell.includes(mark)) throw new Error('src/shell.html is missing the ' + mark + ' placeholder');
 }
 // Function replacements, so a "$" in the engine or the deals is never read as a replacement pattern.
 // "<" is escaped so text in the deals can never close the script tag.
 const page = shell
+  .replaceAll('%%SITE%%', SITE)
   .replace('%%ENGINE%%', () => engine)
   .replace('%%NARRATIVE%%', () => narrative)
   .replace('%%SEED%%', () => JSON.stringify(seed).replace(/</g, '\\u003c'));
