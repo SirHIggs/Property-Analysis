@@ -463,6 +463,22 @@ function rnd(i){
   ok(typeof hs.properties.hostile1.price==='undefined'||typeof hs.properties.hostile1.price==='number','import keeps numbers as numbers',typeof hs.properties.hostile1.price);
   ok(hs.settings.targets.irr===17&&hs.settings.targets.prime===11.5,'import ignores non-numeric targets',JSON.stringify(hs.settings.targets));
 
+  // ---------- lead magnet: 10 checks before you sign, one printed A4 page ----------
+  await p.goto(BASE+'#checklist'); await p.reload(); await p.waitForTimeout(800); // a fresh page: the CSP probe above leaves an <img> behind
+  const cl=await p.evaluate(()=>{ const doc=document.querySelector('.cl-doc'), all=[...doc.querySelectorAll('*')], own=e=>[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
+    return { items:doc.querySelectorAll('.cl-item').length, links:[...doc.querySelectorAll('.cl-item a')].map(a=>a.getAttribute('href')), title:document.querySelector('#crumbs h1').textContent,
+      italic:all.filter(e=>getComputedStyle(e).fontStyle!=='normal').length, small:all.filter(e=>own(e)&&parseFloat(getComputedStyle(e).fontSize)<10.9).map(e=>e.className||e.tagName),
+      side:!!document.querySelector('.side a[href="#checklist"]'), guide:!!document.querySelector('#v-guide a[href="#checklist"]'), site:doc.textContent.includes('%%SITE%%') };
+  });
+  ok(cl.items===10&&cl.title==='10 checks before you sign','checklist shows ten checks',cl.items+' '+cl.title);
+  ok(cl.links.length===8&&cl.links.every(h=>/^#(analyse|report)$/.test(h)),'checks 1 to 8 link into Buy Box',cl.links.join());
+  ok(cl.italic===0&&cl.small.length===0&&!cl.site,'checklist: no italics, nothing below 8pt, site address filled in',JSON.stringify(cl.small));
+  ok(cl.side&&cl.guide,'checklist is linked from the sidebar and the guide','');
+  await p.emulateMedia({media:'print'}); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(200);
+  const clBuf=await p.pdf({printBackground:true,preferCSSPageSize:true}); const clPdf=clBuf.toString('latin1');
+  await p.emulateMedia({media:'screen'});
+  ok((clPdf.match(/\/Type\s*\/Page(?!s)/g)||[]).length===1,'checklist prints on one A4 page',(clPdf.match(/\/Type\s*\/Page(?!s)/g)||[]).length);
+
   // ---------- visit counts: off by default; on the real site only screen and button names, never what people type ----------
   ok(localCounts.length===0,'nothing is counted away from the real site address',localCounts.slice(0,3).join(' '));
   await p.goto(BASE+'#terms'); await p.waitForTimeout(300);

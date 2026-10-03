@@ -9,7 +9,7 @@
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-RBk5aB8hglYijSaZbdp6Ix8nP8xdsgaCBgEneVaksJQ='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qSTp3+kLN0lrTFEJ7dqXvWcqLsHFdjRSOZfa8clfQ64='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="buybox-count" content="buybox">
 <title>Buy Box</title>
@@ -536,6 +536,18 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .rpt-notes .viz-cap{display:block; white-space:normal; margin-bottom:var(--sp-1)!important}
 .rpt-end{font-size:12.5px; line-height:1.6; color:var(--text-2); max-width:72ch}
 .rpt-end p+p{margin-top:var(--sp-3)}
+/* 10 checks before you sign: one A4 sheet in the pack's type and spacing */
+.cl-sheet .pull{font-size:clamp(26px,3.6vw,34px)}
+.cl-sheet .sh-head{margin-bottom:var(--sp-5)}
+.cl-list{list-style:none; counter-reset:cl; margin:var(--sp-5) 0 0; padding:0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:var(--sp-3) var(--sp-5)}
+.cl-item{counter-increment:cl; position:relative; padding:var(--sp-3) 0 0 36px; border-top:1px solid var(--line); break-inside:avoid}
+.cl-item::before{content:counter(cl); position:absolute; left:0; top:var(--sp-2); font-family:var(--pk-display); font-size:26px; line-height:1; color:var(--brass)}
+.cl-item b{display:block; font-size:14px; font-weight:600}
+.cl-item p{margin:var(--sp-1) 0 var(--sp-1)!important; font-size:var(--fs-body); line-height:1.45; color:var(--text-2)}
+.cl-item a,.cl-item span{font-size:var(--fs-small); font-weight:600; color:var(--brass)}
+.cl-foot{display:flex; flex-direction:column; gap:var(--sp-1); margin-top:var(--sp-5); padding-top:var(--sp-3); border-top:1.5px solid var(--text); font-size:var(--fs-small); color:var(--muted)}
+.cl-foot b{font-size:13px; color:var(--text)}
+@media screen and (max-width:700px){ .cl-list{grid-template-columns:minmax(0,1fr)} .cl-sheet .sh-head .r{display:none} }
 .report-doc .tablebox{overflow-x:auto}
 .report-doc .cmp{min-width:0; table-layout:fixed}
 .report-doc .cmp th,.report-doc .cmp td{padding:var(--sp-2)}
@@ -555,11 +567,12 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 /* Printing a pack: only the sheets, on A4, colours kept; a full-bleed cover, then pages with a footer. Other screens print as they are. */
 .report-doc,.sheet{page:report}
 .sheet.cover{page:cover}
+.cl-doc,.cl-sheet{page:checklist}
 @media print{
-  html[data-view="report"],html[data-view="report"] body{background:#fff!important}
-  html[data-view="report"] .side,html[data-view="report"] .topbar,html[data-view="report"] .tabbar,html[data-view="report"] .notice,html[data-view="report"] .toast,html[data-view="report"] .rpt-bar,html[data-view="report"] .rpt-tip{display:none!important}
-  html[data-view="report"] .app{display:block}
-  html[data-view="report"] .main{padding:0}
+  :is(html[data-view="report"],html[data-view="checklist"]),:is(html[data-view="report"],html[data-view="checklist"]) body{background:#fff!important}
+  :is(html[data-view="report"],html[data-view="checklist"]) :is(.side,.topbar,.tabbar,.notice,.toast,.rpt-bar,.rpt-tip){display:none!important}
+  :is(html[data-view="report"],html[data-view="checklist"]) .app{display:block}
+  :is(html[data-view="report"],html[data-view="checklist"]) .main{padding:0}
   .report-doc{display:block}
   .sheet{max-width:none; box-shadow:none; border-radius:0; padding:0; break-before:page}
   .sheet:first-child{break-before:auto}
@@ -574,6 +587,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
   .report-doc .tablebox{overflow:visible}
 }
 @page cover{size:A4; margin:0}
+@page checklist{size:A4; margin:14mm 14mm 14mm; background:#fff}
 /* Page margins print white (Chrome otherwise paints them with the app's dark background). */
 @page report{size:A4; margin:14mm 14mm 18mm; background:#fff;
   @bottom-left{content:"Analysed with Buy Box · sirhiggs.github.io/Property-Analysis · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
@@ -626,7 +640,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <div><span>Duty table</span><b>2026/27</b></div>
       <div><span>Last checked</span><b data-checked="short">Sep 2026</b></div>
     </div>
-    <p class="side-fine">A calculator, not financial advice. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a> · <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" target="_blank" rel="noopener noreferrer" data-feedback>Feedback</a></p>
+    <p class="side-fine">A calculator, not financial advice. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a> · <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" target="_blank" rel="noopener noreferrer" data-feedback>Feedback</a><br><a href="#checklist">10 checks before you sign</a></p>
     <button type="button" class="themebtn" id="themeBtn" aria-pressed="false"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span id="themeLabel">Light mode</span></button>
     <div class="status" id="status" data-s="loading"><i></i><span id="statusText">Connecting…</span></div>
   </aside>
@@ -820,10 +834,34 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p>Buy Box is a free calculator for learning and for screening deals. It is not financial, tax, legal or investment advice, and it does not recommend any property, bond or product. It is not provided by an authorised financial services provider.</p>
           <p>The results are only as good as the numbers you enter. Rates, rents, costs, transfer duty and fees change, and the estimates may be wrong or out of date. Before you buy, speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
           <p>Buy Box is provided as is, without any warranty. You use it at your own risk.</p>
+          <p><strong>Before you make an offer.</strong> The free <a href="#checklist">10 checks before you sign</a> one-pager lists what to look into, and which part of Buy Box does the maths for each.</p>
           <p><strong>Tell us what to fix.</strong> Something confusing, wrong or missing? <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" target="_blank" rel="noopener noreferrer" data-feedback>Send feedback</a>. It goes straight to the person who builds Buy Box.</p>
           <p><strong>Your privacy.</strong> Your deals are saved only in this browser and are never sent to us or anyone else. Clearing your browser data deletes them, so export a backup under <a href="#settings">Your data</a>. Read the full <a href="#terms">terms of use and privacy notice</a>.</p>
         </div>
       </section>
+    </section>
+    <section class="view" id="v-checklist" aria-label="10 checks before you sign" hidden>
+      <p class="fine rpt-tip">Print it, or choose <b>Save as PDF</b> in the print screen, to keep a copy. Checks 1 to 8 link to the part of Buy Box that does the maths.</p>
+      <article class="report-doc cl-doc">
+        <section class="sheet cl-sheet" data-r="checklist">
+          <header class="sh-head"><span class="sh-num">Buy Box</span><span class="sh-title">Free checklist</span><span class="r">sirhiggs.github.io/Property-Analysis</span></header>
+          <div class="intro"><h2 class="pull">10 checks before you sign an offer to purchase on a rental</h2>
+          <p class="lede">An offer to purchase is binding once both sides sign it. These ten checks take an evening, and Buy Box does the maths for the first eight.</p></div>
+          <ol class="cl-list">
+            <li class="cl-item"><b>The cash flow after every cost</b><p>Rent minus the bond isn't the answer. Take off the levy, rates, insurance, management (about 10% plus VAT) and maintenance too.</p><a href="#analyse">In Buy Box: the monthly cash flow on Analyse</a></li>
+            <li class="cl-item"><b>Rent that has actually been achieved</b><p>Compare at least three similar units that let recently, not asking rents. Ask a local rental agent what they would list it for.</p><a href="#analyse">In Buy Box: monthly rent, in the Quick form</a></li>
+            <li class="cl-item"><b>The levy and the scheme's health</b><p>Ask for the levy statement, the body corporate's financial statements and reserve fund, and whether a special levy is planned.</p><a href="#analyse">In Buy Box: stress test, levy and rates up 25%</a></li>
+            <li class="cl-item"><b>Rates and taxes</b><p>Check the municipal valuation and the current rate. A new valuation roll can push rates up.</p><a href="#analyse">In Buy Box: rates and taxes, in the Quick form</a></li>
+            <li class="cl-item"><b>All the cash you need on day one</b><p>Deposit, transfer duty, attorney and bond fees, and repairs. A new development sold with VAT included usually has no transfer duty.</p><a href="#analyse">In Buy Box: cash required, on Analyse</a></li>
+            <li class="cl-item"><b>Prime up 2%</b><p>The prime rate has moved by 2% or more within a few years before. Know your monthly number if it does again.</p><a href="#analyse">In Buy Box: stress test, prime up 2%</a></li>
+            <li class="cl-item"><b>Two empty months</b><p>Tenants leave, and finding the next one takes time. Check the cash flow with two months empty a year.</p><a href="#analyse">In Buy Box: stress test, empty 2 months</a></li>
+            <li class="cl-item"><b>The price that makes it work</b><p>Know the price at which it breaks even, and the price that meets your return target, before you make an offer.</p><a href="#analyse">In Buy Box: stress test, where it breaks</a></li>
+            <li class="cl-item"><b>Condition and certificates</b><p>Have it inspected. On a resale the seller usually supplies an electrical compliance certificate, plus others where they apply. New homes should be NHBRC-enrolled.</p><span>Ask the agent and your attorney</span></li>
+            <li class="cl-item"><b>The conditions in the offer</b><p>Make it subject to bond approval, with clear dates. Read the voetstoots clause, and have a conveyancing attorney look before you sign.</p><span>Share the investor report with your attorney</span></li>
+          </ol>
+          <footer class="cl-foot"><b>Run checks 1 to 8 free at sirhiggs.github.io/Property-Analysis</b><span>General information only, not financial, legal or tax advice. Laws, rates and costs change: confirm with a conveyancing attorney, a bond originator or a financial adviser.</span></footer>
+        </section>
+      </article>
     </section>
     <section class="view" id="v-report" aria-label="Investor report" hidden>
       <div class="rpt-bar">
@@ -1257,7 +1295,7 @@ const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SITE="sirhiggs.github.io/Property-Analysis"; // the site address, set in build.js
 const DRAFT_KEY="buybox-draft", FORM_KEY="buybox-form", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report"];
+const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report","checklist"];
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -1368,7 +1406,7 @@ function storeDraft(){ try{ if(S.draft) localStorage.setItem(DRAFT_KEY,JSON.stri
 // real site (never on localhost, a fork or inside the claude.ai artifact), and never with Do Not Track, Global Privacy
 // Control or the opt-out on the privacy notice. Paths are fixed names; nothing a visitor types is ever sent.
 const COUNT_KEY="buybox-count", GC=(document.querySelector('meta[name="buybox-count"]')||{}).content||"";
-const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link"};
+const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link","checklist-printed":"Checklist printed"};
 let countRef=true;
 function countOptedOut(){ try{ return localStorage.getItem(COUNT_KEY)==="off"; }catch(e){ return false; } }
 function countAllowed(){
@@ -1385,13 +1423,13 @@ function count(path,title,event){
 }
 const countEvent=k=>count(k,COUNT_EVENTS[k],true);
 let countedView=null;
-function countView(v){ if(v===countedView) return; countedView=v; count("/"+v,({analyse:"Analyse",portfolio:"Portfolio",compare:"Compare",settings:"Buy box & method",guide:"How grades work",terms:"Terms & privacy",report:"Investor report"})[v]||v,false); }
+function countView(v){ if(v===countedView) return; countedView=v; count("/"+v,({analyse:"Analyse",portfolio:"Portfolio",compare:"Compare",settings:"Buy box & method",guide:"How grades work",terms:"Terms & privacy",report:"Investor report",checklist:"10 checks before you sign"})[v]||v,false); }
 function setupCounting(){
   const on=/^[a-z0-9-]{1,40}$/.test(GC);
   document.querySelectorAll("[data-count]").forEach(el=>el.hidden=(el.dataset.count==="on")!==on);
   const opt=$("countOpt"); if(opt){ opt.checked=!countOptedOut(); opt.addEventListener("change",()=>{ try{ if(opt.checked) localStorage.removeItem(COUNT_KEY); else localStorage.setItem(COUNT_KEY,"off"); }catch(e){} toast(opt.checked?"Anonymous visit counts on":"Visit counts off for this browser"); }); }
   document.querySelectorAll("[data-feedback]").forEach(a=>a.addEventListener("click",()=>countEvent("feedback")));
-  window.addEventListener("beforeprint",()=>{ if(S.view==="report") countEvent("pack-printed"); });
+  window.addEventListener("beforeprint",()=>{ if(S.view==="report") countEvent("pack-printed"); else if(S.view==="checklist") countEvent("checklist-printed"); });
 }
 setupCounting();
 
@@ -1414,7 +1452,7 @@ function renderView(rebuild){
   else if(S.view==="portfolio") renderPortfolio();
   else if(S.view==="compare") renderCompare();
   else if(S.view==="guide") renderGuide();
-  else if(S.view==="terms"){}
+  else if(S.view==="terms"||S.view==="checklist"){}
   else if(S.view==="report") renderReport();
   else renderSettings();
 }
@@ -1454,6 +1492,10 @@ function renderTopInner(){
     const n=reportItems().length;
     c.innerHTML=`${mb}<span class="cap">Report</span><span class="sep">/</span><h1>Investor report${n?` · ${n} deal${n===1?"":"s"}`:""}</h1>`;
     a.innerHTML="";
+  } else if(S.view==="checklist"){
+    c.innerHTML=`${mb}<span class="cap">Free checklist</span><span class="sep">/</span><h1>10 checks before you sign</h1>`;
+    a.innerHTML=`<button type="button" class="btn primary" id="clPrint">Print or save as PDF</button>`;
+    $("clPrint").addEventListener("click",()=>window.print());
   } else if(S.view==="terms"){
     c.innerHTML=`${mb}<span class="cap">About</span><span class="sep">/</span><h1>Terms &amp; privacy</h1>`;
     a.innerHTML="";

@@ -76,7 +76,7 @@ Ideas come from comments and questions (series 3 is where FAQs and objections go
   - posting minimum hit;
   - the right people getting in touch;
   - giving far more than asking.
-- [ ] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase" PDF, linking back to the tool.
+- [x] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase", at `…/Property-Analysis/#checklist` (print or save as PDF), each check linking back to the tool.
 
 **Done when:** 100 days of posting, with visits per platform known and growing.
 
