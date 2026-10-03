@@ -192,6 +192,14 @@ input[type=range]{accent-color:var(--brass); width:100%}
 .assump .grp + .grp{border-top:1px solid var(--line); padding-top:14px}
 .assump .grp > .cap{color:var(--brass)}
 .pair{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.seg{display:inline-flex; border:1px solid var(--line-2); border-radius:8px; padding:2px; gap:2px; background:var(--surface-2)}
+.seg button{border:0; background:transparent; color:var(--text-2); font-size:12.5px; font-weight:550; padding:4px 10px; border-radius:6px}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{background:var(--brass-soft); color:var(--text); box-shadow:inset 0 0 0 1px var(--brass-line)}
+.assump .quick-lede{margin:0; color:var(--text-2); font-size:13px; line-height:1.5}
+.assumed{margin:0 16px 14px; padding:10px 12px; border:1px dashed var(--line-2); border-radius:8px; color:var(--text-2); font-size:12.5px; line-height:1.55}
+.assumed b{color:var(--text); font-weight:600}
+.assumed .linkbtn{display:inline; border:0; background:none; padding:0; color:var(--brass-2); font:inherit; font-weight:600; text-decoration:underline; text-underline-offset:2px}
 .readout{margin:0 16px 16px; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden}
 .readout div{background:var(--surface-2); padding:8px 10px; display:flex; flex-direction:column}
 .readout span{font-size:10.5px; color:var(--muted); font-weight:500}
@@ -855,30 +863,30 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 "use strict";
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const DRAFT_KEY="buybox-draft", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
+const DRAFT_KEY="buybox-draft", FORM_KEY="buybox-form", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
 const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report"];
 
 const GROUPS=[
   {title:"Deal", fields:[
-    {k:"name",label:"Name",type:"text"},
+    {k:"name",label:"Name",type:"text",quick:1},
     {k:"area",label:"Area",type:"text"},
-    {k:"newDev",label:"New development (no transfer duty; developer usually pays transfer and bond fees)",type:"check"}
+    {k:"newDev",label:"New development (no transfer duty; developer usually pays transfer and bond fees)",type:"check",quick:1}
   ]},
   {title:"Purchase", fields:[
-    {pair:[{k:"price",label:"Purchase price",u:"R"},{k:"marketValue",label:"Market value",u:"R",hint:"Blank = price"}]},
+    {pair:[{k:"price",label:"Purchase price",u:"R",quick:1},{k:"marketValue",label:"Market value",u:"R",hint:"Blank = price"}]},
     {pair:[{k:"reno",label:"Repairs upfront",u:"R"},{k:"legal",label:"Attorney & bond fees",u:"R",est:true}]}
   ]},
   {title:"Income", fields:[
-    {pair:[{k:"rent",label:"Monthly rent",u:"R"},{k:"otherIncome",label:"Other income",u:"R/m"}]},
+    {pair:[{k:"rent",label:"Monthly rent",u:"R",quick:1},{k:"otherIncome",label:"Other income",u:"R/m"}]},
     {k:"vacancy",label:"Vacancy",u:"%",hint:"4% ≈ two weeks empty a year"}
   ]},
   {title:"Running costs", fields:[
-    {pair:[{k:"levy",label:"Levy",u:"R/m"},{k:"rates",label:"Rates & taxes",u:"R/m"}]},
+    {pair:[{k:"levy",label:"Levy",u:"R/m",quick:1},{k:"rates",label:"Rates & taxes",u:"R/m",quick:1}]},
     {pair:[{k:"insurance",label:"Insurance",u:"R/m"},{k:"otherExp",label:"Other",u:"R/m"}]},
     {pair:[{k:"mgmt",label:"Management",u:"%",hint:"10% + VAT = 11.5%"},{k:"maint",label:"Maintenance",u:"%",hint:"% of rent"}]}
   ]},
   {title:"Finance", fields:[
-    {pair:[{k:"deposit",label:"Deposit",u:"%"},{k:"rate",label:"Interest rate",u:"%"}]},
+    {pair:[{k:"deposit",label:"Deposit",u:"%",quick:1},{k:"rate",label:"Interest rate",u:"%"}]},
     {pair:[{k:"term",label:"Term",u:"yrs"},{k:"taxRate",label:"Your tax rate",u:"%",hint:"0 = ignore"}]}
   ]},
   {title:"Exit", fields:[
@@ -1054,11 +1062,36 @@ function buildAssumptions(){
     s+=`</div>${f.hint||f.est?`<span class="hint" ${f.est?`id="legalHint"`:""}>${f.hint||""}</span>`:""}</div>`;
     return s;
   };
-  let h=`<div class="panel-h"><h2>Assumptions</h2><p>${S.cur==="draft"?"Draft · not saved":"Saves as you type"}</p></div>`;
-  GROUPS.forEach(g=>{ h+=`<div class="grp"><span class="cap">${g.title}</span>`; g.fields.forEach(f=>{ h+=f.pair?`<div class="pair">${f.pair.map(field).join("")}</div>`:field(f); }); h+=`</div>`; });
+  const quick=formMode==="quick";
+  let h=`<div class="panel-h"><h2>Assumptions</h2><div class="seg" role="group" aria-label="How many inputs to show"><button type="button" id="formQuick" aria-pressed="${quick}">Quick</button><button type="button" id="formFull" aria-pressed="${!quick}">All inputs</button></div><p style="flex-basis:100%">${S.cur==="draft"?"Draft · not saved":"Saves as you type"}</p></div>`;
+  if(quick){
+    // Quick mode: the five numbers that decide most deals (plus a name and the new-development switch). Everything else
+    // keeps the deal's own values, listed underneath so nothing is hidden.
+    const qf=GROUPS.flatMap(g=>g.fields.flatMap(f=>f.pair||[f])).filter(f=>f.quick), by=k=>field(qf.find(f=>f.k===k));
+    h+=`<div class="grp"><p class="quick-lede">Five numbers from the listing give a first grade. Fine-tune the rest under <b>All inputs</b>.</p>${by("name")}<div class="pair">${by("price")}${by("rent")}</div><div class="pair">${by("levy")}${by("rates")}</div>${by("deposit")}${by("newDev")}</div>`;
+    h+=`<div class="assumed" id="assumed"></div>`;
+  } else GROUPS.forEach(g=>{ h+=`<div class="grp"><span class="cap">${g.title}</span>`; g.fields.forEach(f=>{ h+=f.pair?`<div class="pair">${f.pair.map(field).join("")}</div>`:field(f); }); h+=`</div>`; });
   h+=`<div class="readout" id="readout"></div>`;
-  box.innerHTML=h; builtFor=S.cur+"|"+(S.cur==="draft"?"d":"s");
+  box.innerHTML=h; builtFor=S.cur+"|"+(S.cur==="draft"?"d":"s")+"|"+formMode;
   box.querySelectorAll("[data-k]").forEach(el=>el.addEventListener(el.type==="checkbox"?"change":"input",()=>onField(el)));
+  $("formQuick").addEventListener("click",()=>setFormMode("quick"));
+  $("formFull").addEventListener("click",()=>setFormMode("full"));
+}
+let formMode="quick";
+try{ if(localStorage.getItem(FORM_KEY)==="full") formMode="full"; }catch(e){}
+function setFormMode(m){
+  if(m===formMode) return; formMode=m; try{ localStorage.setItem(FORM_KEY,m); }catch(e){}
+  buildAssumptions(); renderAnalyse(false);
+  const first=$(m==="quick"?"f-price":"f-name"); if(first) first.focus({preventScroll:true});
+}
+// What quick mode assumes for the inputs it doesn't show: the deal's own values, in plain words.
+function renderAssumed(r){
+  const el=$("assumed"), d=curDeal(); if(!el||!d) return;
+  const v={...DEFAULTS,...d}, n=x=>num(x), y=x=>n(x)===1?"1 year":n(x)+" years";
+  const bond=r.loan>0?`a <b>${pct(r.ratePct,2)}</b> bond over <b>${y(v.term)}</b>`:"<b>no bond</b>";
+  const extras=[n(v.reno)?`repairs of <b>${rand(n(v.reno))}</b>`:"",n(v.otherIncome)?`other income of <b>${rand(n(v.otherIncome))}/m</b>`:"",n(v.otherExp)?`other costs of <b>${rand(n(v.otherExp))}/m</b>`:"",n(v.taxRate)?`tax at <b>${n(v.taxRate)}%</b>`:""].filter(Boolean);
+  el.innerHTML=`Also assumed: ${bond}, <b>${n(v.vacancy)}%</b> vacancy, management <b>${n(v.mgmt)}%</b>, maintenance <b>${n(v.maint)}%</b> of rent, insurance <b>${rand(n(v.insurance))}/m</b>, attorney and bond fees ${r.legalBlank?(r.legal>0?`estimated at <b>${rand(r.legal)}</b>`:"<b>none</b>"):`<b>${rand(r.legal)}</b>`}${extras.length?", "+extras.join(", "):""}. Over <b>${y(r.H)}</b>, rent grows <b>${n(v.rentGrowth)}%</b>, the levy <b>${n(v.costGrowth)}%</b> and the value <b>${n(v.capGrowth)}%</b> a year. <button type="button" class="linkbtn" id="assumedMore">Change these</button>`;
+  $("assumedMore").addEventListener("click",()=>setFormMode("full"));
 }
 function syncInputs(){
   const d=curDeal(); if(!d) return; const v={...DEFAULTS,...d};
@@ -1158,6 +1191,7 @@ function renderScreening(r){
   $("screening").innerHTML=h;
 }
 function renderReadout(r){
+  renderAssumed(r);
   const el=$("readout"); if(!el) return;
   el.innerHTML=`<div><span>Transfer duty</span><b>${rand(r.duty)}</b></div><div><span>Attorney & bond fees</span><b>${rand(r.legal)}${r.legalBlank&&r.legal>0?" est.":""}</b></div><div><span>Bond amount</span><b>${rand(r.loan)}</b></div><div><span>Bond /month</span><b>${rand(r.pmt)}</b></div>`;
   const d=curDeal(), lh=$("legalHint"); if(lh&&d) lh.textContent=d.newDev?"Usually paid by developer":`Blank = est. ${compactR(r.legalEst)}`;
@@ -1296,7 +1330,7 @@ function renderIE(d){
   $("ieTable").innerHTML=`<thead><tr><th>Year</th><th>Rent collected</th><th>Running costs</th><th>Bond</th><th>Net</th><th>Per month</th><th>Running total</th></tr></thead><tbody>${rows.map(r=>`<tr><th>${r.y}</th><td class="num">${rand(r.income)}</td><td class="num">${rand(r.running)}</td><td class="num">${rand(r.bond)}</td><td class="num ${r.net<0?"bad":"good"}">${rand(r.net)}</td><td class="num">${rand(r.net/12)}</td><td class="num">${rand(r.cum)}</td></tr>`).join("")}</tbody>`;
 }
 function renderAnalyse(rebuild){
-  const d=curDeal(), key=S.cur+"|"+(S.cur==="draft"?"d":"s");
+  const d=curDeal(), key=S.cur+"|"+(S.cur==="draft"?"d":"s")+"|"+formMode;
   if(rebuild||builtFor!==key) buildAssumptions();
   if(!d) return;
   const r=analyse(d); r.v=verdict(r,S.targets); r.g=grade(r.v);

@@ -52,6 +52,27 @@ function rnd(i){
   p.on('dialog',d=>{ errs.push('dialog opened: '+d.message()); d.dismiss(); });
   await p.goto(BASE+'#analyse'); await p.waitForTimeout(1200);
   await p.click('#newDeal'); await p.waitForTimeout(900);
+  // ---------- quick mode: the default form, five numbers from a listing ----------
+  const qf=await p.evaluate(()=>[...document.querySelectorAll('#assump [data-k]')].map(e=>e.dataset.k));
+  ok(JSON.stringify(qf)===JSON.stringify(['name','price','rent','levy','rates','deposit','newDev']),'quick mode shows only the listing numbers',qf.join());
+  ok(await p.getAttribute('#formQuick','aria-pressed')==='true','quick mode is the default','');
+  for(let i=0;i<6;i++){
+    const q={price:Math.round(400000+Math.random()*4e6),rent:Math.round(4000+Math.random()*30000),levy:Math.round(300+Math.random()*3000),rates:Math.round(Math.random()*2000),deposit:[0,10,20,35,100][i%5]};
+    for(const [k,v] of Object.entries(q)) await p.fill('#f-'+k,String(v));
+    await p.waitForTimeout(60);
+    const d={...E.DEFAULTS,rate:T.prime,...q}, r=E.analyse(d), v=E.verdict(r,T);
+    const g=await p.evaluate(()=>({cash:document.querySelector('#sCash').childNodes[0].textContent, letter:document.querySelector('#seal .letter').textContent, assumed:document.querySelector('#assumed').textContent}));
+    cmpR(g.cash,r.m.cfMonth,'quick mode: cash flow from five numbers');
+    ok(g.letter===grade(v),'quick mode: grade from five numbers',g.letter+' vs '+grade(v));
+    ok(g.assumed.includes(`${E.DEFAULTS.vacancy}% vacancy`)&&g.assumed.includes(`management ${E.DEFAULTS.mgmt}%`)&&g.assumed.includes(`maintenance ${E.DEFAULTS.maint}% of rent`),'quick mode lists what it assumes',g.assumed);
+    ok(q.deposit===100?/no bond/.test(g.assumed):g.assumed.includes(T.prime.toFixed(2)+'% bond over '+E.DEFAULTS.term+' years'),'quick mode names the bond it assumes',g.assumed);
+  }
+  await p.click('#assumedMore'); await p.waitForTimeout(200);
+  ok(await p.evaluate(()=>document.querySelectorAll('#assump [data-k]').length)>20&&await p.getAttribute('#formFull','aria-pressed')==='true','"Change these" opens all inputs','');
+  ok(await p.inputValue('#f-price')!==''&&await p.inputValue('#f-vacancy')===String(E.DEFAULTS.vacancy),'all inputs keep the quick numbers and the assumed values','');
+  await p.reload(); await p.waitForTimeout(900);
+  ok(await p.getAttribute('#formFull','aria-pressed')==='true','the chosen form is remembered','');
+  await p.click('#newDeal'); await p.waitForTimeout(600);
   const N=Number(process.argv[2]||40);
   for(let i=1;i<=N;i++){
     const d=rnd(i);
