@@ -5,11 +5,13 @@
 <meta name="description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="theme-color" content="#0A0F0E">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://buyboxsa.co.za/">
+<link rel="canonical" href="https://buyboxsa.co.za/">
 <meta property="og:title" content="Buy Box: property deal analyser">
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qSTp3+kLN0lrTFEJ7dqXvWcqLsHFdjRSOZfa8clfQ64='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lwPhQhwF8N9M1iXs5H8w5EKrbPYfZ9RgyzIFRDy/6/Y='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="buybox-count" content="buybox">
 <title>Buy Box</title>
@@ -590,7 +592,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 @page checklist{size:A4; margin:14mm 14mm 14mm; background:#fff}
 /* Page margins print white (Chrome otherwise paints them with the app's dark background). */
 @page report{size:A4; margin:14mm 14mm 18mm; background:#fff;
-  @bottom-left{content:"Analysed with Buy Box · sirhiggs.github.io/Property-Analysis · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
+  @bottom-left{content:"Analysed with Buy Box · buyboxsa.co.za · A calculator, not financial advice"; font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
   @bottom-right{content:"Page " counter(page) " of " counter(pages); font-family:"Inter",sans-serif; font-size:8pt; color:#4C5854}
 }
 
@@ -844,7 +846,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <p class="fine rpt-tip">Print it, or choose <b>Save as PDF</b> in the print screen, to keep a copy. Checks 1 to 8 link to the part of Buy Box that does the maths.</p>
       <article class="report-doc cl-doc">
         <section class="sheet cl-sheet" data-r="checklist">
-          <header class="sh-head"><span class="sh-num">Buy Box</span><span class="sh-title">Free checklist</span><span class="r">sirhiggs.github.io/Property-Analysis</span></header>
+          <header class="sh-head"><span class="sh-num">Buy Box</span><span class="sh-title">Free checklist</span><span class="r">buyboxsa.co.za</span></header>
           <div class="intro"><h2 class="pull">10 checks before you sign an offer to purchase on a rental</h2>
           <p class="lede">An offer to purchase is binding once both sides sign it. These ten checks take an evening, and Buy Box does the maths for the first eight.</p></div>
           <ol class="cl-list">
@@ -859,7 +861,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
             <li class="cl-item"><b>Condition and certificates</b><p>Have it inspected. On a resale the seller usually supplies an electrical compliance certificate, plus others where they apply. New homes should be NHBRC-enrolled.</p><span>Ask the agent and your attorney</span></li>
             <li class="cl-item"><b>The conditions in the offer</b><p>Make it subject to bond approval, with clear dates. Read the voetstoots clause, and have a conveyancing attorney look before you sign.</p><span>Share the investor report with your attorney</span></li>
           </ol>
-          <footer class="cl-foot"><b>Run checks 1 to 8 free at sirhiggs.github.io/Property-Analysis</b><span>General information only, not financial, legal or tax advice. Laws, rates and costs change: confirm with a conveyancing attorney, a bond originator or a financial adviser.</span></footer>
+          <footer class="cl-foot"><b>Run checks 1 to 8 free at buyboxsa.co.za</b><span>General information only, not financial, legal or tax advice. Laws, rates and costs change: confirm with a conveyancing attorney, a bond originator or a financial adviser.</span></footer>
         </section>
       </article>
     </section>
@@ -1293,7 +1295,7 @@ function narratePortfolio(ctxs) {
 "use strict";
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const SITE="sirhiggs.github.io/Property-Analysis"; // the site address, set in build.js
+const SITE="buyboxsa.co.za"; // the site address, set in build.js
 const DRAFT_KEY="buybox-draft", FORM_KEY="buybox-form", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
 const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report","checklist"];
 
@@ -2105,7 +2107,7 @@ function rptCover(items,ctxs,port){
       ${one?"":`<div class="cv-seals">${seals}</div>`}
       <div class="cv-stats">${rBand(one?"Cash flow, month 1":"Cash flow, month 1",rand(cf))}${rBand(one?"Cash required":"Total cash required",rand(cash))}${rBand(third[0],third[1],"",third[2])}</div>
     </div>
-    <div class="cv-foot"><div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div><span class="fine2" data-r="cover-site">Analysed with Buy Box · sirhiggs.github.io/Property-Analysis<br>A calculator, not financial advice</span></div>
+    <div class="cv-foot"><div class="rpt-meta" id="rptMeta">${reportMetaHtml()}</div><span class="fine2" data-r="cover-site">Analysed with Buy Box · buyboxsa.co.za<br>A calculator, not financial advice</span></div>
   </div></section>`;
 }
 function rptExec(items,ctxs,port){
@@ -2221,7 +2223,7 @@ function rptMethod(sheetNo){
     <section class="psec keep"><div class="kick">The targets used</div>
     <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.slice(0,5).map((row,i)=>{ const b=tests[i+5]; return `<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td><th>${b.label}<small>${b.sub}</small></th><td class="num">${tgtText(b,T[b.k])}</td></tr>`; }).join("")}</tbody></table></div></section>
     <section class="psec keep"><div class="kick">Not financial advice</div>
-    <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page at sirhiggs.github.io/Property-Analysis.</p></footer></section>
+    <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page at buyboxsa.co.za.</p></footer></section>
   </section>`;
 }
 function renderReport(){

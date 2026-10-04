@@ -5,14 +5,17 @@ const { chromium } = require('playwright');
 const dist=path.join(__dirname,'../dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
-// /Property-Analysis/ serves the site with visit counting on: the real build when GOATCOUNTER is set in build.js,
-// otherwise a copy switched on as a build with GOATCOUNTER='bbtest' would be.
+// Requests for the real site address (SITE in build.js, read back from the built page) get the site with visit counting
+// on: the real build when GOATCOUNTER is set, otherwise a copy switched on as a build with GOATCOUNTER='bbtest' would be.
+const SITE=(html.match(/Analysed with Buy Box · ([^ "·]+)/)||[])[1]||'buyboxsa.co.za', SITE_HOST=SITE.split('/')[0], SITE_BASE='/'+SITE.split('/').slice(1).join('/').replace(/\/?$/,'/').replace(/^\/+/,'');
 const GCODE=(html.match(/<meta name="buybox-count" content="([a-z0-9-]+)">/)||[])[1]||'bbtest';
 const countHtml=html.includes('<meta name="buybox-count"')?html:html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
 const server=http.createServer((q,r)=>{
   let f=decodeURIComponent(new URL(q.url,'http://x').pathname);
-  if(f==='/Property-Analysis/'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
-  if(f.startsWith('/Property-Analysis/')) f=f.slice('/Property-Analysis'.length);
+  if((q.headers.host||'').split(':')[0]===SITE_HOST){
+    if(f===SITE_BASE||f===SITE_BASE+'index.html'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
+    if(f.startsWith(SITE_BASE)) f='/'+f.slice(SITE_BASE.length);
+  }
   if(f.endsWith('/')) f+='index.html';
   const fp=path.join(dist,path.normalize(f));
   if(!fp.startsWith(dist+path.sep)||!fs.existsSync(fp)){ r.writeHead(404); r.end(); return; }
@@ -485,8 +488,8 @@ function rnd(i){
   const on=html.includes('<meta name="buybox-count"');
   ok(await p.isVisible('[data-count=on]')===on&&await p.isVisible('[data-count=off]')===!on,'privacy notice matches whether counting is set up',String(on));
   {
-    const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP sirhiggs.github.io 127.0.0.1']});
-    const SITEURL='http://sirhiggs.github.io:'+port+'/Property-Analysis/';
+    const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP '+SITE_HOST+' 127.0.0.1']});
+    const SITEURL='http://'+SITE_HOST+':'+port+SITE_BASE;
     const run=async(init)=>{
       const ctx=await cb.newContext({viewport:{width:1280,height:900},acceptDownloads:true}); if(init) await ctx.addInitScript(init);
       const cp=await ctx.newPage(), hits=[], cerrs=[]; cp.on('pageerror',e=>cerrs.push(e.message)); cp.on('console',m=>{ if(m.type()==='error') cerrs.push(m.text()); });
