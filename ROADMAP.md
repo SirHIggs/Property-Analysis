@@ -32,7 +32,11 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 - [x] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
 - [x] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
 - [x] **Custom domain**: buyboxsa.co.za, so every share points somewhere we own.
-- [x] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
+- [x] **Feedback link** in the sidebar, the ⋯ menu and the Terms page: a hosted form when `FEEDBACK` is set in build.js, otherwise an email to hello@buyboxsa.co.za.
+- [x] **Friendlier action bar** (Share ▾ and ⋯ menus) and a **checklist card** on Analyse, plus a Resources group in the sidebar.
+- [ ] **Email:** Zoho Mail (free) on buyboxsa.co.za, one mailbox with aliases hello@ (public), social@ (social accounts), admin@ (domain, GitHub, GoatCounter, Supabase; 2-factor), privacy@ (POPIA) and noreply@ (site emails).
+- [ ] **Email sign-up** for deal breakdowns: a free hosted form (e.g. MailerLite) set as `SIGNUP` in build.js; the links appear on the checklist page and card.
+- [ ] **Feedback form** (e.g. Tally): set as `FEEDBACK` in build.js.
 - [x] **Privacy-friendly counts** (on: stats at buybox.goatcounter.com). GoatCounter's image pixel, allowed by one `img-src` address in the CSP: screens viewed, deals saved, packs and share images made, never deal figures. Explained on the Terms & privacy page, with an opt-out, and checked by the dom suite.
 
 **Done when:** 10 people have used it on a real deal and at least 5 testimonials are collected.

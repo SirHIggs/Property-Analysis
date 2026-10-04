@@ -11,7 +11,7 @@
 <meta property="og:description" content="Grade South African rental property deals from A to E against proven investor targets. Stress test the bond, find your maximum offer price and compare up to 8 deals side by side. Free, and your deals stay in your browser.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23101816%22%2F%3E%3Cpath%20d%3D%22M7%2025h18M10%2021v-6M16%2021V9M22%2021v-9%22%20stroke%3D%22%23C9A45C%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lwPhQhwF8N9M1iXs5H8w5EKrbPYfZ9RgyzIFRDy/6/Y='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-cZU5pBLJZHSFNRfOPt1F62mArqqPTTARQ9MLizFi9WA='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://buybox.goatcounter.com/count; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="buybox-count" content="buybox">
 <title>Buy Box</title>
@@ -139,6 +139,26 @@ a{color:inherit}
 .btn kbd{font-family:var(--mono); font-size:10.5px; color:var(--muted); border:1px solid var(--line-2); border-radius:4px; padding:0 4px}
 .toggle{display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); cursor:pointer; padding:6px 10px; border:1px solid var(--line-2); border-radius:7px}
 .toggle input{accent-color:var(--brass); width:15px; height:15px}
+/* Drop-down menus in the top bar (Share ▾, ⋯): a <details> so they work without inline handlers */
+.menu{position:relative}
+.menu>summary{list-style:none}
+.menu>summary::-webkit-details-marker{display:none}
+.menu>summary .chev{transition:transform .15s}
+.menu[open]>summary .chev{transform:rotate(180deg)}
+.btn.icon{padding:7px 10px; font-size:16px; line-height:1}
+.menu-list{position:absolute; right:0; top:calc(100% + 6px); z-index:30; min-width:230px; display:flex; flex-direction:column; gap:2px; padding:6px; background:var(--surface); border:1px solid var(--line-2); border-radius:10px; box-shadow:0 14px 34px var(--shadow)}
+.menu-list>button,.menu-list>a{display:flex; flex-direction:column; align-items:flex-start; gap:1px; width:100%; text-align:left; background:none; border:0; border-radius:7px; padding:8px 10px; color:var(--text); font-size:13px; font-weight:550; text-decoration:none}
+.menu-list>button:hover,.menu-list>a:hover,.menu-list>button:focus-visible,.menu-list>a:focus-visible{background:var(--surface-2)}
+.menu-list small{font-size:11.5px; font-weight:400; color:var(--muted)}
+.menu-list .danger{color:var(--bad-text)}
+.menu-list .danger.armed{background:var(--bad); color:#fff}
+.menu-list hr{border:0; border-top:1px solid var(--line); margin:4px 2px}
+/* "Before you make an offer" card on Analyse */
+.clcard{display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin:0 0 18px; padding:12px 16px; border:1px solid var(--brass-line); border-radius:10px; background:var(--brass-soft)}
+.clcard .t{flex:1 1 280px; min-width:0; font-size:13.5px; color:var(--text-2)}
+.clcard .t b{color:var(--text)}
+.clcard .cl-x{background:none; border:0; color:var(--muted); font-size:18px; line-height:1; padding:4px 6px}
+.clcard .cl-x:hover{color:var(--text)}
 select.pick{appearance:none; -webkit-appearance:none; background:var(--surface-2); border:1px solid var(--line-2); border-radius:7px; color:var(--text); padding:7px 30px 7px 11px; font-weight:600; font-size:14px; max-width:100%;
   background-image:linear-gradient(45deg,transparent 50%,var(--text-2) 50%),linear-gradient(135deg,var(--text-2) 50%,transparent 50%);
   background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%; background-size:5px 5px; background-repeat:no-repeat}
@@ -634,6 +654,9 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <span class="cap" style="margin-top:14px">Setup</span>
       <a href="#settings" data-v="settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Buy box &amp; method</a>
       <a href="#guide" data-v="guide"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2.5h7.5L13 5v8.5H3z"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3"/></svg>How grades work</a>
+      <span class="cap" style="margin-top:14px">Resources</span>
+      <a href="#checklist" data-v="checklist"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M5.5 6l1 1 2-2M5.5 10l1 1 2-2M10 6.5h1M10 10.5h1"/></svg>10 checks before you sign</a>
+      <a href="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback" target="_blank" rel="noopener noreferrer" data-feedback><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>Send feedback</a>
     </nav>
     <div class="market" aria-label="Market inputs">
       <span class="cap">Market · SA</span>
@@ -642,7 +665,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <div><span>Duty table</span><b>2026/27</b></div>
       <div><span>Last checked</span><b data-checked="short">Sep 2026</b></div>
     </div>
-    <p class="side-fine">A calculator, not financial advice. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a> · <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" target="_blank" rel="noopener noreferrer" data-feedback>Feedback</a><br><a href="#checklist">10 checks before you sign</a></p>
+    <p class="side-fine">A calculator, not financial advice. <a href="#guide">How grades work</a> · <a href="#terms">Terms &amp; privacy</a></p>
     <button type="button" class="themebtn" id="themeBtn" aria-pressed="false"><svg class="ic-moon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"/></svg><svg class="ic-sun" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span id="themeLabel">Light mode</span></button>
     <div class="status" id="status" data-s="loading"><i></i><span id="statusText">Connecting…</span></div>
   </aside>
@@ -675,6 +698,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       </div>
 
       <div class="kpis" id="kpis"></div>
+      <div class="clcard" id="clCard" hidden><div class="t"><b>Before you make an offer:</b> the free <b>10 checks before you sign</b>, from the rent to the levy, the bond and the offer's conditions.</div><a class="btn primary" href="#checklist">Open the checklist</a><a class="btn" href="" target="_blank" rel="noopener noreferrer" data-signup>Get deal breakdowns by email</a><button type="button" class="cl-x" id="clCardX" aria-label="Hide this card">×</button></div>
 
       <div class="work">
         <aside class="panel assump" id="assump" aria-label="Assumptions"></aside>
@@ -837,13 +861,13 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p>The results are only as good as the numbers you enter. Rates, rents, costs, transfer duty and fees change, and the estimates may be wrong or out of date. Before you buy, speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
           <p>Buy Box is provided as is, without any warranty. You use it at your own risk.</p>
           <p><strong>Before you make an offer.</strong> The free <a href="#checklist">10 checks before you sign</a> one-pager lists what to look into, and which part of Buy Box does the maths for each.</p>
-          <p><strong>Tell us what to fix.</strong> Something confusing, wrong or missing? <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" target="_blank" rel="noopener noreferrer" data-feedback>Send feedback</a>. It goes straight to the person who builds Buy Box.</p>
+          <p><strong>Tell us what to fix.</strong> Something confusing, wrong or missing? <a href="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback" target="_blank" rel="noopener noreferrer" data-feedback>Send feedback</a>. It goes straight to the person who builds Buy Box.</p>
           <p><strong>Your privacy.</strong> Your deals are saved only in this browser and are never sent to us or anyone else. Clearing your browser data deletes them, so export a backup under <a href="#settings">Your data</a>. Read the full <a href="#terms">terms of use and privacy notice</a>.</p>
         </div>
       </section>
     </section>
     <section class="view" id="v-checklist" aria-label="10 checks before you sign" hidden>
-      <p class="fine rpt-tip">Print it, or choose <b>Save as PDF</b> in the print screen, to keep a copy. Checks 1 to 8 link to the part of Buy Box that does the maths.</p>
+      <p class="fine rpt-tip">Print it, or choose <b>Save as PDF</b> in the print screen, to keep a copy. Checks 1 to 8 link to the part of Buy Box that does the maths.<span data-signup-wrap> Want a new deal broken down in your inbox every week? <a href="" target="_blank" rel="noopener noreferrer" data-signup>Get deal breakdowns by email</a>.</span></p>
       <article class="report-doc cl-doc">
         <section class="sheet cl-sheet" data-r="checklist">
           <header class="sh-head"><span class="sh-num">Buy Box</span><span class="sh-title">Free checklist</span><span class="r">buyboxsa.co.za</span></header>
@@ -876,7 +900,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
     </section>
     <section class="view" id="v-terms" aria-label="Terms and privacy" hidden>
       <section class="panel">
-        <div class="panel-h"><h2>Terms of use</h2><p>Last updated 3 October 2026</p></div>
+        <div class="panel-h"><h2>Terms of use</h2><p>Last updated 4 October 2026</p></div>
         <div class="guide-body">
           <p><strong>What Buy Box is.</strong> Buy Box is a free online calculator for screening South African rental property deals. It is run by an individual in South Africa. By using it, you agree to these terms. If you don't agree, please don't use it.</p>
           <p><strong>Not advice.</strong> Buy Box gives general information only. It is not financial, investment, tax or legal advice, and it does not recommend any property, bond, developer or product. It is not provided by an authorised financial services provider. Grades and results depend only on the numbers you enter and the targets you choose.</p>
@@ -887,11 +911,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p><strong>Fair use.</strong> Don't use Buy Box to break the law, or try to disrupt or damage the site.</p>
           <p><strong>Changes.</strong> These terms may be updated. The date above shows the latest version.</p>
           <p><strong>Law.</strong> These terms are governed by the law of the Republic of South Africa.</p>
-          <p><strong>Contact.</strong> Questions, problems or ideas: <a href="https://github.com/SirHIggs/Property-Analysis/issues/new" rel="noopener noreferrer" target="_blank" data-feedback>send feedback</a>, or open an issue on the <a href="https://github.com/SirHIggs/Property-Analysis/issues" rel="noopener noreferrer" target="_blank">Buy Box project page</a>.</p>
+          <p><strong>Contact.</strong> Questions, problems or ideas: email <a href="mailto:hello@buyboxsa.co.za">hello@buyboxsa.co.za</a> or <a href="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback" rel="noopener noreferrer" target="_blank" data-feedback>send feedback</a>.</p>
         </div>
       </section>
       <section class="panel" id="privacy">
-        <div class="panel-h"><h2>Privacy notice</h2><p>Last updated 3 October 2026</p></div>
+        <div class="panel-h"><h2>Privacy notice</h2><p>Last updated 4 October 2026</p></div>
         <div class="guide-body">
           <p data-count="off"><strong>What we collect: nothing.</strong> Buy Box has no accounts, sign-up forms, cookies, analytics, trackers or adverts. We don't receive your deals, your targets or anything you type.</p>
           <p data-count="on" hidden><strong>What we collect: anonymous visit counts only.</strong> Buy Box has no accounts, sign-up forms, cookies, trackers or adverts, and we never receive your deals, your targets or anything you type. To see how many people use it, the site counts visits with <a href="https://www.goatcounter.com" target="_blank" rel="noopener noreferrer">GoatCounter</a>, an open-source analytics service that sets no cookies. Each count says only which screen was opened (such as Analyse or Portfolio) or which button was used (such as Save, Investor report, Share image or Export), with the referring website, any campaign tag in the link and your screen width. GoatCounter works out your browser, operating system, country and language from the request, and stores them only as daily totals that can't be linked to each other or to you. It uses your IP address and browser details in memory for up to 8 hours to avoid counting a reload twice, and never writes them to disk.</p>
@@ -899,6 +923,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p><strong>Where your deals are kept.</strong> Everything you enter is saved only in this browser, on this device (in its local storage). It stays there until you delete it or clear your browser data. The site is built so that it can't send your deals anywhere.</p>
           <p><strong>Backups.</strong> Exported files are saved to your device. You decide where they go and who sees them. Only import files from people you trust.</p>
           <p><strong>Hosting.</strong> The site is hosted on GitHub Pages. Like any web host, GitHub may record technical information when your browser loads the site, such as your IP address and browser type, to run and secure its service. GitHub handles that information under its own privacy statement. We don't see it.</p>
+          <p><strong>Feedback, email sign-up and contact.</strong> If you choose to send feedback, sign up for emails or email us, what you send (and your email address, if you give it) is used only to reply, to improve Buy Box and, if you signed up, to send the emails you asked for. The feedback and sign-up forms run on their own services, named on each form, under their own privacy policies. You can unsubscribe at any time from any email. Nothing you type into Buy Box itself is sent.</p>
           <p><strong>Fonts.</strong> Fonts are served from this site, so no font service learns that you visited.</p>
           <p><strong>Your rights.</strong> South Africa's Protection of Personal Information Act (POPIA) gives you rights over your personal information. Because we don't collect any that identifies you, there is nothing for us to share, correct or delete. To remove everything from your device, delete your deals or clear this site's data in your browser. For questions, use the contact link above.</p>
         </div>
@@ -1296,6 +1321,7 @@ function narratePortfolio(ctxs) {
 const $=id=>document.getElementById(id);
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SITE="buyboxsa.co.za"; // the site address, set in build.js
+const FEEDBACK_URL="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback", SIGNUP_URL="", CONTACT="hello@buyboxsa.co.za"; // also set in build.js
 const DRAFT_KEY="buybox-draft", FORM_KEY="buybox-form", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
 const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report","checklist"];
 
@@ -1408,7 +1434,7 @@ function storeDraft(){ try{ if(S.draft) localStorage.setItem(DRAFT_KEY,JSON.stri
 // real site (never on localhost, a fork or inside the claude.ai artifact), and never with Do Not Track, Global Privacy
 // Control or the opt-out on the privacy notice. Paths are fixed names; nothing a visitor types is ever sent.
 const COUNT_KEY="buybox-count", GC=(document.querySelector('meta[name="buybox-count"]')||{}).content||"";
-const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link","checklist-printed":"Checklist printed"};
+const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link","checklist-printed":"Checklist printed","signup":"Email sign-up link","checklist-card":"Checklist card opened"};
 let countRef=true;
 function countOptedOut(){ try{ return localStorage.getItem(COUNT_KEY)==="off"; }catch(e){ return false; } }
 function countAllowed(){
@@ -1431,6 +1457,11 @@ function setupCounting(){
   document.querySelectorAll("[data-count]").forEach(el=>el.hidden=(el.dataset.count==="on")!==on);
   const opt=$("countOpt"); if(opt){ opt.checked=!countOptedOut(); opt.addEventListener("change",()=>{ try{ if(opt.checked) localStorage.removeItem(COUNT_KEY); else localStorage.setItem(COUNT_KEY,"off"); }catch(e){} toast(opt.checked?"Anonymous visit counts on":"Visit counts off for this browser"); }); }
   document.querySelectorAll("[data-feedback]").forEach(a=>a.addEventListener("click",()=>countEvent("feedback")));
+  // Email sign-up links show only when a sign-up form is configured in build.js.
+  document.querySelectorAll("[data-signup]").forEach(a=>{ if(!SIGNUP_URL){ a.remove(); return; } a.addEventListener("click",()=>countEvent("signup")); });
+  document.querySelectorAll("[data-signup-wrap]").forEach(w=>{ if(!SIGNUP_URL) w.remove(); });
+  const clx=$("clCardX"); if(clx) clx.addEventListener("click",()=>{ try{ localStorage.setItem(CL_CARD_KEY,"hidden"); }catch(e){} $("clCard").hidden=true; });
+  const clo=document.querySelector('#clCard a[href="#checklist"]'); if(clo) clo.addEventListener("click",()=>countEvent("checklist-card"));
   window.addEventListener("beforeprint",()=>{ if(S.view==="report") countEvent("pack-printed"); else if(S.view==="checklist") countEvent("checklist-printed"); });
 }
 setupCounting();
@@ -1469,10 +1500,14 @@ function renderTopInner(){
     const opts=[];
     if(S.draft) opts.push(`<option value="draft" ${S.cur==="draft"?"selected":""}>Draft · ${esc(S.draft.name||"New deal")}</option>`);
     savedOrder().forEach(p=>opts.push(`<option value="${esc(p.id)}" ${p.id===S.cur?"selected":""}>${esc(p.name||"Untitled")}</option>`));
-    c.innerHTML=`${mb}<span class="cap">Analyse</span><span class="sep">/</span><select class="pick" id="dealPick" aria-label="Deal on the desk">${opts.join("")}</select>`;
+    c.innerHTML=`${mb}<span class="cap">Analyse</span><span class="sep">/</span><select class="pick" id="dealPick" aria-label="Deal on the desk">${opts.join("")}</select><button type="button" class="btn" id="newDeal">+ New deal</button>`;
     const d=curDeal();
-    if(S.cur==="draft") a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><button type="button" class="btn danger" id="discard">Discard</button><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="shareImg">Share image</button><button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
-    else a.innerHTML=`<button type="button" class="btn" id="newDeal">New deal</button><label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In comparison</label><button type="button" class="btn" id="rptOne">Investor report</button><button type="button" class="btn" id="shareImg">Share image</button><button type="button" class="btn" id="dupDeal" ${ro}>Duplicate</button><button type="button" class="btn danger" id="delDeal" ${ro}>Delete</button>`;
+    // Grouped by purpose: share the deal (Share ▾), keep it (Save / In Compare), and the rarer actions behind ⋯.
+    const share=primary=>`<details class="menu" id="shareMenu"><summary class="btn${primary?" primary":""}">Share <svg class="chev" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></summary><div class="menu-list" role="menu"><button type="button" role="menuitem" id="rptOne">Investor report<small>A designed pack to print or save as PDF</small></button><button type="button" role="menuitem" id="shareImg">Share image<small>A square picture for WhatsApp or Instagram</small></button></div></details>`;
+    const more=items=>`<details class="menu" id="moreMenu"><summary class="btn icon" aria-label="More actions" title="More actions">⋯</summary><div class="menu-list" role="menu">${items}<hr><a role="menuitem" href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer" data-feedback>Send feedback<small>Tell us what's confusing or missing</small></a></div></details>`;
+    if(S.cur==="draft") a.innerHTML=`${share(false)}${more(`<button type="button" role="menuitem" class="danger" id="discard">Discard draft</button>`)}<button type="button" class="btn primary" id="saveDeal" ${ro}>Save to portfolio</button>`;
+    else a.innerHTML=`<label class="toggle"><input type="checkbox" id="inCmp" ${d&&d.inCompare?"checked":""} ${ro}> In Compare</label>${share(true)}${more(`<button type="button" role="menuitem" id="dupDeal" ${ro}>Duplicate<small>Copy this deal to try other numbers</small></button><button type="button" role="menuitem" class="danger" id="delDeal" ${ro}>Delete deal</button>`)}`;
+    wireMenus(a); a.querySelectorAll("[data-feedback]").forEach(x=>x.addEventListener("click",()=>countEvent("feedback")));
     $("dealPick")&&$("dealPick").addEventListener("change",e=>{ S.cur=e.target.value; resetCustom(); renderView(true); });
     $("newDeal").addEventListener("click",newDeal);
     $("rptOne").addEventListener("click",()=>{ if(curDeal()) openReport([S.cur],"analyse"); });
@@ -1509,6 +1544,19 @@ function renderTopInner(){
     a.innerHTML="";
   }
 }
+// Top-bar menus: one open at a time; close on outside click, Esc or after choosing an item (but not while a
+// "Delete deal?" confirmation is armed, so the second click can land).
+function wireMenus(root){
+  const menus=[...root.querySelectorAll("details.menu")];
+  menus.forEach(m=>{
+    m.addEventListener("toggle",()=>{ if(m.open){ menus.forEach(o=>{ if(o!==m) o.open=false; }); const f=m.querySelector(".menu-list [role=menuitem]"); if(f) f.focus({preventScroll:true}); } });
+    m.querySelector(".menu-list").addEventListener("click",e=>{ const it=e.target.closest("[role=menuitem]"); if(it&&!it.classList.contains("armed")) setTimeout(()=>{ if(!it.classList.contains("armed")) m.open=false; },0); });
+  });
+}
+document.addEventListener("click",e=>{ document.querySelectorAll("details.menu[open]").forEach(m=>{ if(!m.contains(e.target)) m.open=false; }); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll("details.menu[open]").forEach(m=>{ m.open=false; m.querySelector("summary").focus(); }); });
+const CL_CARD_KEY="buybox-cl-card";
+function renderClCard(){ const c=$("clCard"); if(!c) return; let hidden=false; try{ hidden=localStorage.getItem(CL_CARD_KEY)==="hidden"; }catch(e){} c.hidden=hidden; }
 let armed=null;
 function confirmThen(btn,label,fn){
   if(armed===btn){ armed=null; fn(); return; }
@@ -1800,6 +1848,7 @@ function renderIE(d){
   $("ieTable").innerHTML=`<thead><tr><th>Year</th><th>Rent collected</th><th>Running costs</th><th>Bond</th><th>Net</th><th>Per month</th><th>Running total</th></tr></thead><tbody>${rows.map(r=>`<tr><th>${r.y}</th><td class="num">${rand(r.income)}</td><td class="num">${rand(r.running)}</td><td class="num">${rand(r.bond)}</td><td class="num ${r.net<0?"bad":"good"}">${rand(r.net)}</td><td class="num">${rand(r.net/12)}</td><td class="num">${rand(r.cum)}</td></tr>`).join("")}</tbody>`;
 }
 function renderAnalyse(rebuild){
+  renderClCard();
   const d=curDeal(), key=S.cur+"|"+(S.cur==="draft"?"d":"s")+"|"+formMode;
   if(rebuild||builtFor!==key) buildAssumptions();
   if(!d) return;
@@ -2222,6 +2271,7 @@ function rptMethod(sheetNo){
     <div class="band b4">${rBand("Prime rate used",pct(T.prime,2),"","for new deals")}${rBand("Discount rate",pct(T.discountRate,2),"","for present value")}${rBand("Figures checked",esc(MARKET_CHECKED.short),"","prime rate and duty table")}${rBand("Generated",esc(rDate()))}</div></div>
     <section class="psec keep"><div class="kick">The targets used</div>
     <div class="tablebox"><table class="rpt-t" data-r="targets"><tbody>${tests.slice(0,5).map((row,i)=>{ const b=tests[i+5]; return `<tr><th>${row.label}<small>${row.sub}</small></th><td class="num">${tgtText(row,T[row.k])}</td><th>${b.label}<small>${b.sub}</small></th><td class="num">${tgtText(b,T[b.k])}</td></tr>`; }).join("")}</tbody></table></div></section>
+    <section class="psec keep"><div class="kick">Before you make an offer</div><p class="rpt-end">The free one-page <b>10 checks before you sign</b> lists what to look into before signing an offer to purchase: buyboxsa.co.za/#checklist</p></section>
     <section class="psec keep"><div class="kick">Not financial advice</div>
     <footer class="rpt-end"><p>This pack was generated with Buy Box, a free calculator. It gives general information based only on the numbers entered, and it is not financial, investment, tax or legal advice. It does not recommend any property, bond or product.</p><p>Interest rates, transfer duty, fees, rents and costs change. Built-in figures were last checked ${esc(MARKET_CHECKED.long)}. Growth rates are assumptions, not forecasts. Check every number and speak to qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner, before you buy. See the Terms &amp; privacy page at buyboxsa.co.za.</p></footer></section>
   </section>`;
