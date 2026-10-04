@@ -5,14 +5,17 @@ const { chromium } = require('playwright');
 const dist=path.join(__dirname,'../dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
-// /Property-Analysis/ serves the site with visit counting on: the real build when GOATCOUNTER is set in build.js,
-// otherwise a copy switched on as a build with GOATCOUNTER='bbtest' would be.
+// Requests for the real site address (SITE in build.js, read back from the built page) get the site with visit counting
+// on: the real build when GOATCOUNTER is set, otherwise a copy switched on as a build with GOATCOUNTER='bbtest' would be.
+const SITE=(html.match(/Analysed with Buy Box · ([^ "·]+)/)||[])[1]||'buyboxsa.co.za', SITE_HOST=SITE.split('/')[0], SITE_BASE='/'+SITE.split('/').slice(1).join('/').replace(/\/?$/,'/').replace(/^\/+/,'');
 const GCODE=(html.match(/<meta name="buybox-count" content="([a-z0-9-]+)">/)||[])[1]||'bbtest';
 const countHtml=html.includes('<meta name="buybox-count"')?html:html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
 const server=http.createServer((q,r)=>{
   let f=decodeURIComponent(new URL(q.url,'http://x').pathname);
-  if(f==='/Property-Analysis/'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
-  if(f.startsWith('/Property-Analysis/')) f=f.slice('/Property-Analysis'.length);
+  if((q.headers.host||'').split(':')[0]===SITE_HOST){
+    if(f===SITE_BASE||f===SITE_BASE+'index.html'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
+    if(f.startsWith(SITE_BASE)) f='/'+f.slice(SITE_BASE.length);
+  }
   if(f.endsWith('/')) f+='index.html';
   const fp=path.join(dist,path.normalize(f));
   if(!fp.startsWith(dist+path.sep)||!fs.existsSync(fp)){ r.writeHead(404); r.end(); return; }
@@ -463,14 +466,30 @@ function rnd(i){
   ok(typeof hs.properties.hostile1.price==='undefined'||typeof hs.properties.hostile1.price==='number','import keeps numbers as numbers',typeof hs.properties.hostile1.price);
   ok(hs.settings.targets.irr===17&&hs.settings.targets.prime===11.5,'import ignores non-numeric targets',JSON.stringify(hs.settings.targets));
 
+  // ---------- lead magnet: 10 checks before you sign, one printed A4 page ----------
+  await p.goto(BASE+'#checklist'); await p.reload(); await p.waitForTimeout(800); // a fresh page: the CSP probe above leaves an <img> behind
+  const cl=await p.evaluate(()=>{ const doc=document.querySelector('.cl-doc'), all=[...doc.querySelectorAll('*')], own=e=>[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
+    return { items:doc.querySelectorAll('.cl-item').length, links:[...doc.querySelectorAll('.cl-item a')].map(a=>a.getAttribute('href')), title:document.querySelector('#crumbs h1').textContent,
+      italic:all.filter(e=>getComputedStyle(e).fontStyle!=='normal').length, small:all.filter(e=>own(e)&&parseFloat(getComputedStyle(e).fontSize)<10.9).map(e=>e.className||e.tagName),
+      side:!!document.querySelector('.side a[href="#checklist"]'), guide:!!document.querySelector('#v-guide a[href="#checklist"]'), site:doc.textContent.includes('%%SITE%%') };
+  });
+  ok(cl.items===10&&cl.title==='10 checks before you sign','checklist shows ten checks',cl.items+' '+cl.title);
+  ok(cl.links.length===8&&cl.links.every(h=>/^#(analyse|report)$/.test(h)),'checks 1 to 8 link into Buy Box',cl.links.join());
+  ok(cl.italic===0&&cl.small.length===0&&!cl.site,'checklist: no italics, nothing below 8pt, site address filled in',JSON.stringify(cl.small));
+  ok(cl.side&&cl.guide,'checklist is linked from the sidebar and the guide','');
+  await p.emulateMedia({media:'print'}); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(200);
+  const clBuf=await p.pdf({printBackground:true,preferCSSPageSize:true}); const clPdf=clBuf.toString('latin1');
+  await p.emulateMedia({media:'screen'});
+  ok((clPdf.match(/\/Type\s*\/Page(?!s)/g)||[]).length===1,'checklist prints on one A4 page',(clPdf.match(/\/Type\s*\/Page(?!s)/g)||[]).length);
+
   // ---------- visit counts: off by default; on the real site only screen and button names, never what people type ----------
   ok(localCounts.length===0,'nothing is counted away from the real site address',localCounts.slice(0,3).join(' '));
   await p.goto(BASE+'#terms'); await p.waitForTimeout(300);
   const on=html.includes('<meta name="buybox-count"');
   ok(await p.isVisible('[data-count=on]')===on&&await p.isVisible('[data-count=off]')===!on,'privacy notice matches whether counting is set up',String(on));
   {
-    const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP sirhiggs.github.io 127.0.0.1']});
-    const SITEURL='http://sirhiggs.github.io:'+port+'/Property-Analysis/';
+    const port=server.address().port, cb=await chromium.launch({args:['--host-resolver-rules=MAP '+SITE_HOST+' 127.0.0.1']});
+    const SITEURL='http://'+SITE_HOST+':'+port+SITE_BASE;
     const run=async(init)=>{
       const ctx=await cb.newContext({viewport:{width:1280,height:900},acceptDownloads:true}); if(init) await ctx.addInitScript(init);
       const cp=await ctx.newPage(), hits=[], cerrs=[]; cp.on('pageerror',e=>cerrs.push(e.message)); cp.on('console',m=>{ if(m.type()==='error') cerrs.push(m.text()); });

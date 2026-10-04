@@ -10,10 +10,10 @@ Buy Box is moving from a personal claude.ai artifact to a public website that an
 - [x] Build a full web page (`dist/index.html`) with a description, link preview tags and an icon.
 - [x] Run both test suites on every push and pull request (GitHub Actions). The suites now fail the build on any failed check.
 - [x] Publish `dist/` to GitHub Pages on every push to the default branch.
-- [x] Turn on GitHub Pages. Live at https://sirhiggs.github.io/Property-Analysis/
+- [x] Turn on GitHub Pages. Live at https://buyboxsa.co.za (the old https://sirhiggs.github.io/Property-Analysis/ redirects there).
 - [x] Security: Content Security Policy, self-hosted fonts, hardened import, Dependabot, SECURITY.md.
 - [x] Name: keep **Buy Box**.
-- [ ] Custom domain. buybox.co.za is listed for sale on Dan.com (checked 2026-09-28); otherwise a variant such as buyboxsa.co.za.
+- [x] Custom domain: **buyboxsa.co.za** (registered 4 October 2026 at Domains.co.za, renews yearly). buybox.co.za is listed for sale on Dan.com if it's ever worth buying.
 
 ## Growth plan (agreed October 2026)
 
@@ -31,7 +31,7 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 - [ ] Watch 10 beginner investors analyse a real listing with Buy Box. Fix only their number 1 complaint, and collect quotes (with permission) for testimonials.
 - [x] **Quick mode.** Price, rent, levy, rates and deposit give a grade in about 30 seconds, with the full form optional. Faster and easier is where most of the value lies.
 - [x] **Every pack is an ad.** A shareable square image (grade and monthly cash flow) for WhatsApp and Instagram, and "Analysed with Buy Box · domain" on the pack cover and footer.
-- [ ] **Custom domain** (see phase 1), so every share points somewhere we own.
+- [x] **Custom domain**: buyboxsa.co.za, so every share points somewhere we own.
 - [x] **Feedback link** in the sidebar and on the pack page (an email address or a form link; links are allowed by the CSP, form posts are not).
 - [x] **Privacy-friendly counts** (on: stats at buybox.goatcounter.com). GoatCounter's image pixel, allowed by one `img-src` address in the CSP: screens viewed, deals saved, packs and share images made, never deal figures. Explained on the Terms & privacy page, with an opt-out, and checked by the dom suite.
 
@@ -67,7 +67,7 @@ Ideas come from comments and questions (series 3 is where FAQs and objections go
 **Calls to action.** Give 10, ask 1, and ask for one thing at a time. The first ask is the free tool ("run your own deal, link in bio"); later, the lead magnet below.
 
 **Checklist:**
-- [ ] Set up the three accounts, with a bio link carrying a campaign tag per platform (`…/Property-Analysis/?utm_source=tiktok`, `youtube`, `instagram`). GoatCounter records these, so visits, deals saved and packs show per platform.
+- [ ] Set up the three accounts, with a bio link carrying a campaign tag per platform (`https://buyboxsa.co.za/?utm_source=tiktok`, `youtube`, `instagram`). GoatCounter records these, so visits, deals saved and packs show per platform.
 - [ ] Post for 100 days. Judge results by visits, deals saved and packs per platform, not views.
 - [ ] Monthly self-check:
   - one person, one problem;
@@ -76,7 +76,7 @@ Ideas come from comments and questions (series 3 is where FAQs and objections go
   - posting minimum hit;
   - the right people getting in touch;
   - giving far more than asking.
-- [ ] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase" PDF, linking back to the tool.
+- [x] **Lead magnet:** a free one-page "10 checks before you sign an offer to purchase", at `https://buyboxsa.co.za/#checklist` (print or save as PDF), each check linking back to the tool.
 
 **Done when:** 100 days of posting, with visits per platform known and growing.
 

@@ -9,7 +9,7 @@ const engine = fs.readFileSync(__dirname + '/src/engine.js', 'utf8');
 const narrative = fs.readFileSync(__dirname + '/src/narrative.js', 'utf8');
 const seed = JSON.parse(fs.readFileSync(__dirname + '/data/deals.json', 'utf8')).deals;
 // The site's address, printed on investor packs and share images. Change it here when the custom domain is live.
-const SITE = 'sirhiggs.github.io/Property-Analysis';
+const SITE = 'buyboxsa.co.za';
 // Visit counts: the GoatCounter site code (the "buybox" in buybox.goatcounter.com). Empty = counting off. When set, the
 // website gets a <meta name="buybox-count"> tag and its Content Security Policy allows that one counting address as
 // an image; nothing else changes. The page counts views and a few actions, never what people type.
@@ -43,6 +43,8 @@ const head = [
   '<meta name="description" content="' + description + '">',
   '<meta name="theme-color" content="#0A0F0E">',
   '<meta property="og:type" content="website">',
+  '<meta property="og:url" content="https://' + SITE + '/">',
+  '<link rel="canonical" href="https://' + SITE + '/">',
   '<meta property="og:title" content="Buy Box: property deal analyser">',
   '<meta property="og:description" content="' + description + '">',
   '<meta name="twitter:card" content="summary">',
