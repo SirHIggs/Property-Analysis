@@ -14,11 +14,17 @@ const SITE = 'buyboxsa.co.za';
 // website gets a <meta name="buybox-count"> tag and its Content Security Policy allows that one counting address as
 // an image; nothing else changes. The page counts views and a few actions, never what people type.
 const GOATCOUNTER = 'buybox';
-// Where the Feedback links go: a web address (a form, or the issues page) or a mailto: link.
-const FEEDBACK = 'https://github.com/SirHIggs/Property-Analysis/issues/new';
+// The public contact address (shown on the Terms page; the feedback fallback).
+const CONTACT = 'hello@buyboxsa.co.za';
+// Where the Feedback links go: a hosted form (e.g. Tally). Empty = an email to CONTACT.
+const FEEDBACK = '' || 'mailto:' + CONTACT + '?subject=Buy%20Box%20feedback';
+// The email sign-up form for deal breakdowns (e.g. a MailerLite hosted form). Empty = the sign-up links are hidden.
+const SIGNUP = '';
+if (!/^[^@\s"<>]+@[^@\s"<>]+\.[a-z]{2,}$/i.test(CONTACT)) throw new Error('CONTACT must be an email address');
+if (SIGNUP && !/^https:\/\/[^"<>\s]+$/.test(SIGNUP)) throw new Error('SIGNUP must be an https:// link');
 if (GOATCOUNTER && !/^[a-z0-9-]{1,40}$/.test(GOATCOUNTER)) throw new Error('GOATCOUNTER must be a GoatCounter site code');
 if (!/^(https:\/\/|mailto:)[^"<>\s]+$/.test(FEEDBACK)) throw new Error('FEEDBACK must be an https:// or mailto: link');
-for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FEEDBACK%%']) {
+for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FEEDBACK%%', '%%SIGNUP%%', '%%CONTACT%%']) {
   if (!shell.includes(mark)) throw new Error('src/shell.html is missing the ' + mark + ' placeholder');
 }
 // Function replacements, so a "$" in the engine or the deals is never read as a replacement pattern.
@@ -26,6 +32,8 @@ for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FE
 const page = shell
   .replaceAll('%%SITE%%', SITE)
   .replaceAll('%%FEEDBACK%%', FEEDBACK)
+  .replaceAll('%%SIGNUP%%', SIGNUP)
+  .replaceAll('%%CONTACT%%', CONTACT)
   .replace('%%ENGINE%%', () => engine)
   .replace('%%NARRATIVE%%', () => narrative)
   .replace('%%SEED%%', () => JSON.stringify(seed).replace(/</g, '\\u003c'));
