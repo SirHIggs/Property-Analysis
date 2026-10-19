@@ -7,5 +7,5 @@
     "test": "node build.js && node tests/engine.test.js && node tests/narrative.test.js",
     "test:ui": "node build.js && node tests/dom.test.js 40"
   },
-  "devDependencies": { "playwright": "^1.47.0" }
+  "devDependencies": { "playwright": "^1.64.1" }
 }
