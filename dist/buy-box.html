@@ -617,6 +617,58 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
 .toast{position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--surface-3); border:1px solid var(--brass-line); color:var(--text); font-weight:500; padding:10px 14px; border-radius:9px; box-shadow:0 12px 30px rgba(0,0,0,.5); z-index:60; font-size:13px; display:flex; align-items:center; gap:8px}
 .toast::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--brass)}
 @media (max-width:900px){ .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))} }
+/* ---------- account ---------- */
+.acct{display:grid; gap:16px; max-width:720px}
+.acct-tabs{display:flex; gap:6px; padding:0 18px 4px; flex-wrap:wrap}
+.acct-tabs button{border:1px solid var(--line-2); background:transparent; color:var(--text-2); border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:550}
+.acct-tabs button[aria-pressed="true"]{background:var(--brass-soft); border-color:var(--brass-line); color:var(--text)}
+.acct-form{display:grid; gap:12px; padding:12px 18px 18px; max-width:420px}
+.acct-form .inp input{font-size:14px; padding:9px 10px}
+.acct-form .row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.acct-msg{margin:0; font-size:13px; line-height:1.45; color:var(--text-2)}
+.acct-msg[data-k="err"]{color:var(--bad-text)}
+.acct-msg[data-k="ok"]{color:var(--good-text)}
+.acct-msg:empty{display:none}
+.acct-who{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; padding:0 18px 16px; font-size:13.5px; color:var(--text-2)}
+.acct-who b{color:var(--text); font-weight:600; overflow-wrap:anywhere}
+.acct-role{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brass-2); border:1px solid var(--brass-line); border-radius:999px; padding:2px 8px}
+.acct-body{padding:0 18px 18px; display:grid; gap:12px; font-size:13.5px; color:var(--text-2); line-height:1.5}
+.acct-body p{margin:0}
+.btn.danger{color:var(--bad-text); border-color:var(--bad)}
+a.btn{text-decoration:none}
+.btn:disabled{opacity:.55; cursor:not-allowed}
+/* ---------- video mode (owner only): a phone-shaped screen for screen recordings ---------- */
+.vid{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:20px; align-items:start}
+.vid-ctl{display:grid; gap:12px; align-content:start; max-width:340px}
+.vid-ctl .row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.vid-ctl p{margin:0; font-size:12.5px; color:var(--muted); line-height:1.5}
+.vid-step{font-family:var(--mono); font-size:12px; color:var(--text-2)}
+.vid-phone{position:relative; width:min(405px,calc((100vh - 120px)*9/16)); min-width:270px; aspect-ratio:9/16; border-radius:28px; overflow:hidden; background:linear-gradient(160deg,var(--surface),var(--bg) 75%); border:1px solid var(--brass-line); box-shadow:0 0 0 6px var(--surface-2); color:var(--text); font-family:var(--pk-text,"Inter","Geist",system-ui,sans-serif); cursor:pointer; user-select:none; display:flex; flex-direction:column; container-type:inline-size}
+.vid-phone:fullscreen{width:auto; height:100vh; border-radius:0; border:0; box-shadow:none}
+.vid-top{display:flex; justify-content:space-between; align-items:center; padding:7cqw 7cqw 0; font-size:3.2cqw; font-weight:600; letter-spacing:.12em; color:var(--brass-2)}
+.vid-bar{display:flex; gap:1.2cqw; padding:3.5cqw 7cqw 0}
+.vid-bar i{flex:1; height:.9cqw; border-radius:1cqw; background:var(--surface-3)}
+.vid-bar i.on{background:var(--brass)}
+.vid-beat{flex:1; display:flex; flex-direction:column; justify-content:center; gap:3cqw; padding:0 7cqw; animation:vidIn .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes vidIn{from{opacity:0; transform:translateY(4cqw)}to{opacity:1; transform:none}}
+.vid-k{font-size:3.6cqw; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.vid-h{font-family:"Fraunces",Georgia,serif; font-weight:400; font-size:9cqw; line-height:1.08; margin:0; color:var(--text); overflow-wrap:anywhere}
+.vid-big{font-family:"Fraunces",Georgia,serif; font-weight:400; font-size:16cqw; line-height:1; letter-spacing:-.01em; color:var(--brass-2)}
+.vid-big small{font-family:"Inter","Geist",sans-serif; font-size:4.4cqw; color:var(--muted); margin-left:1.5cqw; letter-spacing:0}
+.vid-big.good{color:var(--good-text)} .vid-big.bad{color:var(--bad-text)}
+.vid-sub{font-size:4.2cqw; line-height:1.4; color:var(--text-2)}
+.vid-list{display:grid; gap:2.2cqw; font-size:4.3cqw; margin-top:2cqw}
+.vid-list div{display:flex; justify-content:space-between; gap:3cqw; border-bottom:1px solid var(--line-2); padding-bottom:2cqw}
+.vid-list b{font-weight:600; font-variant-numeric:tabular-nums; color:var(--text)}
+.vid-list .bad{color:var(--bad-text)} .vid-list .good{color:var(--good-text)}
+.vid-seal{width:46cqw; height:46cqw; position:relative; align-self:center}
+.vid-seal .letter{position:absolute; inset:0; display:grid; place-items:center; font-family:"Fraunces",Georgia,serif; font-size:20cqw; color:var(--text)}
+.vid-ledger{display:grid; grid-template-columns:repeat(4,1fr); gap:1.5cqw; margin:0 7cqw 4cqw; padding:3cqw; border:1px solid var(--line-2); border-radius:3cqw; background:var(--surface-2)}
+.vid-ledger div{display:grid; gap:.8cqw; font-size:2.8cqw; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.vid-ledger b{font-size:3.6cqw; color:var(--text); letter-spacing:0; text-transform:none; font-variant-numeric:tabular-nums; white-space:nowrap}
+.vid-ledger div:not(.on) b{visibility:hidden}
+.vid-foot{padding:0 7cqw 6cqw; font-size:3cqw; color:var(--muted)}
+@media (max-width:900px){ .vid{grid-template-columns:1fr} .vid-phone{justify-self:center} }
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.001ms!important; transition:none!important} }
 </style>
 
@@ -634,9 +686,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <span class="cap" style="margin-top:14px">Setup</span>
       <a href="#settings" data-v="settings"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Buy box &amp; method</a>
       <a href="#guide" data-v="guide"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2.5h7.5L13 5v8.5H3z"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3"/></svg>How grades work</a>
+      <a href="#account" data-v="account" data-cloud="on" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="5.5" r="2.75"/><path d="M2.75 14c.6-2.9 2.7-4.5 5.25-4.5s4.65 1.6 5.25 4.5"/></svg><span id="acctNav">Account</span></a>
       <span class="cap" style="margin-top:14px">Resources</span>
       <a href="#checklist" data-v="checklist"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M5.5 6l1 1 2-2M5.5 10l1 1 2-2M10 6.5h1M10 10.5h1"/></svg>10 checks before you sign</a>
       <a href="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback" target="_blank" rel="noopener noreferrer" data-feedback><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>Send feedback</a>
+      <a href="#video" data-v="video" data-owner hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4.5" y="1.5" width="7" height="13" rx="1.75"/><path d="M7.25 6v4l3-2z"/></svg>Video mode</a>
     </nav>
     <div class="market" aria-label="Market inputs">
       <span class="cap">Market · SA</span>
@@ -785,6 +839,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <section class="panel">
         <div class="panel-h"><h2>Your data</h2><p id="dataNote">Back up your deals or move them to another device</p></div>
         <div style="display:flex; flex-wrap:wrap; gap:8px; padding:0 18px 12px"><button class="btn" id="exportData" type="button">Export deals</button><button class="btn" id="importData" type="button">Import deals</button><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+        <p class="fine" data-cloud="on" hidden id="acctPointer"><a href="#account">Create a free account</a> to keep your deals on every device.</p>
         <p class="fine">Export saves every deal and your targets as a JSON file. Importing adds the deals in a file to yours, replaces any deal with the same id and takes the targets from the file.</p>
       </section>
       <section class="panel">
@@ -878,9 +933,11 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
       <p class="fine rpt-tip">In the print screen, choose <b>Save as PDF</b> as the printer to keep a copy or send it on. The report is built in your browser; nothing is uploaded.</p>
       <article class="report-doc" id="reportDoc"></article>
     </section>
+    <section class="view" id="v-account" aria-label="Account" hidden><div class="acct" id="acct"></div></section>
+    <section class="view" id="v-video" aria-label="Video mode" hidden><div class="vid" id="vid"></div></section>
     <section class="view" id="v-terms" aria-label="Terms and privacy" hidden>
       <section class="panel">
-        <div class="panel-h"><h2>Terms of use</h2><p>Last updated 4 October 2026</p></div>
+        <div class="panel-h"><h2>Terms of use</h2><p>Last updated 14 November 2026</p></div>
         <div class="guide-body">
           <p><strong>What Buy Box is.</strong> Buy Box is a free online calculator for screening South African rental property deals. It is run by an individual in South Africa. By using it, you agree to these terms. If you don't agree, please don't use it.</p>
           <p><strong>Not advice.</strong> Buy Box gives general information only. It is not financial, investment, tax or legal advice, and it does not recommend any property, bond, developer or product. It is not provided by an authorised financial services provider. Grades and results depend only on the numbers you enter and the targets you choose.</p>
@@ -888,6 +945,7 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
           <p><strong>Your decisions are your own.</strong> Before you buy, sell or borrow, get advice from qualified professionals, such as a financial adviser, a bond originator, a conveyancing attorney and a tax practitioner.</p>
           <p><strong>No warranty.</strong> Buy Box is provided as is and as available, without any warranty. It may contain errors, and it may change or stop working at any time.</p>
           <p><strong>Limitation of liability.</strong> To the extent the law allows, the operator of Buy Box is not liable for any loss or damage that comes from using it or relying on it, including any investment loss.</p>
+          <p data-cloud="on" hidden><strong>Accounts.</strong> An account is optional and free. Keep your password to yourself; you are responsible for what is done with your account. One account per person. Accounts used to abuse or overload the service may be suspended. You can delete your account at any time under Account. The service may change or end, so export a backup of deals you want to keep.</p>
           <p><strong>Fair use.</strong> Don't use Buy Box to break the law, or try to disrupt or damage the site.</p>
           <p><strong>Changes.</strong> These terms may be updated. The date above shows the latest version.</p>
           <p><strong>Law.</strong> These terms are governed by the law of the Republic of South Africa.</p>
@@ -895,17 +953,24 @@ svg .ann{fill:var(--text-2); font-size:11px; font-weight:500}
         </div>
       </section>
       <section class="panel" id="privacy">
-        <div class="panel-h"><h2>Privacy notice</h2><p>Last updated 4 October 2026</p></div>
+        <div class="panel-h"><h2>Privacy notice</h2><p>Last updated 14 November 2026</p></div>
         <div class="guide-body">
-          <p data-count="off"><strong>What we collect: nothing.</strong> Buy Box has no accounts, sign-up forms, cookies, analytics, trackers or adverts. We don't receive your deals, your targets or anything you type.</p>
-          <p data-count="on" hidden><strong>What we collect: anonymous visit counts only.</strong> Buy Box has no accounts, sign-up forms, cookies, trackers or adverts, and we never receive your deals, your targets or anything you type. To see how many people use it, the site counts visits with <a href="https://www.goatcounter.com" target="_blank" rel="noopener noreferrer">GoatCounter</a>, an open-source analytics service that sets no cookies. Each count says only which screen was opened (such as Analyse or Portfolio) or which button was used (such as Save, Investor report, Share image or Export), with the referring website, any campaign tag in the link and your screen width. GoatCounter works out your browser, operating system, country and language from the request, and stores them only as daily totals that can't be linked to each other or to you. It uses your IP address and browser details in memory for up to 8 hours to avoid counting a reload twice, and never writes them to disk.</p>
+          <p data-cloud="off"><strong>What we collect.</strong> Buy Box has no accounts, cookies, trackers or adverts. We never receive your deals, your targets or anything you type.</p>
+          <p data-cloud="on" hidden><strong>What we collect.</strong> Without an account, nothing you type leaves your browser. If you create an account, we keep: your email address; your password, stored by our sign-in provider only as a one-way hash that no one can read back; the deals and targets you save; and when the account was created and last signed in. Buy Box has no cookies, trackers or adverts, and never sells or shares your information for marketing.</p>
+          <p data-count="off"><strong>No analytics.</strong> The site doesn't count visits.</p>
+          <p data-count="on" hidden><strong>Anonymous visit counts.</strong> To see how many people use it, the site counts visits with <a href="https://www.goatcounter.com" target="_blank" rel="noopener noreferrer">GoatCounter</a>, an open-source analytics service that sets no cookies. Each count says only which screen was opened (such as Analyse or Portfolio) or which button was used (such as Save, Investor report, Share image or Export), with the referring website, any campaign tag in the link and your screen width. GoatCounter works out your browser, operating system, country and language from the request, and stores them only as daily totals that can't be linked to each other or to you. It uses your IP address and browser details in memory for up to 8 hours to avoid counting a reload twice, and never writes them to disk.</p>
           <p data-count="on" hidden><strong>Turn counting off.</strong> Counting is skipped if your browser sends Do Not Track or Global Privacy Control. You can also switch it off for this browser: <label class="check" style="display:inline-flex; margin-left:4px"><input type="checkbox" id="countOpt" checked><span>Count my visits anonymously</span></label></p>
-          <p><strong>Where your deals are kept.</strong> Everything you enter is saved only in this browser, on this device (in its local storage). It stays there until you delete it or clear your browser data. The site is built so that it can't send your deals anywhere.</p>
+          <p data-cloud="off"><strong>Where your deals are kept.</strong> Everything you enter is saved only in this browser, on this device (in its local storage). It stays there until you delete it or clear your browser data. The site is built so that it can't send your deals anywhere.</p>
+          <p data-cloud="on" hidden><strong>Where your deals are kept.</strong> Without an account, everything you enter stays in this browser, on this device. With an account, your deals and targets are saved to a database run by <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">Supabase</a> in the European Union, so you can open them on any device. They travel encrypted (HTTPS), are encrypted on Supabase's disks, and the database only ever returns an account's own deals to that account. Your browser keeps a sign-in token so you stay signed in; signing out removes it. The page can connect to that one database address and nowhere else.</p>
+          <p data-cloud="on" hidden><strong>Why, and who is responsible.</strong> The individual who runs Buy Box in South Africa is the responsible party. Your account information is used only to sign you in, keep your deals, send emails you ask for (such as confirming your address or resetting your password) and keep the service secure. We process it because you asked for an account, and with your consent when you create one.</p>
+          <p data-cloud="on" hidden><strong>Service providers and other countries.</strong> Supabase stores accounts and deals, and Resend sends the sign-in emails, each only to provide that service and under its own privacy policy. Both may process information outside South Africa (Supabase in the European Union, whose data-protection law, the GDPR, gives protection similar to POPIA). The site itself is hosted on GitHub Pages (below).</p>
+          <p data-cloud="on" hidden><strong>How long we keep it.</strong> Until you delete your account. Account → Delete account erases your email, password hash, deals and targets straight away. Copies in the database provider's routine backups expire on their normal schedule.</p>
           <p><strong>Backups.</strong> Exported files are saved to your device. You decide where they go and who sees them. Only import files from people you trust.</p>
           <p><strong>Hosting.</strong> The site is hosted on GitHub Pages. Like any web host, GitHub may record technical information when your browser loads the site, such as your IP address and browser type, to run and secure its service. GitHub handles that information under its own privacy statement. We don't see it.</p>
           <p><strong>Feedback, email sign-up and contact.</strong> If you choose to send feedback, sign up for emails or email us, what you send (and your email address, if you give it) is used only to reply, to improve Buy Box and, if you signed up, to send the emails you asked for. The feedback and sign-up forms run on their own services, named on each form, under their own privacy policies. You can unsubscribe at any time from any email. Nothing you type into Buy Box itself is sent.</p>
           <p><strong>Fonts.</strong> Fonts are served from this site, so no font service learns that you visited.</p>
-          <p><strong>Your rights.</strong> South Africa's Protection of Personal Information Act (POPIA) gives you rights over your personal information. Because we don't collect any that identifies you, there is nothing for us to share, correct or delete. To remove everything from your device, delete your deals or clear this site's data in your browser. For questions, use the contact link above.</p>
+          <p data-cloud="off"><strong>Your rights.</strong> South Africa's Protection of Personal Information Act (POPIA) gives you rights over your personal information. Because we don't collect any that identifies you, there is nothing for us to share, correct or delete. To remove everything from your device, delete your deals or clear this site's data in your browser. For questions, use the contact link above.</p>
+          <p data-cloud="on" hidden><strong>Your rights.</strong> Under South Africa's Protection of Personal Information Act (POPIA) you may ask what we hold about you, have it corrected or deleted, and object to how it is used. You can do most of this yourself: Export (under Buy box &amp; method) gives you a copy of your deals, you can edit them at any time, and Account → Delete account removes everything. For anything else email <a href="mailto:privacy@buyboxsa.co.za">privacy@buyboxsa.co.za</a>; we reply within 30 days. If you are unhappy with our answer, you can complain to the <a href="https://inforegulator.org.za" target="_blank" rel="noopener noreferrer">Information Regulator</a>.</p>
         </div>
       </section>
     </section>
@@ -1303,7 +1368,11 @@ const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const SITE="buyboxsa.co.za"; // the site address, set in build.js
 const FEEDBACK_URL="mailto:hello@buyboxsa.co.za?subject=Buy%20Box%20feedback", SIGNUP_URL="", CONTACT="hello@buyboxsa.co.za"; // also set in build.js
 const DRAFT_KEY="buybox-draft", FORM_KEY="buybox-form", MAX_CMP=8, BLANKABLE=new Set(["marketValue","legal"]);
-const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report","checklist"];
+const VIEWS=["analyse","portfolio","compare","settings","guide","terms","report","checklist","account","video"];
+// Accounts: the Supabase address and public key, from the buybox-cloud meta tag (added by build.js on the website
+// only when SUPABASE_URL is set). No meta = accounts off, and the page's CSP still blocks every connection.
+const CLOUD=(()=>{ const m=document.querySelector('meta[name="buybox-cloud"]'); const [url,key]=((m&&m.content)||"").split(" ");
+  return url&&key&&/^https?:\/\/[^\s"<>]+$/.test(url)&&/^[\w.-]{20,}$/.test(key)?{url:url.replace(/\/+$/,""),key}:null; })();
 
 const GROUPS=[
   {title:"Deal", fields:[
@@ -1377,7 +1446,7 @@ const CMP_ROWS=[
 // Example deals for a first visit, injected from data/deals.json by build.js.
 const SEED_DEALS=[{"area":"Example only · Gauteng","capGrowth":5,"costGrowth":7,"created":1758740000001,"deposit":10,"hold":10,"id":"ex-newbuild","inCompare":true,"insurance":100,"legal":"","levy":1100,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: new-build 1-bed","newDev":true,"notes":"Made-up example, not a real listing. A typical new-build 1-bed: no transfer duty and low repairs, but the bond is bigger than the rent can cover. Delete it once you have added your own deals.","otherExp":0,"otherIncome":0,"price":950000,"rate":10.75,"rates":450,"reno":0,"rent":8500,"rentGrowth":6,"sellCost":7,"slot":0,"taxRate":0,"term":20,"updated":1790290000000,"vacancy":4},{"area":"Example only · Western Cape","capGrowth":5,"costGrowth":7,"created":1758740000002,"deposit":20,"hold":10,"id":"ex-below-value","inCompare":true,"insurance":150,"legal":"","levy":1800,"maint":5,"marketValue":1500000,"mgmt":11.5,"name":"Example: older 2-bed bought below value","newDev":false,"notes":"Made-up example, not a real listing. An older, under-rented 2-bed bought 23% below its value, with R60k of repairs and the rent brought up to market. It shows how the price you pay changes every number.","otherExp":0,"otherIncome":0,"price":1150000,"rate":10.75,"rates":900,"reno":60000,"rent":13000,"rentGrowth":6,"sellCost":7,"slot":1,"taxRate":0,"term":20,"updated":1790286400000,"vacancy":4},{"area":"Example only · KwaZulu-Natal","capGrowth":5,"costGrowth":7,"created":1758740000003,"deposit":40,"hold":10,"id":"ex-townhouse","inCompare":true,"insurance":200,"legal":"","levy":1500,"maint":5,"marketValue":"","mgmt":11.5,"name":"Example: townhouse with a bigger deposit","newDev":false,"notes":"Made-up example, not a real listing. A 40% deposit makes the monthly cash flow easier but ties up more of your own money. Compare its cash-on-cash with the others.","otherExp":0,"otherIncome":0,"price":1350000,"rate":10.75,"rates":850,"reno":0,"rent":16000,"rentGrowth":6,"sellCost":7,"slot":2,"taxRate":0,"term":20,"updated":1790282800000,"vacancy":5},{"area":"Example only · Free State","capGrowth":5,"costGrowth":7,"created":1758740000004,"deposit":10,"hold":10,"id":"ex-studio","inCompare":false,"insurance":80,"legal":"","levy":950,"maint":5,"marketValue":"","mgmt":12,"name":"Example: studio near a campus","newDev":false,"notes":"Made-up example, not a real listing. Student lets can empty out between terms, so the vacancy is set higher. Tick it into Compare to see it next to the others.","otherExp":0,"otherIncome":0,"price":720000,"rate":10.75,"rates":350,"reno":0,"rent":7200,"rentGrowth":6,"sellCost":7,"slot":3,"taxRate":0,"term":20,"updated":1790279200000,"vacancy":8}];
 
-const S={report:{ids:[],back:"portfolio"},reportSel:new Set(),props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
+const S={cloud:false,user:null,role:"user",recovery:false,acct:{tab:"in",msg:"",k:""},report:{ids:[],back:"portfolio"},reportSel:new Set(),props:[],targets:{...DEFAULT_TARGETS},db:null,mode:"loading",savedText:"All changes saved",readOnly:false,view:"analyse",cur:null,draft:null,sort:{k:"updated",dir:-1}};
 const dirty=new Set(); let targetsDirty=false;
 const custom={rate:0,rent:0,vac:null,levy:0,vacTouched:false};
 
@@ -1414,7 +1483,7 @@ function storeDraft(){ try{ if(S.draft) localStorage.setItem(DRAFT_KEY,JSON.stri
 // real site (never on localhost, a fork or inside the claude.ai artifact), and never with Do Not Track, Global Privacy
 // Control or the opt-out on the privacy notice. Paths are fixed names; nothing a visitor types is ever sent.
 const COUNT_KEY="buybox-count", GC=(document.querySelector('meta[name="buybox-count"]')||{}).content||"";
-const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link","checklist-printed":"Checklist printed","signup":"Email sign-up link","checklist-card":"Checklist card opened"};
+const COUNT_EVENTS={"deal-saved":"Deal saved","pack-opened":"Investor report opened","pack-printed":"Investor report printed","share-image":"Share image made","export":"Data exported","import":"Data imported","feedback":"Feedback link","checklist-printed":"Checklist printed","signup":"Email sign-up link","checklist-card":"Checklist card opened","account-created":"Account created","signed-in":"Signed in"};
 let countRef=true;
 function countOptedOut(){ try{ return localStorage.getItem(COUNT_KEY)==="off"; }catch(e){ return false; } }
 function countAllowed(){
@@ -1431,10 +1500,11 @@ function count(path,title,event){
 }
 const countEvent=k=>count(k,COUNT_EVENTS[k],true);
 let countedView=null;
-function countView(v){ if(v===countedView) return; countedView=v; count("/"+v,({analyse:"Analyse",portfolio:"Portfolio",compare:"Compare",settings:"Buy box & method",guide:"How grades work",terms:"Terms & privacy",report:"Investor report",checklist:"10 checks before you sign"})[v]||v,false); }
+function countView(v){ if(v===countedView||v==="video") return; countedView=v; count("/"+v,({analyse:"Analyse",portfolio:"Portfolio",compare:"Compare",settings:"Buy box & method",guide:"How grades work",terms:"Terms & privacy",report:"Investor report",checklist:"10 checks before you sign",account:"Account"})[v]||v,false); }
 function setupCounting(){
   const on=/^[a-z0-9-]{1,40}$/.test(GC);
   document.querySelectorAll("[data-count]").forEach(el=>el.hidden=(el.dataset.count==="on")!==on);
+  document.querySelectorAll("[data-cloud]").forEach(el=>el.hidden=(el.dataset.cloud==="on")!==!!CLOUD);
   const opt=$("countOpt"); if(opt){ opt.checked=!countOptedOut(); opt.addEventListener("change",()=>{ try{ if(opt.checked) localStorage.removeItem(COUNT_KEY); else localStorage.setItem(COUNT_KEY,"off"); }catch(e){} toast(opt.checked?"Anonymous visit counts on":"Visit counts off for this browser"); }); }
   document.querySelectorAll("[data-feedback]").forEach(a=>a.addEventListener("click",()=>countEvent("feedback")));
   // Email sign-up links show only when a sign-up form is configured in build.js.
@@ -1449,7 +1519,8 @@ setupCounting();
 /* ================= navigation ================= */
 function setView(v){
   if(v==="deals") v="portfolio";
-  if(!VIEWS.includes(v)) v="analyse";
+  if(!VIEWS.includes(v)||(v==="account"&&!CLOUD)||(v==="video"&&S.role!=="owner")) v="analyse";
+  if(v!==S.view) acctKey=null;
   S.view=v; document.documentElement.dataset.view=v; countView(v);
   VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("[data-v]").forEach(a=>a.setAttribute("aria-current",a.dataset.v===v?"page":"false"));
@@ -1466,6 +1537,8 @@ function renderView(rebuild){
   else if(S.view==="compare") renderCompare();
   else if(S.view==="guide") renderGuide();
   else if(S.view==="terms"||S.view==="checklist"){}
+  else if(S.view==="account") renderAccount();
+  else if(S.view==="video") renderVideo();
   else if(S.view==="report") renderReport();
   else renderSettings();
 }
@@ -1518,6 +1591,12 @@ function renderTopInner(){
     a.innerHTML="";
   } else if(S.view==="guide"){
     c.innerHTML=`${mb}<span class="cap">Guide</span><span class="sep">/</span><h1>How grades work</h1>`;
+    a.innerHTML="";
+  } else if(S.view==="account"){
+    c.innerHTML=`${mb}<span class="cap">Setup</span><span class="sep">/</span><h1>${S.user?"Your account":"Sign in"}</h1>`;
+    a.innerHTML="";
+  } else if(S.view==="video"){
+    c.innerHTML=`${mb}<span class="cap">Owner</span><span class="sep">/</span><h1>Video mode</h1>`;
     a.innerHTML="";
   } else {
     c.innerHTML=`${mb}<span class="cap">Setup</span><span class="sep">/</span><h1>Buy box &amp; method</h1>`;
@@ -2373,11 +2452,11 @@ function bodyFor(path){
 async function flush(path){
   if(inflight[path]){ again[path]=true; return; }
   const body=bodyFor(path); if(!body){ done(path); return; }
-  inflight[path]=true;
-  try{ await S.db.doc(path).set(body); }catch(e){ handleWriteError(e); }
+  inflight[path]=true; let failed=false;
+  try{ await S.db.doc(path).set(body); }catch(e){ failed=true; handleWriteError(e); }
   inflight[path]=false;
   if(again[path]){ again[path]=false; return flush(path); }
-  done(path);
+  if(!failed) done(path); // after a failure the change stays unsaved (and the error stays on screen) until the next save
 }
 function done(path){
   if(path==="settings/targets") targetsDirty=false; else dirty.delete(path.slice(11));
@@ -2387,6 +2466,9 @@ function handleWriteError(e){
   const code=e&&e.code;
   if(code==="invalid_argument"){ S.readOnly=true; setStatus("local","View only · changes aren't saved"); renderView(true); }
   else if(code==="quota_exceeded") setStatus("error","Storage full. Delete a deal to save");
+  else if(code==="limit") setStatus("error","Deal limit reached. Delete a deal to save");
+  else if(code==="auth") setStatus("error","Signed out. Sign in again to save");
+  else if(code==="offline") setStatus("error","Offline. Your last change isn't saved");
   else setStatus("error","Couldn't save your last change");
 }
 
@@ -2406,6 +2488,15 @@ function startLocal(){
 /* Browser storage with the same interface as window.claude.use("db"), used outside claude.ai.
    Everything lives under one localStorage key; other tabs pick up changes through the storage event. */
 const STORE_KEY="buybox-data";
+// The snapshot half every store shares: listeners per collection or document, called with the current state.
+function snapshots(get){
+  const subs={};
+  const snapColl=name=>({docs:Object.entries(get()[name]||{}).map(([id,d])=>({id,data:()=>({...d})}))});
+  const snapDoc=path=>{ const [c,id]=path.split("/"), d=(get()[c]||{})[id]; return {exists:d!=null,data:()=>({...d})}; };
+  const snap=k=>k.includes("/")?snapDoc(k):snapColl(k);
+  const on=(k,f)=>{ (subs[k]=subs[k]||[]).push(f); f(snap(k)); return ()=>{ subs[k]=subs[k].filter(x=>x!==f); }; };
+  return {on,notify:()=>Object.keys(subs).forEach(k=>subs[k].forEach(f=>f(snap(k))))};
+}
 function browserDb(){
   const read=()=>{ try{ const v=JSON.parse(localStorage.getItem(STORE_KEY)); return v&&typeof v==="object"&&v.properties?v:null; }catch(e){ return null; } };
   const write=()=>{ try{ localStorage.setItem(STORE_KEY,JSON.stringify(st)); }catch(e){ throw {code:"quota_exceeded"}; } };
@@ -2415,12 +2506,8 @@ function browserDb(){
     SEED_DEALS.forEach(({id,...rest})=>{ st.properties[id]=rest; });
     try{ write(); }catch(e){ return null; }
   }
-  const subs={};
-  const snapColl=name=>({docs:Object.entries(st[name]||{}).map(([id,d])=>({id,data:()=>({...d})}))});
-  const snapDoc=path=>{ const [c,id]=path.split("/"), d=(st[c]||{})[id]; return {exists:d!=null,data:()=>({...d})}; };
-  const snap=k=>k.includes("/")?snapDoc(k):snapColl(k);
-  const on=(k,f)=>{ (subs[k]=subs[k]||[]).push(f); f(snap(k)); return ()=>{ subs[k]=subs[k].filter(x=>x!==f); }; };
-  addEventListener("storage",e=>{ if(e.key!==STORE_KEY) return; const n=read(); if(!n) return; st=n; Object.keys(subs).forEach(k=>subs[k].forEach(f=>f(snap(k)))); });
+  const {on,notify}=snapshots(()=>st);
+  addEventListener("storage",e=>{ if(e.key!==STORE_KEY) return; const n=read(); if(!n) return; st=n; notify(); });
   return {
     collection:name=>({onSnapshot:f=>on(name,f)}),
     doc:path=>{ const [c,id]=path.split("/"); return {
@@ -2540,6 +2627,13 @@ async function importData(file){
   const list=Array.isArray(data)?data:data&&Array.isArray(data.deals)?data.deals:null;
   if(!list){ toast("That file isn't a Buy Box export"); return; }
   countEvent("import");
+  const n=addDeals(list);
+  if(data.targets&&typeof data.targets==="object") addTargets(data.targets);
+  pickInitial(); renderView(true);
+  toast(`Imported ${n} deal${n===1?"":"s"}`);
+}
+// Adds deals from an untrusted list (an import file, or this browser's deals going into an account) and saves them.
+function addDeals(list){
   const now=Date.now(); let n=0;
   for(const raw of list){
     if(!raw||typeof raw!=="object") continue;
@@ -2553,23 +2647,298 @@ async function importData(file){
   let cmp=0; const used=new Set();
   savedOrder().forEach(p=>{ if(p.inCompare&&++cmp>MAX_CMP) p.inCompare=false; if(!p.inCompare) return; if(used.has(p.slot)){ for(let i=0;i<8;i++) if(!used.has(i)){ p.slot=i; break; } } used.add(p.slot); });
   S.props.forEach(p=>scheduleSave("properties/"+p.id));
-  if(data.targets&&typeof data.targets==="object"){
-    Object.keys(DEFAULT_TARGETS).forEach(k=>{ const v=Number(data.targets[k]); if(data.targets[k]!==""&&data.targets[k]!=null&&isFinite(v)&&!(k==="prime"&&(v<0||v>40))) S.targets[k]=v; });
-    syncTargets(); scheduleSave("settings/targets");
-  }
-  pickInitial(); renderView(true);
-  toast(`Imported ${n} deal${n===1?"":"s"}`);
+  return n;
+}
+function addTargets(t){
+  Object.keys(DEFAULT_TARGETS).forEach(k=>{ const v=Number(t[k]); if(t[k]!==""&&t[k]!=null&&isFinite(v)&&!(k==="prime"&&(v<0||v>40))) S.targets[k]=v; });
+  syncTargets(); scheduleSave("settings/targets");
 }
 $("exportData").addEventListener("click",exportData);
 $("importData").addEventListener("click",()=>{ if(!S.readOnly) $("importFile").click(); });
 $("importFile").addEventListener("change",e=>{ const f=e.target.files[0]; e.target.value=""; importData(f); });
+
+/* ================= ACCOUNTS (Supabase, phase 2) ================= */
+// A small hand-written client for Supabase's Auth and REST APIs (no library, so the CSP still allows one script).
+// Each person's rows are protected by row-level security in supabase/schema.sql: the public key below can only ever
+// read or write the signed-in person's own deals.
+const SESSION_KEY="buybox-session", PW_MIN=10;
+const sess={
+  get(){ try{ const s=JSON.parse(localStorage.getItem(SESSION_KEY)); return s&&typeof s.access_token==="string"&&typeof s.refresh_token==="string"?s:null; }catch(e){ return null; } },
+  set(s){ try{ localStorage.setItem(SESSION_KEY,JSON.stringify(s)); }catch(e){} },
+  clear(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+};
+function keepSession(j){
+  if(!j||typeof j.access_token!=="string"||typeof j.refresh_token!=="string") throw {code:"server",message:"The sign-in server sent an unexpected reply"};
+  const old=sess.get()||{};
+  const s={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+(Math.max(60,Number(j.expires_in)||3600)-60)*1000,email:(j.user&&j.user.email)||old.email||""};
+  sess.set(s); return s;
+}
+const AUTH_MSG={invalid_credentials:"Wrong email or password",invalid_grant:"Wrong email or password",email_not_confirmed:"Confirm your email first: open the link we sent you",
+  user_already_exists:"That email already has an account. Sign in instead",email_exists:"That email already has an account. Sign in instead",
+  weak_password:`Choose a stronger password: at least ${PW_MIN} characters, not a common one`,same_password:"That's your current password. Choose a new one",
+  over_email_send_rate_limit:"Too many emails sent. Wait a few minutes and try again",over_request_rate_limit:"Too many tries. Wait a few minutes and try again",
+  email_address_invalid:"That email address doesn't look right",validation_failed:"Check the email address and password",signup_disabled:"New accounts are paused for now",
+  deal_limit:"Deal limit reached. Delete a deal to save"};
+async function sbFetch(path,opt={}){
+  let r;
+  try{ r=await fetch(CLOUD.url+path,{method:opt.method||"GET",headers:{apikey:CLOUD.key,"Content-Type":"application/json",...(opt.headers||{})},
+    body:opt.body!=null?JSON.stringify(opt.body):undefined,credentials:"omit",cache:"no-store",referrerPolicy:"no-referrer"}); }
+  catch(e){ throw {code:"offline",message:"Can't reach the account server. Check your connection and try again"}; }
+  const txt=await r.text(); let j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
+  if(r.ok) return j;
+  const k=j&&(j.error_code||(j.message==="deal_limit"&&"deal_limit")||j.error||j.code);
+  throw {code:r.status===401||r.status===403?"auth":k==="deal_limit"?"limit":"server",status:r.status,message:AUTH_MSG[k]||`Something went wrong (error ${r.status}). Try again`};
+}
+let refreshing=null;
+async function authed(){
+  const s=sess.get(); if(!s) throw {code:"auth",message:"You're signed out"};
+  if(Date.now()<s.expires_at) return s;
+  if(!refreshing) refreshing=sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:{refresh_token:s.refresh_token}})
+    .then(keepSession,e=>{ if(e.code!=="offline") sess.clear(); throw e.code==="offline"?e:{code:"auth",message:"You've been signed out. Sign in again"}; })
+    .finally(()=>{ refreshing=null; });
+  return refreshing;
+}
+async function sbData(path,opt={},retried){
+  const s=await authed();
+  try{ return await sbFetch(path,{...opt,headers:{Authorization:"Bearer "+s.access_token,...(opt.headers||{})}}); }
+  catch(e){ // a token revoked or expired early: refresh once and try again
+    if(e.code!=="auth"||retried) throw e;
+    const cur=sess.get(); if(!cur) throw e; sess.set({...cur,expires_at:0}); return sbData(path,opt,true);
+  }
+}
+const UPSERT={Prefer:"resolution=merge-duplicates,return=minimal"};
+// The account store: the same interface as browserDb(), backed by the deals and settings tables. It loads everything
+// once, then again when the tab comes back into view, so changes made on another device show up.
+async function cloudDb(){
+  let st={properties:{},settings:{}}, pending=0, writes=0, last=Date.now();
+  const load=async()=>{
+    const gen=writes;
+    const [deals,sets]=await Promise.all([sbData("/rest/v1/deals?select=id,data"),sbData("/rest/v1/settings?select=targets")]);
+    const n={properties:{},settings:{}};
+    (Array.isArray(deals)?deals:[]).forEach(r=>{ if(r&&typeof r.id==="string"&&/^[\w-]{1,64}$/.test(r.id)&&r.data&&typeof r.data==="object"&&!Array.isArray(r.data)) n.properties[r.id]=cleanDeal(r.data); });
+    const t=Array.isArray(sets)&&sets[0]&&sets[0].targets; if(t&&typeof t==="object"&&!Array.isArray(t)) n.settings.targets=t;
+    if(gen!==writes||pending) return false; // a save started while this was loading, so this copy may be out of date
+    st=n; return true;
+  };
+  const [u,prof]=await Promise.all([sbData("/auth/v1/user"),sbData("/rest/v1/profiles?select=role").catch(()=>null),load()]);
+  S.user={email:String((u&&u.email)||(sess.get()||{}).email||"")}; S.role=Array.isArray(prof)&&prof[0]&&prof[0].role==="owner"?"owner":"user";
+  const {on,notify}=snapshots(()=>st);
+  const refresh=async()=>{ if(document.hidden||pending||Date.now()-last<15000) return; last=Date.now(); try{ if(await load()) notify(); }catch(e){} };
+  addEventListener("focus",refresh); document.addEventListener("visibilitychange",refresh);
+  const write=async fn=>{ pending++; writes++; try{ await fn(); } finally{ pending--; last=Date.now(); } };
+  return {
+    collection:name=>({onSnapshot:f=>on(name,f)}),
+    doc:path=>{ const [c,id]=path.split("/"); return {
+      set:body=>write(async()=>{ const b=JSON.parse(JSON.stringify(body));
+        if(c==="properties") await sbData("/rest/v1/deals?on_conflict=user_id,id",{method:"POST",headers:UPSERT,body:{id,data:b}});
+        else if(path==="settings/targets") await sbData("/rest/v1/settings?on_conflict=user_id",{method:"POST",headers:UPSERT,body:{targets:b}});
+        else return;
+        (st[c]=st[c]||{})[id]=b; }),
+      delete:()=>write(async()=>{ if(c==="properties") await sbData("/rest/v1/deals?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:{Prefer:"return=minimal"}}); if(st[c]) delete st[c][id]; }),
+      onSnapshot:f=>on(path,f)
+    }; }
+  };
+}
+// Links in sign-up and password emails come back as #access_token=…&type=…; keep the session, then take the token
+// out of the address bar straight away.
+function readAuthHash(){
+  const h=location.hash.slice(1); if(!/(^|&)(access_token|error|error_code|error_description)=/.test(h)) return null;
+  const q=new URLSearchParams(h); history.replaceState(null,"",location.pathname+location.search+"#account");
+  if(q.get("error")||q.get("error_code")||!q.get("access_token")) return {k:"err",msg:"That link has expired or was already used. Request a new one below"};
+  try{ keepSession({access_token:q.get("access_token"),refresh_token:q.get("refresh_token"),expires_in:q.get("expires_in")}); }catch(e){ return {k:"err",msg:"That link didn't work. Request a new one below"}; }
+  const type=q.get("type");
+  return type==="recovery"?{recovery:true,k:"",msg:""}:{k:"ok",msg:type==="signup"?"Email confirmed. You're signed in.":"You're signed in."};
+}
+const backTo=()=>"?redirect_to="+encodeURIComponent(location.origin+location.pathname);
+// Reloads into a view, with an optional message for after the reload (sessionStorage, this tab only).
+function reloadTo(view,msg){ try{ if(msg) sessionStorage.setItem("buybox-flash",msg); }catch(e){} history.replaceState(null,"",location.pathname+location.search+"#"+view); location.reload(); }
+function takeFlash(){ try{ const m=sessionStorage.getItem("buybox-flash"); sessionStorage.removeItem("buybox-flash"); return m; }catch(e){ return null; } }
+function acctNote(k,msg){ S.acct.k=k; S.acct.msg=msg; const el=$("acctMsg"); if(el){ el.dataset.k=k; el.textContent=msg; } }
+// This browser's own deals (saved before signing in), minus untouched example deals and deals already in the account.
+function browserDeals(){
+  let st=null; try{ st=JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){}
+  const props=st&&st.properties&&typeof st.properties==="object"?st.properties:{}, have=new Set(S.props.map(p=>p.id));
+  const canon=o=>JSON.stringify(Object.keys(o).filter(k=>k!=="id").sort().map(k=>[k,o[k]]));
+  const untouched=(id,d)=>{ const sd=SEED_DEALS.find(x=>x.id===id); return !!sd&&canon(sd)===canon(d); };
+  const deals=Object.entries(props).filter(([id,d])=>d&&typeof d==="object"&&!have.has(id)&&!untouched(id,d)).map(([id,d])=>({...d,id}));
+  return {deals,targets:st&&st.settings&&st.settings.targets};
+}
+let acctKey=null;
+function renderSideAccount(){
+  const nav=$("acctNav"); if(nav) nav.textContent=S.user?"Account · signed in":"Account";
+  const ptr=$("acctPointer"); if(ptr&&CLOUD) ptr.innerHTML=S.user?`Signed in as <b>${esc(S.user.email)}</b>. Deals save to your account. <a href="#account">Account</a>`:`<a href="#account">Create a free account</a> to keep your deals on every device.`;
+  document.querySelectorAll("[data-owner]").forEach(el=>el.hidden=S.role!=="owner");
+}
+function renderAccount(){
+  const box=$("acct");
+  if(!CLOUD){ box.innerHTML=`<section class="panel"><div class="empty">Accounts are coming soon.</div></section>`; return; }
+  const bd=S.user?browserDeals():null;
+  const key=JSON.stringify([!!S.user,S.recovery,S.acct.tab,S.mode,bd&&bd.deals.length,S.props.length]);
+  if(key===acctKey) return; acctKey=key;
+  const msg=`<p class="acct-msg" id="acctMsg" role="status" aria-live="polite" data-k="${S.acct.k}">${esc(S.acct.msg)}</p>`;
+  const pw=(id,label,auto)=>`<div class="field"><label for="${id}">${label}</label><div class="inp"><input type="password" id="${id}" autocomplete="${auto}" minlength="${PW_MIN}" maxlength="72" required></div>${auto==="new-password"?`<span class="hint">At least ${PW_MIN} characters. A short sentence is easy to remember.</span>`:""}</div>`;
+  const email=`<div class="field"><label for="acEmail">Email</label><div class="inp"><input type="email" id="acEmail" autocomplete="email" inputmode="email" maxlength="254" required></div></div>`;
+  if(S.recovery){
+    box.innerHTML=`<section class="panel"><div class="panel-h"><h2>Choose a new password</h2><p>${esc(S.user?S.user.email:"")}</p></div>
+      <form class="acct-form" id="acctForm" novalidate>${pw("acPw","New password","new-password")}${msg}<div class="row"><button class="btn primary" type="submit">Save new password</button></div></form></section>`;
+    $("acctForm").addEventListener("submit",e=>{ e.preventDefault(); changePassword(e.currentTarget,true); });
+    return;
+  }
+  if(!S.user){
+    const tab=S.acct.tab, t=(k,l)=>`<button type="button" data-tab="${k}" aria-pressed="${tab===k}">${l}</button>`;
+    const form=tab==="up"?`${email}${pw("acPw","Password","new-password")}
+        <label class="check"><input type="checkbox" id="acAgree"><span>I agree to the <a href="#terms">terms</a> and to Buy Box keeping my email address and saved deals for my account, as the <a href="#terms">privacy notice</a> explains.</span></label>
+        ${msg}<div class="row"><button class="btn primary" type="submit">Create account</button></div>`
+      :tab==="reset"?`${email}${msg}<div class="row"><button class="btn primary" type="submit">Email me a reset link</button></div>`
+      :`${email}${pw("acPw","Password","current-password")}${msg}<div class="row"><button class="btn primary" type="submit">Sign in</button><button type="button" class="btn" data-tab="reset">Forgot password?</button></div>`;
+    box.innerHTML=`<section class="panel"><div class="panel-h"><h2>${tab==="up"?"Create a free account":tab==="reset"?"Reset your password":"Sign in"}</h2><p>Keep your deals on every device</p></div>
+      <div class="acct-tabs">${t("in","Sign in")}${t("up","Create account")}</div>
+      <form class="acct-form" id="acctForm" novalidate>${form}</form></section>
+      <section class="panel"><div class="panel-h"><h2>Do I need an account?</h2></div><div class="acct-body">
+        <p>No. Without one, Buy Box saves your deals in this browser only, and nothing you type leaves your device. An account is free and keeps your deals in one place, so the same deals open on your phone and your computer.</p>
+        <p>When you sign in, you can copy the deals already in this browser into your account. Signing out leaves this browser's own deals where they were.</p></div></section>`;
+    box.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{ S.acct.tab=b.dataset.tab; acctNote("",""); acctKey=null; renderAccount(); const f=$("acEmail"); if(f) f.focus(); }));
+    $("acctForm").addEventListener("submit",e=>{ e.preventDefault(); authSubmit(e.currentTarget,tab); });
+    return;
+  }
+  const n=bd.deals.length, empty=!S.props.length;
+  box.innerHTML=`<section class="panel"><div class="panel-h"><h2>Your account</h2><p>Deals save to your account and open on any device</p></div>
+      <div class="acct-who">Signed in as <b>${esc(S.user.email)}</b>${S.role==="owner"?`<span class="acct-role">Owner</span>`:""}</div>
+      <div class="acct-body">${msg}
+      ${n?`<p>This browser has <b>${n}</b> deal${n===1?"":"s"} saved before you signed in. Copy ${n===1?"it":"them"} into your account?</p><div class="row"><button type="button" class="btn primary" id="acCopy">Copy ${n} deal${n===1?"":"s"} to my account</button></div>`
+        :empty?`<p>Your account has no deals yet. Analyse one, or start with the made-up examples.</p><div class="row"><button type="button" class="btn" id="acSeed">Add the example deals</button></div>`:""}
+      <div class="row"><button type="button" class="btn" id="acOut">Sign out</button>${S.role==="owner"?`<a class="btn" href="#video">Video mode</a>`:""}</div></div></section>
+    <section class="panel"><div class="panel-h"><h2>Change password</h2></div>
+      <form class="acct-form" id="acctPw" novalidate>${pw("acPw","New password","new-password")}<div class="row"><button class="btn" type="submit">Change password</button></div></form></section>
+    <section class="panel"><div class="panel-h"><h2>Delete account</h2><p>Can't be undone</p></div><div class="acct-body">
+      <p>This erases your email address, password and every deal and target saved in your account. Deals saved in this browser before you signed in stay here. <a href="#settings">Export a backup</a> first if you want to keep your deals.</p>
+      <label class="check"><input type="checkbox" id="acDelOk"><span>I understand my account and its deals will be erased</span></label>
+      <div class="row"><button type="button" class="btn danger" id="acDel" disabled>Delete my account</button></div></div></section>`;
+  if($("acCopy")) $("acCopy").addEventListener("click",()=>{ const b=browserDeals(), k=addDeals(b.deals); if(b.targets&&typeof b.targets==="object"&&!S.hasTargets) addTargets(b.targets); pickInitial(); renderView(true); acctNote("ok",`Copied ${k} deal${k===1?"":"s"} into your account.`); toast(`Copied ${k} deal${k===1?"":"s"}`); });
+  if($("acSeed")) $("acSeed").addEventListener("click",()=>{ addDeals(SEED_DEALS); pickInitial(); renderView(true); toast("Example deals added"); });
+  $("acOut").addEventListener("click",signOut);
+  $("acctPw").addEventListener("submit",e=>{ e.preventDefault(); changePassword(e.currentTarget,false); });
+  $("acDelOk").addEventListener("change",e=>{ $("acDel").disabled=!e.target.checked; });
+  $("acDel").addEventListener("click",e=>confirmThen(e.currentTarget,"Yes, delete everything",deleteAccount));
+}
+async function busy(form,fn){
+  const btns=[...form.querySelectorAll("button")]; btns.forEach(b=>b.disabled=true);
+  try{ await fn(); }catch(e){ acctNote("err",(e&&e.message)||"Something went wrong. Try again"); }
+  finally{ btns.forEach(b=>{ if(b.isConnected) b.disabled=false; }); }
+}
+function authSubmit(form,tab){
+  const email=($("acEmail").value||"").trim(), pwEl=$("acPw"), pw=pwEl?pwEl.value:"";
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ acctNote("err","Enter your email address"); $("acEmail").focus(); return; }
+  if(tab==="up"&&pw.length<PW_MIN){ acctNote("err",`Choose a password of at least ${PW_MIN} characters`); pwEl.focus(); return; }
+  if(tab==="in"&&!pw){ acctNote("err","Enter your password"); pwEl.focus(); return; }
+  if(tab==="up"&&!$("acAgree").checked){ acctNote("err","Tick the box to agree to the terms and privacy notice"); return; }
+  busy(form,async()=>{
+    if(tab==="reset"){ await sbFetch("/auth/v1/recover"+backTo(),{method:"POST",body:{email}}); acctNote("ok",`If ${email} has an account, a reset link is on its way. Check your inbox (and spam).`); return; }
+    if(tab==="up"){
+      const j=await sbFetch("/auth/v1/signup"+backTo(),{method:"POST",body:{email,password:pw}}); countEvent("account-created");
+      if(j&&j.access_token){ keepSession(j); reloadTo("account","Account created. You're signed in."); return; }
+      acctNote("ok",`Almost done: open the link we sent to ${email} to confirm your address. Then you're signed in.`); return;
+    }
+    keepSession(await sbFetch("/auth/v1/token?grant_type=password",{method:"POST",body:{email,password:pw}})); countEvent("signed-in"); reloadTo("account","You're signed in.");
+  });
+}
+function changePassword(form,recovery){
+  const pw=$("acPw").value||"";
+  if(pw.length<PW_MIN){ acctNote("err",`Choose a password of at least ${PW_MIN} characters`); return; }
+  busy(form,async()=>{ await sbData("/auth/v1/user",{method:"PUT",body:{password:pw}}); S.recovery=false; acctKey=null; acctNote("ok","Password changed."); renderAccount(); toast("Password changed"); });
+}
+async function signOut(){
+  const s=sess.get(); if(s) try{ await sbFetch("/auth/v1/logout?scope=local",{method:"POST",headers:{Authorization:"Bearer "+s.access_token}}); }catch(e){}
+  sess.clear(); reloadTo("account","You're signed out. This browser's own deals are back.");
+}
+async function deleteAccount(){
+  try{ await sbData("/rest/v1/rpc/delete_me",{method:"POST",body:{}}); }
+  catch(e){ acctNote("err",(e&&e.message)||"Couldn't delete your account. Try again"); return; }
+  sess.clear(); reloadTo("account","Your account and its deals have been deleted.");
+}
+// Signing in or out in another tab switches this one too.
+addEventListener("storage",e=>{ if(CLOUD&&e.key===SESSION_KEY&&!!e.newValue!==S.cloud) location.reload(); });
+
+/* ================= VIDEO MODE (owner only) ================= */
+// A phone-shaped screen of one deal that reveals the numbers a tap at a time, for screen recordings. Only accounts
+// whose profile role is "owner" (set by hand in the database) see it. Figures come straight from the engine.
+const VID_STEPS=["title","rent","costs","bond","cash","stress","grade","price","end"];
+let vidStep=0, vidDeal=null;
+function vidData(d){
+  const r=analyse(d); r.v=verdict(r,S.targets); r.g=grade(r.v);
+  const bp=breakPoints(d,S.targets), mo=x=>x/12, c=r.costs;
+  return {d,r,bp,collected:mo(r.effA),costs:mo(c.opexA),bond:r.pmt&&r.termM?mo(r.debtA):0,cf:r.m.cfMonth,
+    lines:[["Levy",mo(c.levyA)],["Rates & taxes",mo(c.ratesA)],["Insurance & other",mo(c.insuranceA+c.otherExpA)],["Management",mo(c.mgmtA)],["Maintenance",mo(c.maintA)]].filter(x=>x[1]>0.5),
+    stress:[["Today",r.m.cfMonth],["Prime up 2%",scenario(d,"rate2").m.cfMonth],["Rent 10% lower",scenario(d,"rent10").m.cfMonth],["Perfect storm",scenario(d,"storm").m.cfMonth]]};
+}
+const signed=v=>(Math.round(v)<0?"−":Math.round(v)>0?"+":"")+rand(Math.abs(v));
+const tone=v=>Math.round(v)<0?"bad":"good";
+function vidBeat(k,x){
+  const {d,r}=x, area=[d.area||"",d.newDev?"New development":"Resale"].filter(Boolean).join(" · ");
+  if(k==="title") return `<span class="vid-k">Will it pay for itself?</span><h2 class="vid-h">${esc(d.name||"Untitled")}</h2><span class="vid-sub">${esc(area)}</span><div class="vid-big">${rand(r.price)}</div>`;
+  if(k==="rent") return `<span class="vid-k">The rent</span><div class="vid-big">${rand(r.rent)}<small>/ month</small></div><span class="vid-sub">After ${num(d.vacancy)}% vacancy, about <b>${rand(x.collected)}</b> a month actually comes in.</span>`;
+  if(k==="costs") return `<span class="vid-k">Running costs</span><div class="vid-big">${rand(x.costs)}<small>/ month</small></div><div class="vid-list">${x.lines.map(([l,v])=>`<div><span>${l}</span><b>${rand(v)}</b></div>`).join("")}</div>`;
+  if(k==="bond") return r.loan>0?`<span class="vid-k">The bond</span><div class="vid-big">${rand(x.bond)}<small>/ month</small></div><span class="vid-sub">${rand(r.loan)} over ${Math.round(r.termM/12)} years at ${r.ratePct.toFixed(2)}%, with ${num(d.deposit)}% down.</span>`
+    :`<span class="vid-k">The bond</span><div class="vid-big">R 0</div><span class="vid-sub">No bond: a cash purchase.</span>`;
+  if(k==="cash") return `<span class="vid-k">Cash flow · month 1</span><div class="vid-big ${tone(x.cf)}" data-vid-cf>${signed(x.cf)}<small>/ month</small></div><span class="vid-sub">${Math.round(x.cf)<0?"Rent doesn't cover the costs and the bond. The owner tops up every month.":"Rent covers the costs and the bond, with this left over."}</span>`;
+  if(k==="stress") return `<span class="vid-k">Stress test</span><div class="vid-list">${x.stress.map(([l,v])=>`<div><span>${l}</span><b class="${tone(v)}">${signed(v)}</b></div>`).join("")}</div><span class="vid-sub">Monthly cash flow if things go wrong.</span>`;
+  if(k==="grade") return `<span class="vid-k">The grade</span><div class="vid-seal">${sealSvg(r.v.ratio,r.g)}</div><span class="vid-sub" style="text-align:center">${r.v.pass} of ${r.v.n} tests met · ${verdictText(r.v)}</span>`;
+  if(k==="price"){ const o=x.bp.offerCf, tgt=S.targets.cfMonth, aim=Math.round(tgt)===0?"breaks even every month":`gives ${signed(tgt)} a month`;
+    const big=o.kind==="never"?"None":o.kind==="above"||o.v>=r.price?rand(r.price):rand(o.v);
+    const sub=o.kind==="never"?"No price works: the rent can't cover the running costs.":o.kind==="above"||o.v>=r.price?`At the asking price it already ${aim.replace(" every month","")} or better.`:`The highest price that still ${aim}: ${Math.round((1-o.v/r.price)*100)}% below asking.`;
+    return `<span class="vid-k">The price that works</span><div class="vid-big">${big}</div><span class="vid-sub">${sub}</span>`; }
+  return `<span class="vid-k">Run your own deal</span><h2 class="vid-h">Free at ${esc(SITE)}</h2><span class="vid-sub">Price, rent, levy, rates and deposit: a grade in 30 seconds.</span><span class="vid-sub">A calculator, not financial advice.</span>`;
+}
+function renderVideo(){
+  const box=$("vid"), deals=savedOrder();
+  if(!vidDeal||!(vidDeal==="draft"?S.draft:deals.find(p=>p.id===vidDeal))) vidDeal=(S.cur&&S.cur!=="draft"?S.cur:(deals[0]||{}).id)||(S.draft?"draft":null);
+  const d=vidDeal==="draft"?S.draft:deals.find(p=>p.id===vidDeal);
+  if(!d){ box.innerHTML=`<section class="panel"><div class="empty">Save a deal first.</div></section>`; return; }
+  const x=vidData({...DEFAULTS,...d}), k=VID_STEPS[vidStep], led=[["Rent in",x.collected,1],["Costs",-x.costs,2],["Bond",-x.bond,3],["Cash flow",x.cf,4]];
+  box.innerHTML=`<div class="vid-ctl"><section class="panel"><div class="panel-h"><h2>Video mode</h2><p>Only your account sees this</p></div><div class="acct-body">
+      <div class="field"><label for="vidPick">Deal</label><select class="pick" id="vidPick">${(S.draft?[`<option value="draft" ${vidDeal==="draft"?"selected":""}>Draft · ${esc(S.draft.name||"New deal")}</option>`]:[]).concat(deals.map(p=>`<option value="${esc(p.id)}" ${p.id===vidDeal?"selected":""}>${esc(p.name||"Untitled")}</option>`)).join("")}</select></div>
+      <div class="row"><button type="button" class="btn" id="vidBack" ${vidStep?"":"disabled"}>← Back</button><button type="button" class="btn primary" id="vidNext" ${vidStep<VID_STEPS.length-1?"":"disabled"}>Next →</button><button type="button" class="btn" id="vidRestart">Restart</button><button type="button" class="btn" id="vidFull">Full screen</button></div>
+      <span class="vid-step" id="vidStep">${vidStep+1} / ${VID_STEPS.length} · ${k}</span>
+      <p>Tap the phone, press Space or → to reveal the next number; ← goes back. Record just the phone (crop to it, or use Full screen).</p></div></section></div>
+    <div class="vid-phone rpt-dark" id="vidPhone" role="button" tabindex="0" aria-label="Next">
+      <div class="vid-top"><span>BUY BOX</span><span>${esc(SITE)}</span></div>
+      <div class="vid-bar">${VID_STEPS.map((_,i)=>`<i class="${i<=vidStep?"on":""}"></i>`).join("")}</div>
+      <div class="vid-beat" data-beat="${k}">${vidBeat(k,x)}</div>
+      ${vidStep>=1&&vidStep<=4?`<div class="vid-ledger">${led.map(([l,v,s])=>`<div class="${vidStep>=s?"on":""}">${l}<b>${s>1&&s<4?"−"+rand(Math.abs(v)).replace(/^−/,""):s===4?signed(v):rand(v)}</b></div>`).join("")}</div>`:""}
+      <div class="vid-foot">Made-up or generic listing · a calculator, not advice</div></div>`;
+  $("vidPick").addEventListener("change",e=>{ vidDeal=e.target.value; vidStep=0; renderVideo(); });
+  $("vidBack").addEventListener("click",()=>vidGo(-1)); $("vidNext").addEventListener("click",()=>vidGo(1));
+  $("vidRestart").addEventListener("click",()=>{ vidStep=0; renderVideo(); });
+  $("vidFull").addEventListener("click",()=>{ const ph=$("vidPhone"); if(ph.requestFullscreen) ph.requestFullscreen().catch(()=>{}); });
+  $("vidPhone").addEventListener("click",()=>vidGo(1));
+}
+function vidGo(n){ const s=Math.max(0,Math.min(VID_STEPS.length-1,vidStep+n)); if(s===vidStep) return; vidStep=s; renderVideo(); const ph=$("vidPhone"); if(ph&&document.fullscreenElement) ph.focus(); }
+document.addEventListener("keydown",e=>{
+  if(S.view!=="video"||e.target.closest&&e.target.closest("input,select,textarea,button,a")) return;
+  if(e.key===" "||e.key==="ArrowRight"||e.key==="Enter"){ e.preventDefault(); vidGo(1); }
+  else if(e.key==="ArrowLeft"){ e.preventDefault(); vidGo(-1); }
+});
 async function start(){
   S.draft=loadDraft();
-  setView(location.hash.slice(1)||"analyse");
+  const auth=CLOUD?readAuthHash():null;
+  const flash=CLOUD?takeFlash():null; if(flash){ S.acct.k="ok"; S.acct.msg=flash; }
+  if(auth){ if(auth.recovery) S.recovery=true; S.acct.k=auth.k; S.acct.msg=auth.msg; }
+  const want=location.hash.slice(1)||"analyse";
+  setView(want==="video"?"analyse":want);
   let db=null;
   try{ db=window.claude&&window.claude.use?await window.claude.use("db"):null; }catch(e){ db=null; }
   if(db) $("dataNote").textContent="Deals are saved with this artifact. Export a backup or move them elsewhere";
-  else{ db=browserDb(); S.savedText="Saved in this browser"; $("dataNote").textContent="Deals are saved in this browser only and never leave your device. Export a backup to keep them or move them"; }
+  else if(CLOUD&&sess.get()){
+    setStatus("loading","Opening your account…");
+    try{ db=await cloudDb(); S.cloud=true; S.savedText="Saved to your account"; $("dataNote").textContent="Deals are saved to your account and open on any device. Export a backup any time"; }
+    catch(e){
+      db=null; S.user=null; S.role="user";
+      if(e&&e.code==="offline") toast("Couldn't reach your account, so this is this browser's own copy. Reload to try again");
+      else { sess.clear(); S.acct.k="err"; S.acct.msg="You've been signed out. Sign in again to see your account's deals"; }
+    }
+  }
+  if(!db){ db=browserDb(); S.savedText="Saved in this browser"; $("dataNote").textContent="Deals are saved in this browser only and never leave your device. Export a backup to keep them or move them"; }
+  renderSideAccount();
   if(!db){ startLocal(); return; }
   S.db=db; S.mode="db"; setStatus("saved",S.savedText);
   let first=true;
@@ -2586,10 +2955,13 @@ async function start(){
     first=false;
   },e=>{ if(e&&e.code==="revoked"){ S.readOnly=true; setStatus("local","Saving is off in this view"); } else setStatus("error","Lost connection. Reload to reconnect"); });
   db.doc("settings/targets").onSnapshot(snap=>{
+    S.hasTargets=snap.exists;
     if(targetsDirty) return;
     S.targets={...DEFAULT_TARGETS,...(snap.exists?snap.data():{})};
     syncTargets(); if(!first&&S.view!=="settings") renderView(false);
   },()=>{});
+  if(S.cloud&&S.role==="owner"&&want==="video") setView("video");
+  else if(S.view==="account") renderView(true);
 }
 let rz,lastW=0; new ResizeObserver(ents=>{ const w=Math.round(ents[0].contentRect.width); if(w===lastW) return; lastW=w; clearTimeout(rz); rz=setTimeout(()=>{ if(S.mode!=="loading") renderView(false); },140); }).observe(document.querySelector(".main"));
 start();

@@ -4,7 +4,7 @@ A free property deal analyser for South African rental property. It grades each 
 
 Tick deals on Portfolio (or open one on Analyse) and choose **Investor report** to print a report or save it as a PDF. **Share image** on Analyse makes a square picture of a deal for WhatsApp or Instagram. **10 checks before you sign** (`#checklist`) is a free one-page checklist to print or save as a PDF.
 
-Deals are saved in your own browser and never leave your device. Use **Buy box & method → Your data** to export a backup or move your deals to another device.
+Deals are saved in your own browser and never leave your device. Use **Buy box & method → Your data** to export a backup or move your deals to another device. Optional free accounts (when switched on) keep your deals on every device; see [docs/accounts-setup.md](docs/accounts-setup.md).
 
 ## Develop
 
