@@ -35,6 +35,8 @@ function pR(s){ s=clean(s).replace(/\/.*$/,'').replace(/[+R\s]/g,''); return Num
 function pC(s){ s=clean(s).replace(/[R+\s]/g,''); const m=s.match(/^(-?[\d.]+)([mk]?)$/); if(!m) return NaN; return Number(m[1])*(m[2]==='m'?1e6:m[2]==='k'?1e3:1); }
 function pP(s){ return Number(clean(s).replace('%','')); }
 function pX(s){ return Number(clean(s).replace('×','')); }
+// Click an item in a top-bar menu (Share ▾ or ⋯): open the menu first, as a person would.
+const menuClick=async(pg,sel)=>{ await pg.click(`details.menu:has(${sel}) > summary`); await pg.click(sel); };
 function grade(v){ const r=v.ratio; return r>=0.9?'A':r>=0.75?'B':r>=0.55?'C':r>=0.35?'D':'E'; }
 const closeR=(disp,v,tol)=>Math.abs(disp-Math.round(v))<= (tol||1);
 function cmpR(txt,v,name){ const d=pR(txt); ok(closeR(d,v),name,`shown ${txt} vs ${v.toFixed(2)}`); }
@@ -82,9 +84,33 @@ function rnd(i){
   ok(await p.inputValue('#f-price')!==''&&await p.inputValue('#f-vacancy')===String(E.DEFAULTS.vacancy),'all inputs keep the quick numbers and the assumed values','');
   await p.reload(); await p.waitForTimeout(900);
   ok(await p.getAttribute('#formFull','aria-pressed')==='true','the chosen form is remembered','');
+  // ---------- action bar: Share ▾ and ⋯ menus ----------
+  {
+    await p.selectOption('#dealPick','ex-townhouse'); await p.waitForTimeout(300);
+    const vis=sel=>p.isVisible(sel);
+    ok(!(await vis('#rptOne'))&&!(await vis('#delDeal')),'share and delete actions start tucked into menus','');
+    await p.click('#shareMenu > summary'); ok(await vis('#rptOne')&&await vis('#shareImg'),'Share menu shows the report and the image','');
+    await p.click('#moreMenu > summary'); ok(!(await vis('#rptOne'))&&await vis('#dupDeal')&&await vis('#delDeal'),'opening ⋯ closes Share; ⋯ shows Duplicate and Delete','');
+    await p.keyboard.press('Escape'); await p.waitForTimeout(100); ok(!(await vis('#delDeal')),'Esc closes a menu','');
+    const n0=await p.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('buybox-data')).properties).length);
+    await menuClick(p,'#delDeal'); await p.waitForTimeout(150);
+    ok(await vis('#delDeal')&&(await p.textContent('#delDeal')).includes('Delete deal?'),'Delete asks to confirm and keeps the menu open',await p.textContent('#delDeal'));
+    await p.click('#kpis'); await p.waitForTimeout(150);
+    const n1=await p.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('buybox-data')).properties).length);
+    ok(n1===n0&&!(await vis('#delDeal')),'clicking away closes the menu and deletes nothing',n0+' → '+n1);
+    ok(await p.evaluate(()=>{ const a=document.querySelector('#moreMenu [data-feedback]'); return !!a&&/^(https:|mailto:)/.test(a.getAttribute('href'))&&a.target==='_blank'&&/noopener/.test(a.rel); }),'⋯ menu has a feedback link','');
+    // the checklist card: shown, links to the checklist, can be hidden for good
+    ok(await vis('#clCard')&&await p.getAttribute('#clCard a.primary','href')==='#checklist','Analyse shows the checklist card','');
+    await p.click('#clCardX'); await p.reload(); await p.waitForTimeout(800);
+    ok(!(await vis('#clCard')),'hiding the checklist card is remembered','');
+    await p.evaluate(()=>localStorage.removeItem('buybox-cl-card'));
+    const pm=await b.newPage({viewport:{width:390,height:844},isMobile:true}); await pm.goto(BASE+'#analyse'); await pm.waitForTimeout(900);
+    ok(await pm.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),'action bar fits a phone screen','');
+    await pm.close();
+  }
   // ---------- share image: a square PNG whose figures match the engine ----------
   {
-    const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#shareImg')]);
+    const [dl]=await Promise.all([p.waitForEvent('download'),menuClick(p,'#shareImg')]);
     const buf=require('fs').readFileSync(await dl.path());
     ok(/^buy-box-[a-z0-9-]+\.png$/.test(dl.suggestedFilename()),'share image file name',dl.suggestedFilename());
     ok(buf.slice(1,4).toString()==='PNG'&&buf.readUInt32BE(16)===1080&&buf.readUInt32BE(20)===1080,'share image is a 1080×1080 PNG',buf.readUInt32BE(16)+'×'+buf.readUInt32BE(20));
@@ -305,7 +331,7 @@ function rnd(i){
   // single deal from Analyse
   await p.goto(BASE+'#analyse'); await p.waitForTimeout(600);
   await p.selectOption('#dealPick','ex-townhouse'); await p.waitForTimeout(300);
-  await p.click('#rptOne'); await p.waitForTimeout(600);
+  await menuClick(p,'#rptOne'); await p.waitForTimeout(600);
   const d1={...E.DEFAULTS,...(await deal('ex-townhouse'))}, r1=E.analyse(d1); r1.v=E.verdict(r1,TT);
   const rp=await p.evaluate(()=>{
     const sec=document.querySelector('[data-r=deal]'), t=s=>[...sec.querySelectorAll(s)];
@@ -471,12 +497,13 @@ function rnd(i){
   const cl=await p.evaluate(()=>{ const doc=document.querySelector('.cl-doc'), all=[...doc.querySelectorAll('*')], own=e=>[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
     return { items:doc.querySelectorAll('.cl-item').length, links:[...doc.querySelectorAll('.cl-item a')].map(a=>a.getAttribute('href')), title:document.querySelector('#crumbs h1').textContent,
       italic:all.filter(e=>getComputedStyle(e).fontStyle!=='normal').length, small:all.filter(e=>own(e)&&parseFloat(getComputedStyle(e).fontSize)<10.9).map(e=>e.className||e.tagName),
-      side:!!document.querySelector('.side a[href="#checklist"]'), guide:!!document.querySelector('#v-guide a[href="#checklist"]'), site:doc.textContent.includes('%%SITE%%') };
+      side:!!document.querySelector('.side .nav a[href="#checklist"]'), signup:document.querySelectorAll('[data-signup]').length, signupHref:[...document.querySelectorAll('[data-signup]')].map(a=>a.getAttribute('href')), guide:!!document.querySelector('#v-guide a[href="#checklist"]'), site:doc.textContent.includes('%%SITE%%') };
   });
   ok(cl.items===10&&cl.title==='10 checks before you sign','checklist shows ten checks',cl.items+' '+cl.title);
   ok(cl.links.length===8&&cl.links.every(h=>/^#(analyse|report)$/.test(h)),'checks 1 to 8 link into Buy Box',cl.links.join());
   ok(cl.italic===0&&cl.small.length===0&&!cl.site,'checklist: no italics, nothing below 8pt, site address filled in',JSON.stringify(cl.small));
   ok(cl.side&&cl.guide,'checklist is linked from the sidebar and the guide','');
+  ok(cl.signupHref.every(h=>/^https:\/\//.test(h)),'email sign-up links appear only when configured, and are https',JSON.stringify(cl.signupHref));
   await p.emulateMedia({media:'print'}); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(200);
   const clBuf=await p.pdf({printBackground:true,preferCSSPageSize:true}); const clPdf=clBuf.toString('latin1');
   await p.emulateMedia({media:'screen'});
@@ -502,9 +529,9 @@ function rnd(i){
     await c.cp.goto(SITEURL+'#analyse'); await c.cp.waitForTimeout(400);
     await c.cp.click('#newDeal'); await c.cp.waitForTimeout(400);
     await c.cp.fill('#f-name','Secret Street 42'); await c.cp.fill('#f-price','987654'); await c.cp.waitForTimeout(100);
-    await Promise.all([c.cp.waitForEvent('download'),c.cp.click('#shareImg')]); await c.cp.waitForTimeout(200);
+    await Promise.all([c.cp.waitForEvent('download'),menuClick(c.cp,'#shareImg')]); await c.cp.waitForTimeout(200);
     await c.cp.click('#saveDeal'); await c.cp.waitForTimeout(400);
-    await c.cp.click('#rptOne'); await c.cp.waitForTimeout(600);
+    await menuClick(c.cp,'#rptOne'); await c.cp.waitForTimeout(600);
     const P=c.hits.map(u=>u.searchParams.get('p'));
     ok(P[0]==='/analyse'&&P.includes('/portfolio')&&P.includes('/report'),'counts the screens opened',P.join());
     ok(['share-image','deal-saved','pack-opened'].every(k=>c.hits.some(u=>u.searchParams.get('p')===k&&u.searchParams.get('e')==='1')),'counts saves, share images and reports as events',P.join());
