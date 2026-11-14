@@ -18,13 +18,28 @@ const GOATCOUNTER = 'buybox';
 const CONTACT = 'hello@buyboxsa.co.za';
 // Where the Feedback links go: a hosted form (e.g. Tally). Empty = an email to CONTACT.
 const FEEDBACK = '' || 'mailto:' + CONTACT + '?subject=Buy%20Box%20feedback';
+// Where privacy requests go (named in the privacy notice when accounts are on).
+const PRIVACY = 'privacy@buyboxsa.co.za';
+// Accounts (phase 2): the Supabase project URL and its publishable ("anon") key, from Supabase → Project Settings →
+// API. Both empty = accounts off: no sign-in, and the page still can't connect anywhere. When set, the website gets a
+// <meta name="buybox-cloud"> tag and its CSP allows connections to that one address only. The key is public by
+// design: row-level security in supabase/schema.sql is what keeps each person's deals their own.
+const SUPABASE_URL = '';
+const SUPABASE_KEY = '';
 // The email sign-up form for deal breakdowns (e.g. a MailerLite hosted form). Empty = the sign-up links are hidden.
 const SIGNUP = '';
 if (!/^[^@\s"<>]+@[^@\s"<>]+\.[a-z]{2,}$/i.test(CONTACT)) throw new Error('CONTACT must be an email address');
+if (!/^[^@\s"<>]+@[^@\s"<>]+\.[a-z]{2,}$/i.test(PRIVACY)) throw new Error('PRIVACY must be an email address');
+if (!SUPABASE_URL !== !SUPABASE_KEY) throw new Error('set both SUPABASE_URL and SUPABASE_KEY, or neither');
+if (SUPABASE_URL && !/^https:\/\/[a-z0-9.-]+$/.test(SUPABASE_URL)) throw new Error('SUPABASE_URL must look like https://abcd1234.supabase.co (no path or trailing slash)');
+if (SUPABASE_KEY && !/^[\w.-]{20,}$/.test(SUPABASE_KEY)) throw new Error('SUPABASE_KEY must be the publishable (anon) key');
+// Never the secret key: it bypasses row-level security. (Legacy keys are JWTs whose payload names the role.)
+const keyRole = SUPABASE_KEY.split('.').length === 3 ? (() => { try { return JSON.parse(Buffer.from(SUPABASE_KEY.split('.')[1], 'base64url').toString()).role; } catch (e) { return ''; } })() : '';
+if (/^sb_secret_/.test(SUPABASE_KEY) || keyRole === 'service_role') throw new Error('SUPABASE_KEY must be the publishable (anon) key, never the secret / service_role key');
 if (SIGNUP && !/^https:\/\/[^"<>\s]+$/.test(SIGNUP)) throw new Error('SIGNUP must be an https:// link');
 if (GOATCOUNTER && !/^[a-z0-9-]{1,40}$/.test(GOATCOUNTER)) throw new Error('GOATCOUNTER must be a GoatCounter site code');
 if (!/^(https:\/\/|mailto:)[^"<>\s]+$/.test(FEEDBACK)) throw new Error('FEEDBACK must be an https:// or mailto: link');
-for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FEEDBACK%%', '%%SIGNUP%%', '%%CONTACT%%']) {
+for (const mark of ['%%ENGINE%%', '%%NARRATIVE%%', '%%SEED%%', '%%SITE%%', '%%FEEDBACK%%', '%%SIGNUP%%', '%%CONTACT%%', '%%PRIVACY%%']) {
   if (!shell.includes(mark)) throw new Error('src/shell.html is missing the ' + mark + ' placeholder');
 }
 // Function replacements, so a "$" in the engine or the deals is never read as a replacement pattern.
@@ -34,6 +49,7 @@ const page = shell
   .replaceAll('%%FEEDBACK%%', FEEDBACK)
   .replaceAll('%%SIGNUP%%', SIGNUP)
   .replaceAll('%%CONTACT%%', CONTACT)
+  .replaceAll('%%PRIVACY%%', PRIVACY)
   .replace('%%ENGINE%%', () => engine)
   .replace('%%NARRATIVE%%', () => narrative)
   .replace('%%SEED%%', () => JSON.stringify(seed).replace(/</g, '\\u003c'));
@@ -85,7 +101,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self'",
   "img-src 'self' data: blob:" + (GOATCOUNTER ? ' https://' + GOATCOUNTER + '.goatcounter.com/count' : ''),
-  "connect-src 'none'",
+  "connect-src " + (SUPABASE_URL || "'none'"),
   "object-src 'none'",
   "base-uri 'none'",
   "form-action 'none'",
@@ -99,5 +115,6 @@ fs.writeFileSync(__dirname + '/dist/buy-box.html', page);
 fs.writeFileSync(__dirname + '/dist/index.html',
   head + '\n<meta http-equiv="Content-Security-Policy" content="' + csp + '">\n' +
   '<meta name="referrer" content="no-referrer">\n' +
-  (GOATCOUNTER ? '<meta name="buybox-count" content="' + GOATCOUNTER + '">\n' : '') + site + '\n</html>\n');
+  (GOATCOUNTER ? '<meta name="buybox-count" content="' + GOATCOUNTER + '">\n' : '') +
+  (SUPABASE_URL ? '<meta name="buybox-cloud" content="' + SUPABASE_URL + ' ' + SUPABASE_KEY + '">\n' : '') + site + '\n</html>\n');
 console.log('Built dist/buy-box.html and dist/index.html');

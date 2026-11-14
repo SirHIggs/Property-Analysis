@@ -34,7 +34,7 @@ Based on a business-scaling playbook (offers, leads, money models, one constrain
 - [x] **Custom domain**: buyboxsa.co.za, so every share points somewhere we own.
 - [x] **Feedback link** in the sidebar, the ⋯ menu and the Terms page: a hosted form when `FEEDBACK` is set in build.js, otherwise an email to hello@buyboxsa.co.za.
 - [x] **Friendlier action bar** (Share ▾ and ⋯ menus) and a **checklist card** on Analyse, plus a Resources group in the sidebar.
-- [ ] **Email:** Zoho Mail (free) on buyboxsa.co.za, one mailbox with aliases hello@ (public), social@ (social accounts), admin@ (domain, GitHub, GoatCounter, Supabase; 2-factor), privacy@ (POPIA) and noreply@ (site emails).
+- [x] **Email:** Zoho Mail (free) on buyboxsa.co.za, one mailbox with aliases hello@ (public), social@ (social accounts), admin@ (domain, GitHub, GoatCounter, Supabase; 2-factor), privacy@ (POPIA) and noreply@ (site emails).
 - [ ] **Email sign-up** for deal breakdowns: a free hosted form (e.g. MailerLite) set as `SIGNUP` in build.js; the links appear on the checklist page and card.
 - [ ] **Feedback form** (e.g. Tally): set as `FEEDBACK` in build.js.
 - [x] **Privacy-friendly counts** (on: stats at buybox.goatcounter.com). GoatCounter's image pixel, allowed by one `img-src` address in the CSP: screens viewed, deals saved, packs and share images made, never deal figures. Explained on the Terms & privacy page, with an opt-out, and checked by the dom suite.
@@ -109,21 +109,21 @@ Ideas come from comments and questions (series 3 is where FAQs and objections go
 **Done when:** the first 3 professionals are paying.
 
 ### Later, only when it becomes the constraint
-- Accounts and syncing (phase 2 below); Pro will need them.
 - The annual data pack (see Future offers).
 - More metrics and features.
 
-## Phase 2: accounts and syncing
+## Phase 2: accounts and syncing (built, switching on)
 
-Needed for Buy Box Pro (stage C of the growth plan). Build it only then, because it brings a backend, privacy obligations and possibly running costs.
+Brought forward (November 2026) so testers have their own logins and the owner gets Video mode. Built and tested, but off until the Supabase project exists: see [docs/accounts-setup.md](docs/accounts-setup.md).
 
-- Sign-in and cloud storage through a hosted backend such as Supabase (or Firebase), so deals follow people across devices.
-- Share a deal, or a comparison, with someone else by link.
-- The page already talks to storage through one small interface (`browserDb()` in `src/shell.html`, the same shape as the claude.ai `db`). A Supabase version of that interface can be swapped in without touching the rest of the UI.
-- Import existing browser deals into a new account on first sign-in.
-- Comply with POPIA (South Africa's data-protection law): privacy policy, consent, data export and deletion on request.
-- **Owner-only Video mode** for making content: a phone-shaped screen of one deal that reveals the numbers a tap at a time (title → rent → costs → bond → cash flow → stress test → grade → the price that works → end card), for screen recording. Only the owner's account gets it, which is why it waits for accounts.
-- Plan for hosting costs and abuse protection (rate limits, sign-up checks).
+- [x] Sign-in and cloud storage on Supabase (EU region), through a small hand-written client and `cloudDb()`, a store with the same interface as `browserDb()`. Email and password; confirm email, reset and change password, sign out, delete account.
+- [x] Copy existing browser deals into a new account after signing in.
+- [x] POPIA: privacy notice for accounts (what, why, where, who, how long, rights), consent at sign-up, export, and deletion from the Account page.
+- [x] Row-level security on every table (`supabase/schema.sql`); limits of 500 deals of 20 KB per account.
+- [x] **Owner-only Video mode** for making content: a phone-shaped screen of one deal that reveals the numbers a tap at a time (title → rent → costs → bond → cash flow → stress test → grade → the price that works → end card), for screen recording. Only the account with the owner role sees it.
+- [ ] Switch on: create the Supabase project and Resend (noreply@), then set `SUPABASE_URL` and `SUPABASE_KEY` in build.js.
+- [ ] Later: share a deal, or a comparison, by link.
+- [ ] Later, if abuse appears: a CAPTCHA on sign-up (Supabase supports Cloudflare Turnstile), and watching the free-plan limits.
 
 ## Done after phase 1
 

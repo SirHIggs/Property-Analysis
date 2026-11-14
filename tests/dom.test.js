@@ -10,8 +10,49 @@ const TYPES={'.html':'text/html; charset=utf-8','.woff2':'font/woff2','.txt':'te
 const SITE=(html.match(/Analysed with Buy Box · ([^ "·]+)/)||[])[1]||'buyboxsa.co.za', SITE_HOST=SITE.split('/')[0], SITE_BASE='/'+SITE.split('/').slice(1).join('/').replace(/\/?$/,'/').replace(/^\/+/,'');
 const GCODE=(html.match(/<meta name="buybox-count" content="([a-z0-9-]+)">/)||[])[1]||'bbtest';
 const countHtml=html.includes('<meta name="buybox-count"')?html:html.replace("img-src 'self' data: blob:","img-src 'self' data: blob: https://bbtest.goatcounter.com/count").replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-count" content="bbtest">');
+// Accounts: /cloud/ serves the site as a build with SUPABASE_URL set would be, pointing at a fake Supabase under /sb/
+// on this same server (the real build when SUPABASE_URL is set is checked the same way, against its own meta tag).
+const SBKEY='sb_publishable_test_key_000000';
+const SB={users:new Map(),tokens:new Map(),refresh:new Map(),deals:new Map(),settings:new Map(),log:[],expiresIn:3600,failWrites:false};
+const cloudHtml=port=>html.replace(/connect-src [^;"]+/,"connect-src http://127.0.0.1:"+port).replace('<meta name="referrer" content="no-referrer">','<meta name="referrer" content="no-referrer">\n<meta name="buybox-cloud" content="http://127.0.0.1:'+port+'/sb '+SBKEY+'">').replace(/<meta name="buybox-cloud" content="https:[^"]*">\n/,'');
+const tok=()=>require('crypto').randomBytes(12).toString('hex');
+function sbSession(u){ const a='at_'+tok(), rt='rt_'+tok(); SB.tokens.set(a,u.id); SB.refresh.set(rt,u.id); return {access_token:a,refresh_token:rt,expires_in:SB.expiresIn,token_type:'bearer',user:{id:u.id,email:u.email}}; }
+function fakeSupabase(q,r,u,body){
+  const send=(st,j)=>{ r.writeHead(st,{'content-type':'application/json'}); r.end(j===undefined?'':JSON.stringify(j)); };
+  const p=u.pathname.slice(3), m=q.method; let b={}; try{ b=body?JSON.parse(body):{}; }catch(e){ return send(400,{message:'bad json'}); }
+  SB.log.push(m+' '+p+u.search);
+  if(q.headers.apikey!==SBKEY) return send(401,{message:'No API key'});
+  const user=(()=>{ const a=(q.headers.authorization||'').replace(/^Bearer /,''); const id=SB.tokens.get(a); return id&&[...SB.users.values()].find(x=>x.id===id); })();
+  if(p==='/auth/v1/signup'&&m==='POST'){ if(!/@/.test(b.email||'')) return send(400,{error_code:'email_address_invalid'}); if([...SB.users.values()].some(x=>x.email===b.email)) return send(422,{error_code:'user_already_exists'}); const nu={id:'u_'+tok(),email:b.email,password:b.password,role:'user'}; SB.users.set(nu.email,nu); SB.lastRedirect=u.searchParams.get('redirect_to'); return send(200,sbSession(nu)); }
+  if(p==='/auth/v1/token'&&m==='POST'){
+    if(u.searchParams.get('grant_type')==='password'){ const x=SB.users.get(b.email); return x&&x.password===b.password?send(200,sbSession(x)):send(400,{error_code:'invalid_credentials'}); }
+    const id=SB.refresh.get(b.refresh_token); if(!id) return send(400,{error_code:'refresh_token_not_found'}); SB.refresh.delete(b.refresh_token); return send(200,sbSession([...SB.users.values()].find(x=>x.id===id)));
+  }
+  if(p==='/auth/v1/recover'&&m==='POST'){ SB.lastRedirect=u.searchParams.get('redirect_to'); return send(200,{}); }
+  if(!user) return send(401,{message:'JWT expired'});
+  if(p==='/auth/v1/user'&&m==='GET') return send(200,{id:user.id,email:user.email});
+  if(p==='/auth/v1/user'&&m==='PUT'){ user.password=b.password; return send(200,{id:user.id,email:user.email}); }
+  if(p==='/auth/v1/logout'){ const a=(q.headers.authorization||'').replace(/^Bearer /,''); if(u.searchParams.get('scope')==='local') SB.tokens.delete(a); else [...SB.tokens].forEach(([k,v])=>{ if(v===user.id) SB.tokens.delete(k); }); return send(204); }
+  if(p==='/rest/v1/profiles'&&m==='GET') return send(200,[{role:user.role}]);
+  const mine=SB.deals.get(user.id)||new Map(); SB.deals.set(user.id,mine);
+  if(p==='/rest/v1/deals'){
+    if(m==='GET') return send(200,[...mine].map(([id,data])=>({id,data})));
+    if(SB.failWrites) return send(500,{message:'boom'});
+    if(m==='POST'){ if(u.searchParams.get('on_conflict')!=='user_id,id'||!/merge-duplicates/.test(q.headers.prefer||'')) return send(409,{message:'duplicate key'}); if(!/^[\w-]{1,64}$/.test(b.id)||!b.data||typeof b.data!=='object') return send(400,{message:'check'}); if(!mine.has(b.id)&&mine.size>=500) return send(400,{message:'deal_limit',code:'P0001'}); mine.set(b.id,b.data); return send(201); }
+    if(m==='DELETE'){ mine.delete((u.searchParams.get('id')||'').replace(/^eq\./,'')); return send(204); }
+  }
+  if(p==='/rest/v1/settings'){
+    if(m==='GET') return send(200,SB.settings.has(user.id)?[{targets:SB.settings.get(user.id)}]:[]);
+    if(m==='POST'){ SB.settings.set(user.id,b.targets); return send(201); }
+  }
+  if(p==='/rest/v1/rpc/delete_me'&&m==='POST'){ SB.users.delete(user.email); SB.deals.delete(user.id); SB.settings.delete(user.id); return send(204); }
+  send(404,{message:'not found'});
+}
 const server=http.createServer((q,r)=>{
-  let f=decodeURIComponent(new URL(q.url,'http://x').pathname);
+  const u0=new URL(q.url,'http://x');
+  if(u0.pathname.startsWith('/sb/')){ let body=''; q.on('data',c=>body+=c); q.on('end',()=>fakeSupabase(q,r,u0,body)); return; }
+  if(u0.pathname==='/cloud/'||u0.pathname==='/cloud/index.html'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(cloudHtml(server.address().port)); return; }
+  let f=decodeURIComponent(u0.pathname.replace(/^\/cloud\//,'/'));
   if((q.headers.host||'').split(':')[0]===SITE_HOST){
     if(f===SITE_BASE||f===SITE_BASE+'index.html'){ r.writeHead(200,{'content-type':TYPES['.html']}); r.end(countHtml); return; }
     if(f.startsWith(SITE_BASE)) f='/'+f.slice(SITE_BASE.length);
@@ -550,6 +591,106 @@ function rnd(i){
     const d=await run('Object.defineProperty(Navigator.prototype,"doNotTrack",{get:()=>"1"})');
     await d.cp.goto(SITEURL+'#analyse'); await d.cp.waitForTimeout(1000);
     ok(d.hits.length===0,'Do Not Track stops the counts',d.hits.length); await d.ctx.close();
+    await cb.close();
+  }
+
+  // ---------- accounts (phase 2): off unless SUPABASE_URL is set; against a fake Supabase when on ----------
+  {
+    const cloudOn=html.includes('<meta name="buybox-cloud" content=');
+    await p.goto(BASE+'#account'); await p.waitForTimeout(400);
+    if(!cloudOn){
+      ok(await p.evaluate(()=>document.documentElement.dataset.view)==='analyse','accounts off: #account goes to Analyse','');
+      ok(!(await p.isVisible('a[href="#account"][data-v]'))&&/connect-src 'none'/.test(html),'accounts off: no account link, and the page still connects nowhere','');
+    }
+    await p.goto(BASE+'#terms'); await p.waitForTimeout(300);
+    ok(await p.isVisible('[data-cloud=off]')===!cloudOn&&(await p.locator('[data-cloud=on]').first().isVisible())===cloudOn,'privacy notice matches whether accounts are set up',String(cloudOn));
+    ok(!/service_role/.test(html),'the secret key is never in the page','');
+    const schema=fs.readFileSync(path.join(__dirname,'../supabase/schema.sql'),'utf8');
+    ok(['profiles','deals','settings'].every(t=>new RegExp('alter table public\\.'+t+' enable row level security').test(schema)),'every table has row-level security','');
+    ok(!/for (update|insert|all)[^;]*on public\.profiles|on public\.profiles for (update|insert|all)/.test(schema),'nobody can change their own role','');
+    ok(/revoke execute on function public\.delete_me\(\) from public, anon/.test(schema),'only signed-in people can delete an account (their own)','');
+
+    const CURL=BASE+'cloud/', cb=await chromium.launch();
+    const dev=async()=>{ const ctx=await cb.newContext({viewport:{width:1280,height:900},acceptDownloads:true,reducedMotion:'reduce'}); const cp=await ctx.newPage(), cerrs=[];
+      cp.on('pageerror',e=>cerrs.push(e.message)); cp.on('console',m=>{ if(m.type()==='error'&&!/status of (400|401|422|500)/.test(m.text())) cerrs.push(m.text()); }); cp.on('dialog',d=>{ cerrs.push('dialog'); d.dismiss(); }); return {ctx,cp,cerrs}; };
+    const msg=async cp=>(await cp.textContent('#acctMsg').catch(()=>''))||'';
+    const status=async cp=>(await cp.textContent('#statusText'))||'';
+    const A=await dev(), cp=A.cp;
+    await cp.goto(CURL+'#analyse'); await cp.waitForTimeout(900);
+    ok(await cp.isVisible('a[href="#account"][data-v]'),'accounts on: the sidebar links to Account','');
+    ok(/Saved in this browser/.test(await status(cp)),'signed out: deals still save in this browser',await status(cp));
+    // make a deal of your own before signing in, to copy into the account later
+    await cp.click('#newDeal'); await cp.waitForTimeout(300); await cp.fill('#f-name','Browser flat'); await cp.fill('#f-price','777000'); await cp.waitForTimeout(100); await cp.click('#saveDeal'); await cp.waitForTimeout(900);
+    await cp.goto(CURL+'#account'); await cp.waitForTimeout(400);
+    await cp.click('[data-tab=up]'); await cp.waitForTimeout(100);
+    await cp.fill('#acEmail','tester@example.com'); await cp.fill('#acPw','short'); await cp.click('#acctForm button[type=submit]'); await cp.waitForTimeout(200);
+    ok(/at least 10/.test(await msg(cp))&&!SB.log.some(x=>/signup/.test(x)),'sign-up: a short password is refused before anything is sent',await msg(cp));
+    await cp.fill('#acPw','correct horse battery'); await cp.click('#acctForm button[type=submit]'); await cp.waitForTimeout(200);
+    ok(/Tick the box/.test(await msg(cp))&&!SB.log.some(x=>/signup/.test(x)),'sign-up: needs consent to the terms and privacy notice',await msg(cp));
+    await cp.check('#acAgree'); await cp.click('#acctForm button[type=submit]'); await cp.waitForTimeout(1500);
+    ok(SB.users.has('tester@example.com')&&/^http:\/\/127\.0\.0\.1:\d+\/cloud\/$/.test(SB.lastRedirect||''),'sign-up: creates the account, with emails linking back to the site',SB.lastRedirect);
+    ok(/Account created/.test(await msg(cp))&&/Saved to your account/.test(await status(cp)),'sign-up: signed in, saving to the account',await msg(cp)+' | '+await status(cp));
+    ok(/tester@example\.com/.test(await cp.textContent('.acct-who'))&&!(await cp.isVisible('a[href="#video"]')),'account shows the email, and no Video mode for ordinary accounts','');
+    ok(/1 deal saved before you signed in/.test(await cp.textContent('#acct')),'offers to copy this browser\'s own deals (not untouched examples)',(await cp.textContent('#acct')).slice(0,200));
+    await cp.click('#acCopy'); await cp.waitForTimeout(1500);
+    const mine=()=>[...(SB.deals.get(SB.users.get('tester@example.com').id)||new Map()).values()];
+    ok(mine().length===1&&mine()[0].price===777000&&mine()[0].name==='Browser flat','copied deals are saved to the account',JSON.stringify(mine().map(d=>d.name)));
+    // a change on Analyse goes to the account
+    await cp.goto(CURL+'#analyse'); await cp.waitForTimeout(500); await cp.selectOption('#dealPick',{label:'Browser flat'}); await cp.waitForTimeout(300); await cp.fill('#f-rent','8800'); await cp.waitForTimeout(1600);
+    ok(mine()[0].rent===8800&&/Saved to your account/.test(await status(cp)),'edits save to the account',mine()[0].rent+' '+await status(cp));
+    const d0={...E.DEFAULTS,...mine()[0]}, shown=await cp.evaluate(()=>document.querySelector('#sCash').childNodes[0].textContent);
+    cmpR(shown,E.analyse(d0).m.cfMonth,'account deal: cash flow matches the engine');
+    // a second device sees the same deals; a wrong password is refused
+    const B=await dev(), bp=B.cp;
+    await bp.goto(CURL+'#account'); await bp.waitForTimeout(600);
+    await bp.fill('#acEmail','tester@example.com'); await bp.fill('#acPw','wrong password!'); await bp.click('#acctForm button[type=submit]'); await bp.waitForTimeout(400);
+    ok(/Wrong email or password/.test(await msg(bp)),'sign-in: wrong password is refused',await msg(bp));
+    SB.expiresIn=61; // this session's token expires a second after sign-in
+    await bp.fill('#acPw','correct horse battery'); await bp.click('#acctForm button[type=submit]'); await bp.waitForTimeout(1500);
+    SB.expiresIn=3600;
+    await bp.goto(CURL+'#portfolio'); await bp.waitForTimeout(600);
+    ok(await bp.textContent('#cntDeals')==='1'&&/Browser flat/.test(await bp.textContent('#v-portfolio')),'sign-in on another device shows the same deals',await bp.textContent('#cntDeals'));
+    const nRefresh=SB.log.filter(x=>/grant_type=refresh_token/.test(x)).length;
+    await bp.goto(CURL+'#analyse'); await bp.waitForTimeout(500); await bp.fill('#f-levy','1234'); await bp.waitForTimeout(1600);
+    ok(SB.log.filter(x=>/grant_type=refresh_token/.test(x)).length>nRefresh&&mine()[0].levy===1234,'an expired token is refreshed and the save goes through',mine()[0].levy);
+    ok(!(await bp.evaluate(()=>location.href)).includes('token'),'tokens never appear in the address bar','');
+    // a failed save says so
+    SB.failWrites=true; await bp.fill('#f-levy','1300'); await bp.waitForTimeout(1600); SB.failWrites=false;
+    ok(/Couldn't save/.test(await status(bp)),'a failed save is shown',await status(bp));
+    // owner: Video mode
+    ok(!(await bp.isVisible('a[href="#video"]')),'Video mode hidden before the owner role is set','');
+    await bp.goto(CURL+'#video'); await bp.waitForTimeout(700);
+    ok(await bp.evaluate(()=>document.documentElement.dataset.view)==='analyse','ordinary accounts can\'t open Video mode','');
+    SB.users.get('tester@example.com').role='owner';
+    await bp.goto(CURL+'#portfolio'); await bp.reload(); await bp.waitForTimeout(900);
+    ok(await bp.isVisible('a[href="#video"]'),'owner: the sidebar shows Video mode','');
+    await bp.goto(CURL+'#video'); await bp.waitForTimeout(700);
+    ok(await bp.evaluate(()=>document.documentElement.dataset.view)==='video','owner: Video mode opens','');
+    const d1={...E.DEFAULTS,...mine()[0]}, r1=E.analyse(d1), beats=[];
+    for(let i=0;i<9;i++){ beats.push(await bp.getAttribute('.vid-beat','data-beat')); if(i===4) cmpR((await bp.textContent('[data-vid-cf]')).replace(/^[+−-]/,m=>m==='+'?'':'-'),r1.m.cfMonth,'video mode: cash flow matches the engine'); if(i===0) ok((await bp.textContent('.vid-beat')).includes('Browser flat'),'video mode: opens on the deal name',''); await bp.keyboard.press('ArrowRight'); await bp.waitForTimeout(60); }
+    ok(beats.join()==='title,rent,costs,bond,cash,stress,grade,price,end','video mode: nine beats in order',beats.join());
+    ok((await bp.textContent('.vid-beat')).includes(SITE),'video mode: ends on the site address','');
+    await bp.keyboard.press('ArrowLeft'); await bp.waitForTimeout(60);
+    ok(await bp.getAttribute('.vid-beat','data-beat')==='price','video mode: ← goes back','');
+    const ph=await bp.evaluate(()=>{ const b=document.getElementById('vidPhone').getBoundingClientRect(); return b.height/b.width; });
+    ok(Math.abs(ph-16/9)<0.02,'video mode: the phone screen is 9:16',ph);
+    // password reset link: the token goes into the session, out of the address bar, and asks for a new password
+    const C=await dev(), rp=C.cp, rs=sbSession(SB.users.get('tester@example.com'));
+    await rp.goto(CURL+'#access_token='+rs.access_token+'&expires_in=3600&refresh_token='+rs.refresh_token+'&token_type=bearer&type=recovery'); await rp.waitForTimeout(900);
+    ok((await rp.evaluate(()=>location.hash))==='#account'&&await rp.isVisible('text=Choose a new password'),'reset link: asks for a new password, token gone from the address bar',await rp.evaluate(()=>location.href));
+    await rp.fill('#acPw','another long password'); await rp.click('#acctForm button[type=submit]'); await rp.waitForTimeout(500);
+    ok(SB.users.get('tester@example.com').password==='another long password'&&/Password changed/.test(await rp.textContent('#acct')),'reset link: the new password is saved','');
+    await rp.goto('about:blank'); await rp.goto(CURL+'#access_token=x&error=access_denied&error_code=otp_expired'); await rp.waitForTimeout(700);
+    ok(/expired/.test(await msg(rp)),'an expired email link says so',await msg(rp));
+    // sign out: back to this browser's own deals
+    await cp.goto(CURL+'#account'); await cp.waitForTimeout(400); await cp.click('#acOut'); await cp.waitForTimeout(1200);
+    ok(/Saved in this browser/.test(await status(cp))&&!(await cp.evaluate(()=>localStorage.getItem('buybox-session'))),'sign out: the session is removed and the browser\'s deals are back',await status(cp));
+    // delete account
+    await bp.goto(CURL+'#account'); await bp.waitForTimeout(500);
+    ok(await bp.isDisabled('#acDel'),'delete: needs the "I understand" tick first','');
+    await bp.check('#acDelOk'); await bp.click('#acDel'); await bp.click('#acDel'); await bp.waitForTimeout(1200);
+    ok(!SB.users.has('tester@example.com')&&/deleted/.test(await msg(bp))&&/Saved in this browser/.test(await status(bp)),'delete: the account and its deals are erased',await msg(bp));
+    ok([A,B,C].every(x=>!x.cerrs.length),'no script or CSP errors with accounts on',[A,B,C].flatMap(x=>x.cerrs).join(' | '));
     await cb.close();
   }
 
